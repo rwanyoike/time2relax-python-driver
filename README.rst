@@ -1,6 +1,6 @@
-===============================
+=============
 Time to Relax
-===============================
+=============
 
 .. image:: https://img.shields.io/pypi/v/time2relax.svg
         :target: https://pypi.python.org/pypi/time2relax
@@ -24,7 +24,7 @@ Features
 * TODO
 
 Credits
----------
+-------
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 

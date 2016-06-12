@@ -37,8 +37,7 @@ setup(
     packages=[
         'time2relax',
     ],
-    package_dir={'time2relax':
-                 'time2relax'},
+    package_dir={'time2relax': 'time2relax'},
     include_package_data=True,
     install_requires=requirements,
     license="ISCL",
