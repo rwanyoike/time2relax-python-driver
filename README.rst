@@ -1,6 +1,6 @@
-=============
-Time to Relax
-=============
+============
+Time 2 Relax
+============
 
 .. image:: https://img.shields.io/pypi/v/time2relax.svg
         :target: https://pypi.python.org/pypi/time2relax
@@ -12,8 +12,9 @@ Time to Relax
         :target: https://readthedocs.org/projects/time2relax/?badge=latest
         :alt: Documentation Status
 
-
 CouchDB driver for Python.
+
+WIP! Not production ready.
 
 * Free software: ISC license
 * Documentation: https://time2relax.readthedocs.org.
