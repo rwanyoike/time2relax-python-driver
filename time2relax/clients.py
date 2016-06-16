@@ -2,9 +2,9 @@
 
 from requests import Session
 
-from .errors import BadRequest, ResourceConflict, CouchDbError, \
-    MethodNotAllowed, ServerError, ResourceNotFound, Unauthorized, Forbidden, \
-    PreconditionFailed
+from .errors import (BadRequest, ResourceConflict, CouchDbError,
+                     MethodNotAllowed, ServerError, ResourceNotFound,
+                     Unauthorized, Forbidden, PreconditionFailed)
 
 
 class HTTPClient(object):
@@ -19,39 +19,40 @@ class HTTPClient(object):
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""
 
+        # Pipe to HTTP library
         r = self.session.request(method, url, **kwargs)
-        self._handle(r)
 
-        return r.json(), r.status_code, r.headers
+        if not (200 <= r.status_code < 400):
+            self._handle_error(r)
 
-    def _handle(self, r):
-        """Handles any >= 400 status code."""
+        # json + headers = simple
+        return r.json(), r.headers
 
-        if r.status_code <= 399:
-            return
+    def _handle_error(self, r):
+        """Handles any non [2|3]xx status."""
 
-        if len(r.content) > 3:
-            err = r.json()
-        else:
-            err = None
+        try:
+            m = r.json()
+        except ValueError:
+            m = None
 
-        args = (err, r.status_code)
+        a = (m, r.headers, r.status_code)
 
         if r.status_code == 400:
-            raise BadRequest(*args)
+            raise BadRequest(*a)
         if r.status_code == 401:
-            raise Unauthorized(*args)
+            raise Unauthorized(*a)
         if r.status_code == 403:
-            raise Forbidden(*args)
+            raise Forbidden(*a)
         if r.status_code == 404:
-            raise ResourceNotFound(*args)
+            raise ResourceNotFound(*a)
         if r.status_code == 405:
-            raise MethodNotAllowed(*args)
+            raise MethodNotAllowed(*a)
         if r.status_code == 409:
-            raise ResourceConflict(*args)
+            raise ResourceConflict(*a)
         if r.status_code == 412:
-            raise PreconditionFailed(*args)
+            raise PreconditionFailed(*a)
         if r.status_code == 500:
-            raise ServerError(*args)
+            raise ServerError(*a)
 
-        raise CouchDbError(*args)
+        raise CouchDbError(*a)

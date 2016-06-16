@@ -60,7 +60,7 @@ class Server(object):
         """Returns the database information."""
 
         url = urljoin(self.url, name)
-        j, _, _ = self.request('GET', url)
+        j, _ = self.request('GET', url)
 
         return j
 
@@ -69,7 +69,7 @@ class Server(object):
         """Returns a list of all the databases."""
 
         url = urljoin(self.url, '_all_dbs')
-        j, _, _ = self.request('GET', url)
+        j, _ = self.request('GET', url)
 
         for i in j:
             yield Database(self, i)
@@ -82,7 +82,7 @@ class Server(object):
         data = {'source': name, 'target': target}
         if options:
             data.update(options)
-        j, _, _ = self.request('POST', url, json=data)
+        j, _ = self.request('POST', url, json=data)
 
         return j
 
@@ -91,7 +91,7 @@ class Server(object):
         """Returns Cookie-based login user information."""
 
         url = urljoin(self.url, '_session')
-        j, _, _ = self.request('GET', url)
+        j, _ = self.request('GET', url)
 
         return j
 

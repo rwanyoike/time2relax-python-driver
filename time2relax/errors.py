@@ -4,10 +4,11 @@
 class CouchDbError(Exception):
     """Class for errors based on HTTP status codes >= 400."""
 
-    def __init__(self, message, status_code=None):
+    def __init__(self, message, headers=None, status_code=None):
         """Initialize the error object."""
 
         super(CouchDbError, self).__init__(message)
+        self.headers = headers
         self.status_code = status_code
 
 

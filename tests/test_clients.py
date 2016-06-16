@@ -5,9 +5,9 @@ import responses
 from responses import RequestsMock
 
 from time2relax.clients import HTTPClient
-from time2relax.errors import BadRequest, ResourceConflict, CouchDbError, \
-    MethodNotAllowed, ServerError, ResourceNotFound, Unauthorized, Forbidden, \
-    PreconditionFailed
+from time2relax.errors import (BadRequest, ResourceConflict, CouchDbError,
+                               MethodNotAllowed, ServerError, ResourceNotFound,
+                               Unauthorized, Forbidden, PreconditionFailed)
 
 
 @responses.activate
@@ -19,10 +19,9 @@ def test_http_client_request():
     data = {'py.test': 100}
 
     responses.add('GET', url, json=data, status=200)
-    j, s, h = client.request('GET', url)
+    j, h = client.request('GET', url)
 
     assert j == data
-    assert s == 200
     assert h == {'Content-Type': 'application/json'}
 
 
