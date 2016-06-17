@@ -9,4 +9,4 @@ __author__ = 'Raymond Wanyoike'
 __email__ = 'raymond.wanyoike@gmail.com'
 __version__ = '0.1.0'
 
-from .time2relax import Server, Database, Document
+from .time2relax import Server, Database

@@ -6,7 +6,6 @@ from requests.compat import urljoin
 
 from .clients import HTTPClient
 
-BASE_CLIENT = HTTPClient
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
 
@@ -16,11 +15,11 @@ class Server(object):
     def __init__(self, url=COUCHDB_URL):
         """Initialize the server object."""
 
-        self._c = BASE_CLIENT()
+        self._c = HTTPClient()
         self.url = url
 
     def __repr__(self):
-        return '<{0} [{1}]>'.format(type(self).__name__, self.url)
+        return '<{0} [{1}]>'.format(self.__class__.__name__, self.url)
 
     # http://docs.couchdb.org/en/latest/api/server/authn.html#post--_session
     def auth(self, username, password):
@@ -32,7 +31,7 @@ class Server(object):
 
     # http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     def compact(self, name, ddoc=None):
-        """Starts a compaction for the database or selected design document."""
+        """Starts a compaction for the database or ddoc."""
 
         url = '/'.join([urljoin(self.url, name), '_compact'])
         if ddoc:
@@ -113,7 +112,7 @@ class Database(object):
         self.url = urljoin(server.url, name)
 
     def __repr__(self):
-        return '<{0} [{1}]>'.format(type(self).__name__, self.name)
+        return '<{0} [{1}]>'.format(self.__class__.__name__, self.url)
 
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""

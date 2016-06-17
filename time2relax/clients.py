@@ -32,27 +32,27 @@ class HTTPClient(object):
         """Handles any non [2|3]xx status."""
 
         try:
-            m = r.json()
+            message = r.json()
         except ValueError:
-            m = None
+            message = None
 
-        a = (m, r.headers, r.status_code)
+        args = (message, r.headers, r.status_code)
 
         if r.status_code == 400:
-            raise BadRequest(*a)
+            raise BadRequest(*args)
         if r.status_code == 401:
-            raise Unauthorized(*a)
+            raise Unauthorized(*args)
         if r.status_code == 403:
-            raise Forbidden(*a)
+            raise Forbidden(*args)
         if r.status_code == 404:
-            raise ResourceNotFound(*a)
+            raise ResourceNotFound(*args)
         if r.status_code == 405:
-            raise MethodNotAllowed(*a)
+            raise MethodNotAllowed(*args)
         if r.status_code == 409:
-            raise ResourceConflict(*a)
+            raise ResourceConflict(*args)
         if r.status_code == 412:
-            raise PreconditionFailed(*a)
+            raise PreconditionFailed(*args)
         if r.status_code == 500:
-            raise ServerError(*a)
+            raise ServerError(*args)
 
-        raise CouchDbError(*a)
+        raise CouchDbError(*args)

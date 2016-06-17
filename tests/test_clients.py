@@ -45,6 +45,6 @@ def test_http_client_errors():
     data = {'py.test': 100}
 
     for i in exceptions:
-        with RequestsMock() as rsps, pytest.raises(exceptions[i]):
-            rsps.add('GET', url, json=data, status=i)
+        with RequestsMock() as rm, pytest.raises(exceptions[i]):
+            rm.add('GET', url, json=data, status=i)
             client.request('GET', url)
