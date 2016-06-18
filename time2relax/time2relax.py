@@ -2,9 +2,8 @@
 
 import os
 
-from requests.compat import urljoin
-
 from .clients import HTTPClient
+from .compat import urljoin
 
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
@@ -27,7 +26,8 @@ class Server(object):
 
         url = urljoin(self.url, '_session')
         data = {'name': username, 'password': password}
-        self.request('POST', url, json=data)
+
+        return self.request('POST', url, json=data)
 
     # http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     def compact(self, name, ddoc=None):
@@ -36,42 +36,40 @@ class Server(object):
         url = '/'.join([urljoin(self.url, name), '_compact'])
         if ddoc:
             url = '/'.join([url, ddoc])
-        self.request('POST', url, json={})
+
+        return self.request('POST', url, json={})
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#put--db
     def create(self, name):
         """Creates a new database."""
 
         url = urljoin(self.url, name)
-        self.request('PUT', url)
 
-        return Database(self, name)
+        return self.request('PUT', url)
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#delete--db
     def delete(self, name):
         """Deletes an existing database."""
 
         url = urljoin(self.url, name)
-        self.request('DELETE', url)
+
+        return self.request('DELETE', url)
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#get--db
     def get(self, name):
         """Returns the database information."""
 
         url = urljoin(self.url, name)
-        j, _ = self.request('GET', url)
 
-        return j
+        return self.request('GET', url)
 
     # http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs
     def list(self):
         """Returns a list of all the databases."""
 
         url = urljoin(self.url, '_all_dbs')
-        j, _ = self.request('GET', url)
 
-        for i in j:
-            yield Database(self, i)
+        return self.request('GET', url)
 
     # http://docs.couchdb.org/en/latest/api/server/common.html#replicate
     def replicate(self, name, target, options=None):
@@ -81,24 +79,24 @@ class Server(object):
         data = {'source': name, 'target': target}
         if options:
             data.update(options)
-        j, _ = self.request('POST', url, json=data)
 
-        return j
+        return self.request('POST', url, json=data)
 
     # http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
     def session(self):
         """Returns Cookie-based login user information."""
 
         url = urljoin(self.url, '_session')
-        j, _ = self.request('GET', url)
 
-        return j
+        return self.request('GET', url)
 
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""
 
         # Pipe to HTTP client
-        return self._c.request(method, url, **kwargs)
+        h, j = self._c.request(method, url, **kwargs)
+
+        return Response(url, h, j)
 
 
 class Database(object):
@@ -117,25 +115,19 @@ class Database(object):
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""
 
-        # Pipe to HTTP client
+        # Just relax!
         return self._s.request(method, url, **kwargs)
 
 
-class Document(dict):
-    """Representation of a CouchDB document."""
+class Response(object):
+    """Representation of a CouchDB response."""
+
+    def __init__(self, url, headers, body):
+        """Initialize the response object."""
+
+        self.url = url
+        self.headers = headers
+        self.body = body
 
     def __repr__(self):
-        return '<{0} [{1}@{2}]>'.format(type(self).__name__, self.id, self.rev)
-
-    @property
-    def id(self):
-        """Returns the document _id."""
-
-        return self.get('_id')
-
-    @property
-    def rev(self):
-        """Returns the document _rev."""
-
-        return self.get('_rev')
-
+        return '<{0} [{1}]>'.format(self.__class__.__name__, self.url)

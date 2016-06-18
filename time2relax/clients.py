@@ -25,8 +25,8 @@ class HTTPClient(object):
         if not (200 <= r.status_code < 400):
             self._handle_error(r)
 
-        # json + headers = simple
-        return r.json(), r.headers
+        # headers + json = :-)
+        return r.headers, r.json()
 
     def _handle_error(self, r):
         """Handles any non [2|3]xx status."""

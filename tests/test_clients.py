@@ -19,10 +19,10 @@ def test_http_client_request():
     data = {'py.test': 100}
 
     responses.add('GET', url, json=data, status=200)
-    j, h = client.request('GET', url)
+    h, j = client.request('GET', url)
 
-    assert j == data
     assert h == {'Content-Type': 'application/json'}
+    assert j == data
 
 
 def test_http_client_errors():
