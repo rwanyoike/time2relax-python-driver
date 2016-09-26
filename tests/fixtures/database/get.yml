@@ -1,0 +1,13 @@
+---
+- method: PUT
+  url: '/database_get'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: GET
+  url: '/database_get'
+  json: '{ "db_name": "database_get", "doc_count": 0 }'
+
+- method: DELETE
+  url: '/database_get'
+  json: '{ "ok": true }'

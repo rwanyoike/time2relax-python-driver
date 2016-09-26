@@ -1,0 +1,27 @@
+---
+- method: PUT
+  url: '/database_create_delete'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/az09_%24()%2B-%2F'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/with%2Fslash'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: DELETE
+  url: '/with%2Fslash'
+  json: '{ "ok": true }'
+
+- method: DELETE
+  url: '/az09_%24()%2B-%2F'
+  json: '{ "ok": true }'
+
+- method: DELETE
+  url: '/database_create_delete'
+  json: '{ "ok": true }'

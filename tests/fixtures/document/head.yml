@@ -1,0 +1,17 @@
+---
+- method: PUT
+  url: '/document_head'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/document_head/foobaz'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+
+- method: HEAD
+  url: '/document_head/foobaz'
+
+- method: DELETE
+  url: '/document_head'
+  json: '{ "ok": true }'

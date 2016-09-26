@@ -1,0 +1,47 @@
+---
+- method: PUT
+  url: '/database_replicate'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/database_replica'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/database_replicate/foobar'
+  status: 201
+  json: '{ "id": "foobar", "ok": true, "rev": "1-4c6114c65e295552ab1019e2b046b10e" }'
+
+- method: PUT
+  url: '/database_replicate/foobaz'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+
+- method: PUT
+  url: '/database_replicate/barfoo'
+  status: 201
+  json: '{ "id": "barfoo", "ok": true, "rev": "1-41412c293dade3fe73279cba8b4cece4" }'
+
+- method: POST
+  url: '/_replicate'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: GET
+  url: '/database_replica/_all_docs'
+  json: '{ "offset": 0, "rows": [ { "id": "barfoo", "key": "barfoo", "value": { "rev": "1-41412c293dade3fe73279cba8b4cece4" } }, { "id": "foobar", "key": "foobar", "value": { "rev": "1-4c6114c65e295552ab1019e2b046b10e" } }, { "id": "foobaz", "key": "foobaz", "value": { "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" } } ], "total_rows": 3 }'
+
+- method: POST
+  url: '/_replicate'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: DELETE
+  url: '/database_replica'
+  json: '{ "ok": true }'
+
+- method: DELETE
+  url: '/database_replicate'
+  json: '{ "ok": true }'
