@@ -2,7 +2,7 @@
 
 import time
 
-from time2relax import Database
+from time2relax.time2relax import Database
 
 FIXTURE = ['database', 'compact']
 

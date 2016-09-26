@@ -1,12 +1,66 @@
 # -*- coding: utf-8 -*-
 
 import os
-from urllib import quote
 from urlparse import urljoin
 
-from .clients import HTTPClient
+from requests import Session
+
+from .exceptions import (BadRequest, CouchDbError, Forbidden, MethodNotAllowed,
+                         PreconditionFailed, ResourceConflict,
+                         ResourceNotFound, ServerError, Unauthorized)
+from .utils import format_url_params, encode_url_database
 
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
+
+
+class HttpClient(object):
+    """Base HTTP client. (Requests HTTP library)"""
+
+    def __init__(self):
+        """Initialize a HTTP client object."""
+
+        # Session with cookie persistence
+        self.session = Session()
+
+    def request(self, method, url, **kwargs):
+        """Constructs and sends a request."""
+
+        r = self.session.request(method, url, **kwargs)
+
+        if not (200 <= r.status_code < 400):
+            self._handle_error(r)
+
+        # Return requests.Response
+        return r
+
+    def _handle_error(self, response):
+        """Handles any non [2|3]xx status."""
+
+        try:
+            message = response.json()
+        except ValueError:
+            message = None
+
+        args = (message, response)
+
+        if response.status_code == 400:
+            raise BadRequest(*args)
+        if response.status_code == 401:
+            raise Unauthorized(*args)
+        if response.status_code == 403:
+            raise Forbidden(*args)
+        if response.status_code == 404:
+            raise ResourceNotFound(*args)
+        if response.status_code == 405:
+            raise MethodNotAllowed(*args)
+        if response.status_code == 409:
+            raise ResourceConflict(*args)
+        if response.status_code == 412:
+            raise PreconditionFailed(*args)
+        if response.status_code == 500:
+            raise ServerError(*args)
+
+        raise CouchDbError(*args)
 
 
 class Server(object):
@@ -15,7 +69,7 @@ class Server(object):
     def __init__(self, url=COUCHDB_URL):
         """Initialize the server object."""
 
-        self.client = HTTPClient()
+        self.client = HttpClient()
         self.url = url
 
     def __repr__(self):
@@ -172,27 +226,3 @@ class Database(object):
             u = os.path.join(u, url)
 
         return self.server.request(method, u, **kwargs)
-
-
-# http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
-def encode_url_database(url):
-    """Encodes a database url."""
-
-    return quote(url, "~()*!.\'")
-
-
-def format_url_params(params):
-    """Formats sent url params."""
-
-    p = {}
-
-    for k, v in params.items():
-        if type(v) is str:
-            v = '"{0}"'.format(v)
-        elif v is True:
-            v = 'true'
-        elif v is False:
-            v = 'false'
-        p[k] = v
-
-    return p
