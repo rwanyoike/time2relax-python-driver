@@ -6,7 +6,7 @@ from time2relax import Server, Database
 def test_database_object():
     """Tests. Tests. Tests."""
 
-    d = Database(Server(), 'test')
-    t = '<{0} [{1}]>'.format(d.__class__.__name__, d.url)
+    database = Database(Server(), 'test')
+    r = '<{0} [{1}]>'.format(database.__class__.__name__, database.name)
 
-    assert repr(d) == t
+    assert repr(database) == r
