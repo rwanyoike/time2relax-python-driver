@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import time
+
 from time2relax import Database
 
 FIXTURE = ['database', 'compact']
@@ -26,6 +28,8 @@ def test_compact(server, db_name):
 def test_confirm(server, db_name):
     """Should finish compaction before ending."""
 
+    # Wait for CouchDB (compact)
+    time.sleep(1)
     r = server.get(db_name)
     json = r.json()
 

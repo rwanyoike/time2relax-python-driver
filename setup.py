@@ -14,12 +14,8 @@ requirements = [
 ]
 
 test_requirements = [
-    'pytest',
+    'PyYAML',
     'responses',
-]
-
-setup_requires=[
-    'pytest-runner',
 ]
 
 setup(
@@ -50,6 +46,5 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     test_suite='tests',
-    tests_require=test_requirements,
-    setup_requires=setup_requires
+    tests_require=test_requirements
 )

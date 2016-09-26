@@ -42,13 +42,18 @@ def test_http_client_errors():
     client = HTTPClient()
     url = 'http://example.com'
     data = {'py.test': 100}
+
     rm = RequestsMock()
+    rm.start()
 
     for i in exceptions:
-        with rm, pytest.raises(exceptions[i]):
-            rm.add('GET', url, json=data, status=i)
+        rm.add('GET', url, json=data, status=i)
+        with pytest.raises(exceptions[i]):
             client.request('GET', url)
 
-    with rm, pytest.raises(CouchDbError):
-        rm.add('HEAD', url, status=999)
+    rm.add('HEAD', url, status=999)
+    with pytest.raises(CouchDbError):
         client.request('HEAD', url)
+
+    rm.stop()
+    rm.reset()
