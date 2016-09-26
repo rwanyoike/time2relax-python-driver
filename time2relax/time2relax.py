@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+from urllib import quote
+from urlparse import urljoin
 
 from .clients import HTTPClient
-from .compat import urljoin
 
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
