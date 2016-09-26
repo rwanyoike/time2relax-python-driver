@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use Time to Relax in a project::
+To use time2relax in a project::
 
     import time2relax

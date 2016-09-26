@@ -55,7 +55,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Time to Relax'
+project = u'time2relax'
 copyright = u'2016, Raymond Wanyoike'
 
 # The version info for the project you're documenting, acts as replacement
@@ -209,7 +209,7 @@ latex_elements = {
 # [howto/manual]).
 latex_documents = [
     ('index', 'time2relax.tex',
-     u'Time to Relax Documentation',
+     u'time2relax Documentation',
      u'Raymond Wanyoike', 'manual'),
 ]
 
@@ -240,7 +240,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'time2relax',
-     u'Time to Relax Documentation',
+     u'time2relax Documentation',
      [u'Raymond Wanyoike'], 1)
 ]
 
@@ -255,7 +255,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'time2relax',
-     u'Time to Relax Documentation',
+     u'time2relax Documentation',
      u'Raymond Wanyoike',
      'time2relax',
      'One line description of project.',

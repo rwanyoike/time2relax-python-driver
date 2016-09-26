@@ -27,19 +27,19 @@ Fix Bugs
 ~~~~~~~~
 
 Look through the GitHub issues for bugs. Anything tagged with "bug"
-is open to whoever wants to implement it.
+and "help wanted" is open to whoever wants to implement it.
 
 Implement Features
 ~~~~~~~~~~~~~~~~~~
 
-Look through the GitHub issues for features. Anything tagged with "feature"
-is open to whoever wants to implement it.
+Look through the GitHub issues for features. Anything tagged with "enhancement"
+and "help wanted" is open to whoever wants to implement it.
 
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-Time to Relax could always use more documentation, whether as part of the
-official Time to Relax docs, in docstrings, or even on the web in blog posts,
+time2relax could always use more documentation, whether as part of the
+official time2relax docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
@@ -79,7 +79,7 @@ Ready to contribute? Here's how to set up `time2relax` for local development.
 5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox::
 
     $ flake8 time2relax tests
-    $ python setup.py test
+    $ python setup.py test or py.test
     $ tox
 
    To get flake8 and tox, just pip install them into your virtualenv.
@@ -110,4 +110,4 @@ Tips
 
 To run a subset of tests::
 
-    $ python -m unittest tests.test_time2relax
+    $ py.test tests.test_time2relax
