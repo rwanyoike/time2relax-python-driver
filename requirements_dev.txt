@@ -1,8 +1,8 @@
 bumpversion==0.5.3
-coverage==4.1
-cryptography==1.4
-flake8==2.5.4
-PyYAML==3.11
+coverage==4.2
+cryptography==1.5.1
+flake8==3.0.4
+PyYAML==3.12
 Sphinx==1.4.3
 tox==2.3.1
 watchdog==0.8.3
