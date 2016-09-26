@@ -115,7 +115,6 @@ class Database(object):
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""
 
-        # Just relax!
         return self._s.request(method, url, **kwargs)
 
 
