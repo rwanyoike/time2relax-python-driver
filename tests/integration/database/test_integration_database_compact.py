@@ -29,4 +29,4 @@ def test_confirm(server, db_name):
     r = server.get(db_name)
     json = r.json()
 
-    assert json['compact_running'] == False
+    assert json['compact_running'] is False

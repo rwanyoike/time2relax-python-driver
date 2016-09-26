@@ -11,4 +11,3 @@ def test_get(server, db_name):
 
     assert json['db_name'] == db_name
     assert json['doc_count'] == 0
-
