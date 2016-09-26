@@ -93,10 +93,9 @@ class Server(object):
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""
 
-        # Pipe to HTTP client
-        h, j = self._c.request(method, url, **kwargs)
 
-        return Response(url, h, j)
+        # Pipe to the HTTP client
+        return self.client.request(method, u, **k)
 
 
 class Database(object):
@@ -119,15 +118,6 @@ class Database(object):
         return self._s.request(method, url, **kwargs)
 
 
-class Response(object):
-    """Representation of a CouchDB response."""
 
-    def __init__(self, url, headers, body):
-        """Initialize the response object."""
 
-        self.url = url
-        self.headers = headers
-        self.body = body
 
-    def __repr__(self):
-        return '<{0} [{1}]>'.format(self.__class__.__name__, self.url)

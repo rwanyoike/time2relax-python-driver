@@ -19,10 +19,10 @@ def test_http_client_request():
     data = {'py.test': 100}
 
     responses.add('GET', url, json=data, status=200)
-    h, j = client.request('GET', url)
+    r = client.request('GET', url)
 
-    assert h == {'Content-Type': 'application/json'}
-    assert j == data
+    assert r.headers == {'Content-Type': 'application/json'}
+    assert r.json() == data
 
 
 def test_http_client_errors():
@@ -37,14 +37,18 @@ def test_http_client_errors():
         409: ResourceConflict,
         412: PreconditionFailed,
         500: ServerError,
-        999: CouchDbError,
     }
 
     client = HTTPClient()
     url = 'http://example.com'
     data = {'py.test': 100}
+    rm = RequestsMock()
 
     for i in exceptions:
-        with RequestsMock() as rm, pytest.raises(exceptions[i]):
+        with rm, pytest.raises(exceptions[i]):
             rm.add('GET', url, json=data, status=i)
             client.request('GET', url)
+
+    with rm, pytest.raises(CouchDbError):
+        rm.add('HEAD', url, status=999)
+        client.request('HEAD', url)

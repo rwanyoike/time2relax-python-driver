@@ -19,40 +19,39 @@ class HTTPClient(object):
     def request(self, method, url, **kwargs):
         """Constructs and sends a request."""
 
-        # Pipe to HTTP library
         r = self.session.request(method, url, **kwargs)
 
         if not (200 <= r.status_code < 400):
             self._handle_error(r)
 
-        # headers + json = :-)
-        return r.headers, r.json()
+        # Return requests.Response
+        return r
 
-    def _handle_error(self, r):
+    def _handle_error(self, response):
         """Handles any non [2|3]xx status."""
 
         try:
-            message = r.json()
+            message = response.json()
         except ValueError:
             message = None
 
-        args = (message, r.headers, r.status_code)
+        args = (message, response)
 
-        if r.status_code == 400:
+        if response.status_code == 400:
             raise BadRequest(*args)
-        if r.status_code == 401:
+        if response.status_code == 401:
             raise Unauthorized(*args)
-        if r.status_code == 403:
+        if response.status_code == 403:
             raise Forbidden(*args)
-        if r.status_code == 404:
+        if response.status_code == 404:
             raise ResourceNotFound(*args)
-        if r.status_code == 405:
+        if response.status_code == 405:
             raise MethodNotAllowed(*args)
-        if r.status_code == 409:
+        if response.status_code == 409:
             raise ResourceConflict(*args)
-        if r.status_code == 412:
+        if response.status_code == 412:
             raise PreconditionFailed(*args)
-        if r.status_code == 500:
+        if response.status_code == 500:
             raise ServerError(*args)
 
         raise CouchDbError(*args)
