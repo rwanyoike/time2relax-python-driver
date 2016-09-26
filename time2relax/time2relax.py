@@ -182,7 +182,7 @@ def encode_url_database(url):
 
 
 def format_url_params(params):
-    """Formats set url params."""
+    """Formats sent url params."""
 
     p = {}
 

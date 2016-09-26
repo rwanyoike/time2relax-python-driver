@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
+from setuptools import setup
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -38,12 +33,13 @@ setup(
     packages=[
         'time2relax',
     ],
-    package_dir={'time2relax': 'time2relax'},
+    package_dir={'time2relax':
+                 'time2relax'},
     include_package_data=True,
     install_requires=requirements,
     license="ISCL",
     zip_safe=False,
-    keywords='time2relax',
+    keywords='couchdb, time2relax',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
