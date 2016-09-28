@@ -275,6 +275,27 @@ class Database(object):
 
         return self.request('GET', '_all_docs', params=params)
 
+    def view(self, ddoc, _type, view, params=None):
+
+        # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
+        # Several search parameters must be JSON-encoded
+        if params:
+            for i in ('counts', 'drilldown', 'group_sort', 'ranges', 'sort'):
+                if i in params:
+                    params[i] = json.dumps(params[i])
+
+        url = os.path.join('_design', ddoc, '_{0}'.format(_type), view)
+
+        return self.request('GET', url, params=params)
+
+    def ddoc_list(self, ddoc, view, _list, params=None):
+
+        return self.view(ddoc, 'list', os.path.join(_list, view), params)
+
+    def ddoc_show(self, ddoc, view, _id, params=None):
+
+        return self.view(ddoc, 'show', os.path.join(view, _id), params)
+
     def request(self, method, url=None, **kwargs):
         """Constructs and sends a request."""
 

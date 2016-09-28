@@ -1,0 +1,39 @@
+---
+- method: PUT
+  url: '/design_show'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/design_show/_design/people'
+  status: 201
+  json: '{ "ok": true, "id": "_design/people", "rev": "1-005eb11fec6020c5f1fc16a657db4c55" }'
+
+- method: PUT
+  url: '/design_show/p_clemens'
+  status: 201
+  json: '{ "id": "p_clemens", "ok": true, "rev": "1-c8a4a5b61f6f18cd9ab6ffe5dc311a10" }'
+
+- method: PUT
+  url: '/design_show/p_randall'
+  status: 201
+  json: '{ "id": "p_randall", "ok": true, "rev": "1-d73dfdb15d5ba044ab4c70e342813739" }'
+
+- method: PUT
+  url: '/design_show/p_nuno'
+  status: 201
+  json: '{ "id": "p_nuno", "ok": true, "rev": "1-7e2685fd5513b729c799531936b04175" }'
+
+- method: GET
+  url: '/design_show/_design/people/_show/singleDoc/p_clemens'
+  json: '{ "name": "Clemens", "city": "Dresden", "format": "json" }'
+
+- method: GET
+  url: '/design_show/_design/people/_show/singleDoc/p_clemens?format=html'
+  body: 'Hello Clemens!'
+  match_querystring: True
+  adding_headers: {Content-Type: text/html}
+
+- method: DELETE
+  url: '/design_show'
+  json: '{ "ok": true }'

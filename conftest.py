@@ -89,6 +89,31 @@ def insert_docs(db):
         db.insert(i)
 
 
+def insert_view(db):
+    """Creates a ddoc and inserts some docs."""
+
+    view = {
+        '_id': '_design/people',
+        'views': {
+            'by_name_and_city': {
+                'map': 'function(doc) { emit([doc.name, doc.city], doc._id); }'
+            }
+        },
+        'lists': {
+            'my_list': 'function(head, req) { send(\'Hello\'); }'
+        }
+    }
+    db.insert(view)
+
+    docs = [
+        {'_id': 'p_derek', 'name': 'Derek', 'city': 'San Francisco'},
+        {'_id': 'p_randall', 'name': 'Randall', 'city': 'San Francisco'},
+        {'_id': 'p_nuno', 'name': 'Nuno', 'city': 'London'},
+    ]
+    for i in docs:
+        db.insert(i)
+
+
 def fixture_path(name):
     """Returns a fixture's filesystem path."""
 
