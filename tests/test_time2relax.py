@@ -9,14 +9,14 @@ from time2relax.exceptions import (BadRequest, ResourceConflict, CouchDbError,
                                    MethodNotAllowed, ServerError,
                                    ResourceNotFound, Unauthorized, Forbidden,
                                    PreconditionFailed)
-from time2relax.time2relax import Database, HttpClient, Server
+from time2relax.time2relax import Database, HTTPClient, Server
 
 
 @responses.activate
 def test_client_request():
     """Tests. Tests. Tests."""
 
-    client = HttpClient()
+    client = HTTPClient()
     url = 'http://example.com'
     data = {'py.test': 100}
 
@@ -41,7 +41,7 @@ def test_client_errors():
         500: ServerError,
     }
 
-    client = HttpClient()
+    client = HTTPClient()
     url = 'http://example.com'
     data = {'py.test': 100}
 

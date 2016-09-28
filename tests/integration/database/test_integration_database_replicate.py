@@ -12,8 +12,8 @@ def test_replicate(server, db_name, insert_three):
     # Create a database replica
     server.create('database_replica')
     server.replicate(db_name, 'database_replica')
-    db = Database(server, 'database_replica')
 
+    db = Database(server, 'database_replica')
     r = db.list()
     json = r.json()
 

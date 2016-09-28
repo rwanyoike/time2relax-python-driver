@@ -13,7 +13,6 @@ def test_bulk(server, db_name):
         {'key': 'baz', 'name': 'bazzel'},
         {'key': 'bar', 'name': 'barry'},
     ]
-
     r = db.bulk(docs)
     json = r.json()
 
@@ -30,7 +29,6 @@ def test_params(server, db_name):
         {'key': 'baz', 'name': 'bazzel'},
         {'key': 'bar', 'name': 'barry'},
     ]
-
     r = db.bulk(docs, {'new_edits': True})
     json = r.json()
 

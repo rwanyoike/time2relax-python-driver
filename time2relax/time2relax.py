@@ -13,8 +13,8 @@ from .utils import format_url_params, encode_url_database
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
 
-class HttpClient(object):
     """Base HTTP client. (Requests HTTP library)"""
+class HTTPClient(object):
 
     def __init__(self):
         """Initialize a HTTP client object."""
@@ -30,7 +30,6 @@ class HttpClient(object):
         if not (200 <= r.status_code < 400):
             self._handle_error(r)
 
-        # Return requests.Response
         return r
 
     def _handle_error(self, response):

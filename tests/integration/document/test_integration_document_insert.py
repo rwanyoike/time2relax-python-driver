@@ -13,7 +13,6 @@ def test_insert(server, db_name):
 
     db = Database(server, db_name)
     doc = {'_id': 'foobaz', 'foo': 'baz'}
-
     r = db.insert(doc)
     json = r.json()
 
@@ -38,8 +37,8 @@ def test_params(server, db_name):
 
     db = Database(server, db_name)
     rev = db.get('foobaz').json()['_rev']
-    doc = {'_id': 'foobaz', '_rev': rev, 'foo': 'baz'}
 
+    doc = {'_id': 'foobaz', '_rev': rev, 'foo': 'baz'}
     r = db.insert(doc, {'new_edits': False})
     json = r.json()
 

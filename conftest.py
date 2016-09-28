@@ -106,7 +106,7 @@ def insert_three():
     return insert
 
 
-def get_fixture_path(name):
+def fixture_path(name):
     """Returns a fixture's filesystem path."""
 
     return os.path.join(os.path.dirname(__file__), 'tests', 'fixtures', name)
@@ -115,5 +115,5 @@ def get_fixture_path(name):
 def load_fixture(name):
     """Loads a fixture from the filesystem."""
 
-    with open(get_fixture_path(name)) as f:
+    with open(fixture_path(name)) as f:
         return yaml.load(f)

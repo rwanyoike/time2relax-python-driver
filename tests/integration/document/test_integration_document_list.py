@@ -21,7 +21,6 @@ def test_params(server, db_name):
     """Should be able to use custom params in list."""
 
     db = Database(server, db_name)
-
     r = db.list({'limit': 1})
     json = r.json()
 
@@ -33,7 +32,6 @@ def test_startkey(server, db_name):
     """Should be able to list with a startkey."""
 
     db = Database(server, db_name)
-
     r = db.list({'startkey': 'c'})
     json = r.json()
 
