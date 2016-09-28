@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import json
 import os
+from urllib import quote
 from urlparse import urljoin
 
 from requests import Session
@@ -8,22 +10,31 @@ from requests import Session
 from .exceptions import (BadRequest, CouchDbError, Forbidden, MethodNotAllowed,
                          PreconditionFailed, ResourceConflict,
                          ResourceNotFound, ServerError, Unauthorized)
-from .utils import format_url_params, encode_url_database
 
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
 
-    """Base HTTP client. (Requests HTTP library)"""
 class HTTPClient(object):
+    """Base HTTP client. (Requests HTTP library)
+
+    Provides a :class:`requests.Session` with cookie persistence.
+    """
 
     def __init__(self):
-        """Initialize a HTTP client object."""
+        """Initialize the HTTP client object."""
 
         # Session with cookie persistence
         self.session = Session()
 
     def request(self, method, url, **kwargs):
-        """Constructs and sends a request."""
+        """Constructs a :class:`requests.Request` and sends it.
+
+        :param method: method for the new :class:`requests.Request` object.
+        :param url: URL for the new :class:`requests.Request` object.
+        :param kwargs: Optional :class:`requests.Request` arguments.
+
+        :rtype: requests.Response
+        """
 
         r = self.session.request(method, url, **kwargs)
 
@@ -33,7 +44,10 @@ class HTTPClient(object):
         return r
 
     def _handle_error(self, response):
-        """Handles any non [2|3]xx status."""
+        """Raises a :class:`CouchDbError` exception.
+
+        :param response: The :class:`requests.Response` object.
+        """
 
         try:
             message = response.json()
@@ -66,9 +80,12 @@ class Server(object):
     """Representation of a CouchDB server."""
 
     def __init__(self, url=COUCHDB_URL):
-        """Initialize the server object."""
+        """Initialize the server object.
 
-        self.client = HttpClient()
+        :param url: URL for the CouchDB instance.
+        """
+
+        self.client = HTTPClient()
         self.url = url
 
     def __repr__(self):
@@ -76,7 +93,11 @@ class Server(object):
 
     # http://docs.couchdb.org/en/latest/api/server/authn.html#post--_session
     def auth(self, username, password):
-        """Authenticates user by Cookie-based user login."""
+        """Authenticates user by Cookie-based login.
+
+        :param username: Username.
+        :param password: Password.
+        """
 
         data = {
             'name': username,
@@ -87,42 +108,60 @@ class Server(object):
 
     # http://docs.couchdb.org/en/latest/api/database/compact.html#post--db-_compact
     def compact(self, name, ddoc=None):
-        """Starts a compaction for the database or ddoc."""
+        """Starts compaction for a database or ddoc.
 
-        url = os.path.join(encode_url_database(name), '_compact')
+        :param name: The name of the database.
+        :param ddoc: TODO
+        """
+
+        url = '_compact'
 
         if ddoc:
             url = os.path.join(url, ddoc)
 
-        return self.request('POST', url, json={})
+        return self.request('POST', name, url, json={})
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#put--db
     def create(self, name):
-        """Creates a new database."""
+        """Creates a new database.
 
-        return self.request('PUT', encode_url_database(name))
+        :param name: The name of the database.
+        """
+
+        return self.request('PUT', name)
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#delete--db
     def delete(self, name):
-        """Deletes an existing database."""
+        """Deletes an existing database.
 
-        return self.request('DELETE', encode_url_database(name))
+        :param name: The name of the database.
+        """
+
+        return self.request('DELETE', name)
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#get--db
     def get(self, name):
-        """Returns the database information."""
+        """Returns the database information.
 
-        return self.request('GET', encode_url_database(name))
+        :param name: The name of the database.
+        """
+
+        return self.request('GET', name)
 
     # http://docs.couchdb.org/en/latest/api/server/common.html#get--_all_dbs
     def list(self):
-        """Returns a list of all the databases."""
+        """Returns a list of all databases."""
 
         return self.request('GET', '_all_dbs')
 
     # http://docs.couchdb.org/en/latest/api/server/common.html#replicate
     def replicate(self, name, target, options=None):
-        """Starts or cancels the replication."""
+        """Starts or cancels a replication.
+
+        :param name: URL or name of the source database.
+        :param target: URL or name of the target database.
+        :param options: Optional replication arguments.
+        """
 
         data = {
             'source': name,
@@ -136,21 +175,41 @@ class Server(object):
 
     # http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
     def session(self):
-        """Returns Cookie-based login user information."""
+        """Returns Cookie-based login information."""
 
         return self.request('GET', '_session')
 
-    def request(self, method, url, **kwargs):
-        """Constructs and sends a request."""
+    def request(self, method, name=None, url=None, **kwargs):
+        """Constructs a :class:`requests.Request` and sends it.
 
-        u = urljoin(self.url, url)
-        k = kwargs
+        :rtype: requests.Response
+        """
 
+        # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
+        # Several search parameters must be JSON-encoded
         if 'params' in kwargs and kwargs['params']:
-            k['params'] = format_url_params(kwargs['params'])
+            for i in ('startkey', 'endkey', 'key', 'keys'):
+                if i in kwargs['params']:
+                    kwargs['params'][i] = json.dumps(kwargs['params'][i])
+            # Python booleans
+            for k, v in kwargs['params'].iteritems():
+                if v is True or v is False:
+                    kwargs['params'][k] = json.dumps(v)
+
+        # http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
+        if name:
+            # Avoid special components
+            if not name.startswith('_'):
+                name = quote(name, "~()*!.\'")
+            if url:
+                url = os.path.join(name, url)
+            else:
+                url = name
+
+        url = urljoin(self.url, url)
 
         # Pipe to the HTTP client
-        return self.client.request(method, u, **k)
+        return self.client.request(method, url, **kwargs)
 
 
 class Database(object):
@@ -219,9 +278,4 @@ class Database(object):
     def request(self, method, url=None, **kwargs):
         """Constructs and sends a request."""
 
-        u = encode_url_database(self.name)
-
-        if url:
-            u = os.path.join(u, url)
-
-        return self.server.request(method, u, **kwargs)
+        return self.server.request(method, self.name, url, **kwargs)
