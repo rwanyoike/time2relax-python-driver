@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
+from conftest import insert_docs
 from time2relax.time2relax import Database
 
 FIXTURE = ['document', 'list']
 
 
-def test_list(server, db_name, insert_three):
+def test_list(server, db_name):
     """Should list the three documents."""
 
-    insert_three(server, db_name)
     db = Database(server, db_name)
-
+    insert_docs(db)
     r = db.list()
     json = r.json()
 

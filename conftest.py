@@ -71,39 +71,22 @@ def server(request, config, responses, db_name):
         responses.reset()
 
 
-def insert_docs(server, name, docs):
-    """Inserts multiple CouchDB documents."""
-
-    db = Database(server, name)
-
-    for i in docs:
-        db.insert(i)
-
-
-@pytest.fixture()
-def insert_one():
+def insert_1doc(db):
     """Inserts a single CouchDB document."""
 
-    def insert(server, name):
-        docs = [{'_id': 'foobaz', 'foo': 'baz'}]
-        insert_docs(server, name, docs)
-
-    return insert
+    db.insert({'_id': 'foobaz', 'foo': 'baz'})
 
 
-@pytest.fixture()
-def insert_three():
+def insert_docs(db):
     """Inserts three CouchDB documents."""
 
-    def insert(server, name):
-        docs = [
-            {'_id': 'foobar', 'foo': 'bar'},
-            {'_id': 'barfoo', 'bar': 'foo'},
-            {'_id': 'foobaz', 'foo': 'baz'},
-        ]
-        insert_docs(server, name, docs)
-
-    return insert
+    docs = [
+        {'_id': 'foobar', 'foo': 'bar'},
+        {'_id': 'barfoo', 'bar': 'foo'},
+        {'_id': 'foobaz', 'foo': 'baz'},
+    ]
+    for i in docs:
+        db.insert(i)
 
 
 def fixture_path(name):

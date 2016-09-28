@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from conftest import insert_docs
 from time2relax.time2relax import Database
 
 FIXTURE = ['database', 'replicate']
 
 
-def test_replicate(server, db_name, insert_three):
+def test_replicate(server, db_name):
     """Should be able to replicate three docs."""
 
-    insert_three(server, db_name)
+    insert_docs(Database(server, db_name))
     # Create a database replica
     server.create('database_replica')
     server.replicate(db_name, 'database_replica')
