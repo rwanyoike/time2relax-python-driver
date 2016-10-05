@@ -9,13 +9,18 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
+setup_requires = [
+    'pytest-runner==2.9',
+]
+
 requirements = [
-    'requests',
+    'requests==2.11.1',
 ]
 
 test_requirements = [
-    'PyYAML',
-    'responses',
+    'pytest==3.0.3',
+    'PyYAML==3.12',
+    'responses==0.5.1',
 ]
 
 setup(
@@ -29,9 +34,9 @@ setup(
     packages=[
         'time2relax',
     ],
-    package_dir={'time2relax':
-                 'time2relax'},
+    package_dir={'time2relax': 'time2relax'},
     include_package_data=True,
+    setup_requires=setup_requires,
     install_requires=requirements,
     license="ISCL",
     zip_safe=False,
@@ -46,5 +51,5 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
 )
