@@ -3,7 +3,7 @@ coverage==4.2
 cryptography==1.5.1
 flake8==3.0.4
 pip==8.1.2
-pytest==3.0.2
+pytest==3.0.3
 PyYAML==3.12
 responses==0.5.1
 Sphinx==1.4.3
