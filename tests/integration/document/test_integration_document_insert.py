@@ -3,7 +3,7 @@
 import pytest
 
 from time2relax.time2relax import Database
-from time2relax.exceptions import ResourceConflict
+from time2relax.time2relax import ResourceConflict
 
 FIXTURE = ['document', 'insert']
 

@@ -8,10 +8,6 @@ from urlparse import urljoin
 
 from requests import Session
 
-from .exceptions import (BadRequest, CouchDbError, Forbidden, MethodNotAllowed,
-                         PreconditionFailed, ResourceConflict,
-                         ResourceNotFound, ServerError, Unauthorized)
-
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
 
@@ -307,3 +303,70 @@ class Database(object):
         """Constructs and sends a request."""
 
         return self.server.request(method, self.name, url, **kwargs)
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class CouchDbError(Exception):
+    """Class for errors based on HTTP status codes >= 400."""
+
+    def __init__(self, message, response):
+        """Initialize the error object."""
+
+        super(CouchDbError, self).__init__(message)
+        self.response = response
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class BadRequest(CouchDbError):
+    """Exception raised when a 400 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class Unauthorized(CouchDbError):
+    """Exception raised when a 401 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class Forbidden(CouchDbError):
+    """Exception raised when a 403 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class ResourceNotFound(CouchDbError):
+    """Exception raised when a 404 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class MethodNotAllowed(CouchDbError):
+    """Exception raised when a 405 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class ResourceConflict(CouchDbError):
+    """Exception raised when a 409 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class PreconditionFailed(CouchDbError):
+    """Exception raised when a 412 HTTP error is received."""
+
+    pass
+
+
+# http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
+class ServerError(CouchDbError):
+    """Exception raised when a 500 HTTP error is received."""
+
+    pass
