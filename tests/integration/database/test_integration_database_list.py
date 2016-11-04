@@ -9,7 +9,4 @@ def test_list(server, db_name):
     r = server.list()
     json = r.json()
 
-    assert len(json) == 3
-
-    for i in ['_replicator', '_users', db_name]:
-        assert i in json
+    assert db_name in json
