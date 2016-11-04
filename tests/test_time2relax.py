@@ -5,11 +5,11 @@ import responses
 from requests.models import Response
 from responses import RequestsMock
 
-from time2relax.exceptions import (BadRequest, ResourceConflict, CouchDbError,
-                                   MethodNotAllowed, ServerError,
-                                   ResourceNotFound, Unauthorized, Forbidden,
-                                   PreconditionFailed)
-from time2relax.time2relax import Database, HTTPClient, Server
+from time2relax import HTTPClient, Server, Database
+from time2relax.time2relax import (CouchDbError, BadRequest, Forbidden,
+                                   MethodNotAllowed, PreconditionFailed,
+                                   ResourceConflict, ResourceNotFound,
+                                   ServerError, Unauthorized)
 
 
 @responses.activate
