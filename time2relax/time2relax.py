@@ -2,6 +2,7 @@
 
 import json
 import os
+from copy import copy
 from urllib import quote
 from urlparse import urljoin
 
@@ -188,13 +189,16 @@ class Server(object):
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
         # Several search parameters must be JSON-encoded
         if 'params' in kwargs and kwargs['params']:
+            # Avoid mutable pitfall
+            p = copy(kwargs['params'])
             for i in ('startkey', 'endkey', 'key', 'keys'):
-                if i in kwargs['params']:
-                    kwargs['params'][i] = json.dumps(kwargs['params'][i])
+                if i in p:
+                    p[i] = json.dumps(p[i])
             # Python booleans
-            for k, v in kwargs['params'].iteritems():
+            for k, v in p.iteritems():
                 if v is True or v is False:
-                    kwargs['params'][k] = json.dumps(v)
+                    p[k] = json.dumps(v)
+            kwargs['params'] = p
 
         # http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
         if name:
@@ -280,9 +284,12 @@ class Database(object):
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
         # Several search parameters must be JSON-encoded
         if params:
+            # Avoid mutable pitfall
+            p = copy(params)
             for i in ('counts', 'drilldown', 'group_sort', 'ranges', 'sort'):
-                if i in params:
-                    params[i] = json.dumps(params[i])
+                if i in p:
+                    p[i] = json.dumps(p[i])
+            params = p
 
         url = os.path.join('_design', ddoc, '_{0}'.format(_type), view)
 
