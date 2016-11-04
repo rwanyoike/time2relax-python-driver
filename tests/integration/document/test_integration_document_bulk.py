@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from time2relax.time2relax import Database
+from time2relax import Database
 
 FIXTURE = ['document', 'bulk']
 

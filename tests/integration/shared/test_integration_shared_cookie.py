@@ -3,7 +3,7 @@
 import os
 from urlparse import urlparse
 
-from time2relax.time2relax import Database
+from time2relax import Database
 
 FIXTURE = ['shared', 'cookie']
 

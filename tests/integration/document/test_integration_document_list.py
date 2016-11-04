@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from conftest import insert_docs
-from time2relax.time2relax import Database
+from conftest import insert_three_docs
+from time2relax import Database
 
 FIXTURE = ['document', 'list']
 
@@ -10,7 +10,7 @@ def test_list(server, db_name):
     """Should list the three documents."""
 
     db = Database(server, db_name)
-    insert_docs(db)
+    insert_three_docs(db)
     r = db.list()
     json = r.json()
 
