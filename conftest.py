@@ -8,7 +8,7 @@ import pytest
 import yaml
 from responses import RequestsMock
 
-from time2relax.time2relax import Server, Database
+from time2relax.time2relax import Server
 
 
 @pytest.fixture(scope='session')
@@ -71,28 +71,10 @@ def server(request, config, responses, db_name):
         responses.reset()
 
 
-def insert_1doc(db):
-    """Inserts a single CouchDB document."""
-
-    db.insert({'_id': 'foobaz', 'foo': 'baz'})
-
-
-def insert_docs(db):
-    """Inserts three CouchDB documents."""
-
-    docs = [
-        {'_id': 'foobar', 'foo': 'bar'},
-        {'_id': 'barfoo', 'bar': 'foo'},
-        {'_id': 'foobaz', 'foo': 'baz'},
-    ]
-    for i in docs:
-        db.insert(i)
-
-
-def insert_view(db):
+def prepare_a_view(db):
     """Creates a ddoc and inserts some docs."""
 
-    view = {
+    db.insert({
         '_id': '_design/people',
         'views': {
             'by_name_and_city': {
@@ -102,19 +84,38 @@ def insert_view(db):
         'lists': {
             'my_list': 'function(head, req) { send(\'Hello\'); }'
         }
-    }
-    db.insert(view)
+    })
 
     docs = [
         {'_id': 'p_derek', 'name': 'Derek', 'city': 'San Francisco'},
         {'_id': 'p_randall', 'name': 'Randall', 'city': 'San Francisco'},
         {'_id': 'p_nuno', 'name': 'Nuno', 'city': 'London'},
     ]
+
     for i in docs:
         db.insert(i)
 
 
-def fixture_path(name):
+def insert_one_doc(db):
+    """Inserts a single CouchDB document."""
+
+    db.insert({'_id': 'foobaz', 'foo': 'baz'})
+
+
+def insert_three_docs(db):
+    """Inserts three CouchDB documents."""
+
+    docs = [
+        {'_id': 'foobar', 'foo': 'bar'},
+        {'_id': 'barfoo', 'bar': 'foo'},
+        {'_id': 'foobaz', 'foo': 'baz'},
+    ]
+
+    for i in docs:
+        db.insert(i)
+
+
+def get_fixture_path(name):
     """Returns a fixture's filesystem path."""
 
     return os.path.join(os.path.dirname(__file__), 'tests', 'fixtures', name)
@@ -123,5 +124,5 @@ def fixture_path(name):
 def load_fixture(name):
     """Loads a fixture from the filesystem."""
 
-    with open(fixture_path(name)) as f:
+    with open(get_fixture_path(name)) as f:
         return yaml.load(f)
