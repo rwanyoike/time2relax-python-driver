@@ -22,14 +22,13 @@ def test_compact(server, db_name):
 
     assert json['doc_count'] == 0
     assert json['doc_del_count'] == 1
-    assert json['update_seq'] == 2
 
 
 def test_confirm(server, db_name):
     """Should finish compaction before ending."""
 
     # Wait for CouchDB (compact)
-    time.sleep(1)
+    time.sleep(0.5)
     r = server.get(db_name)
     json = r.json()
 
