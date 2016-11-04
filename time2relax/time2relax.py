@@ -20,7 +20,6 @@ class HTTPClient(object):
     def __init__(self):
         """Initialize the HTTP client object."""
 
-        # Session with cookie persistence
         self.session = Session()
 
     def request(self, method, url, **kwargs):
