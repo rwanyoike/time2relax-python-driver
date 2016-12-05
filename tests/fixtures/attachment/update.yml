@@ -1,0 +1,38 @@
+---
+- method: PUT
+  url: '/attachment_update'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/attachment_update/foobaz'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+
+- method: GET
+  url: '/attachment_update/foobaz'
+  json: '{ "_id": "foobaz", "_rev": "1-cfa20dddac397da5bf0be2b50fb472fe", "foo": "baz" }'
+
+- method: PUT
+  url: '/attachment_update/foobaz/att?rev=1-cfa20dddac397da5bf0be2b50fb472fe'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "2-cfa20dddac397da5bf0be2b50fb472fe" }'
+  match_querystring: True
+
+- method: GET
+  url: '/attachment_update/foobaz'
+  json: '{ "_id": "foobaz", "_rev": "2-cfa20dddac397da5bf0be2b50fb472fe", "foo": "baz" }'
+
+- method: PUT
+  url: '/attachment_update/foobaz/att?rev=2-cfa20dddac397da5bf0be2b50fb472fe'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "3-cfa20dddac397da5bf0be2b50fb472fe" }'
+  match_querystring: True
+
+- method: GET
+  url: '/attachment_update/foobaz/att'
+  body: '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+
+- method: DELETE
+  url: '/attachment_update'
+  json: '{ "ok": true }'

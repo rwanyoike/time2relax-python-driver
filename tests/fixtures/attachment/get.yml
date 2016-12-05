@@ -1,0 +1,28 @@
+---
+- method: PUT
+  url: '/attachment_get'
+  status: 201
+  json: '{ "ok": true }'
+
+- method: PUT
+  url: '/attachment_get/foobaz'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+
+- method: GET
+  url: '/attachment_get/foobaz'
+  json: '{ "_id": "foobaz", "_rev": "1-cfa20dddac397da5bf0be2b50fb472fe", "foo": "baz" }'
+
+- method: PUT
+  url: '/attachment_get/foobaz/att?rev=1-cfa20dddac397da5bf0be2b50fb472fe'
+  status: 201
+  json: '{ "id": "foobaz", "ok": true, "rev": "2-cfa20dddac397da5bf0be2b50fb472fe" }'
+  match_querystring: True
+
+- method: GET
+  url: '/attachment_get/foobaz/att'
+  body: 'Hello World!'
+
+- method: DELETE
+  url: '/attachment_get'
+  json: '{ "ok": true }'
