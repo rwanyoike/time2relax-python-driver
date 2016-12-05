@@ -11,8 +11,7 @@ def test_get(server, db_name):
 
     db = Database(server, db_name)
     insert_one_doc(db)
-    r = db.get('foobaz', {'revs_info': True})
-    json = r.json()
+    json = db.get('foobaz', {'revs_info': True}).json()
 
     assert json['_id'] == 'foobaz'
     assert json['_revs_info']

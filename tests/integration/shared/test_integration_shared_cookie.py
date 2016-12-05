@@ -14,13 +14,11 @@ def test_cookie(config, server):
     pr = urlparse(config['auth'])
     username = pr.username
     password = pr.password
-
     url = os.path.join('_config', 'admins', username)
     server.request('PUT', url, json=password)
+    headers = server.auth(username, password).headers
 
-    r = server.auth(username, password)
-
-    assert r.headers['set-cookie']
+    assert headers['set-cookie']
 
 
 def test_insert(server, db_name):
@@ -35,9 +33,7 @@ def test_session(config, server):
 
     pr = urlparse(config['auth'])
     username = pr.username
-
-    r = server.session()
-    json = r.json()
+    json = server.session().json()
 
     assert json['userCtx']['name'] == username
 
@@ -47,6 +43,5 @@ def test_delete(config, server):
 
     pr = urlparse(config['auth'])
     username = pr.username
-
     url = os.path.join('_config', 'admins', username)
     server.request('DELETE', url)

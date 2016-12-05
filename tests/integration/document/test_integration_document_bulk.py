@@ -13,8 +13,7 @@ def test_bulk(server, db_name):
         {'key': 'baz', 'name': 'bazzel'},
         {'key': 'bar', 'name': 'barry'},
     ]
-    r = db.bulk(docs)
-    json = r.json()
+    json = db.bulk(docs).json()
 
     assert len(json) == 2
     assert json[0]['id']
@@ -29,8 +28,7 @@ def test_params(server, db_name):
         {'key': 'baz', 'name': 'bazzel'},
         {'key': 'bar', 'name': 'barry'},
     ]
-    r = db.bulk(docs, {'new_edits': True})
-    json = r.json()
+    json = db.bulk(docs, {'new_edits': True}).json()
 
     assert len(json) == 2
     assert json[0]['id']

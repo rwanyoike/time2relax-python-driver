@@ -12,5 +12,4 @@ def test_delete(server, db_name):
     # Insert a single doc
     doc = {'_id': 'foobaz', 'foo': 'baz'}
     rev = db.insert(doc).json()['rev']
-
     db.delete('foobaz', rev)

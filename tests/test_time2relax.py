@@ -16,12 +16,10 @@ from time2relax.time2relax import (CouchDbError, BadRequest, Forbidden,
 def test_client_request():
     """Tests. Tests. Tests."""
 
-    client = HTTPClient()
     url = 'http://example.com'
     data = {'py.test': 100}
-
     responses.add('GET', url, json=data, status=200)
-    r = client.request('GET', url)
+    r = HTTPClient().request('GET', url)
 
     assert r.headers == {'Content-Type': 'application/json'}
     assert r.json() == data

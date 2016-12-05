@@ -12,6 +12,6 @@ def test_list(server, db_name):
     db = Database(server, db_name)
     prepare_a_view(db)
     params = {'key': ['Derek', 'San Francisco']}
-    r = db.ddoc_list('people', 'by_name_and_city', 'my_list', params)
+    text = db.ddoc_list('people', 'by_name_and_city', 'my_list', params).text
 
-    assert r.text == 'Hello'
+    assert text == 'Hello'

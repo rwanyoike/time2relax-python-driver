@@ -15,10 +15,8 @@ def test_compact(server, db_name):
     rev = db.insert({'_id': 'goofy', 'foo': 'baz'}).json()['rev']
     # Delete a single doc
     db.delete('goofy', rev)
-
     server.compact(db_name)
-    r = server.get(db_name)
-    json = r.json()
+    json = server.get(db_name).json()
 
     assert json['doc_count'] == 0
     assert json['doc_del_count'] == 1
@@ -29,7 +27,6 @@ def test_confirm(server, db_name):
 
     # Wait for CouchDB (compact)
     time.sleep(0.5)
-    r = server.get(db_name)
-    json = r.json()
+    json = server.get(db_name).json()
 
     assert json['compact_running'] is False

@@ -9,14 +9,12 @@ def test_update(server, db_name):
     """Should update the document."""
 
     db = Database(server, db_name)
-
     # Insert a single doc
     doc_1 = {'_id': 'foobar', 'foo': 'baz'}
     rev = db.insert(doc_1).json()['rev']
-
+    # Update a single doc
     doc_2 = {'_id': 'foobar', '_rev': rev, 'foo': 'bar'}
-    r = db.insert(doc_2)
-    json = r.json()
+    json = db.insert(doc_2).json()
 
     assert json['id'] == 'foobar'
     assert json['rev'] != rev

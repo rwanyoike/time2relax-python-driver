@@ -32,12 +32,12 @@ class HTTPClient(object):
         :rtype: requests.Response
         """
 
-        r = self.session.request(method, url, **kwargs)
+        response = self.session.request(method, url, **kwargs)
 
-        if not (200 <= r.status_code < 400):
-            self._handle_error(r)
+        if not (200 <= response.status_code < 400):
+            self._handle_error(response)
 
-        return r
+        return response
 
     def _handle_error(self, response):
         """Raises a :class:`CouchDbError` exception.
@@ -182,10 +182,10 @@ class Server(object):
         """
 
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
-        # Several search parameters must be JSON-encoded
         if 'params' in kwargs and kwargs['params']:
-            # Avoid mutable pitfall
+            # Copy params dict
             p = copy(kwargs['params'])
+            # Search parameters must be JSON-encoded
             for i in ('startkey', 'endkey', 'key', 'keys'):
                 if i in p:
                     p[i] = json.dumps(p[i])
@@ -197,7 +197,7 @@ class Server(object):
 
         # http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
         if name:
-            # Avoid special components
+            # Special components
             if not name.startswith('_'):
                 name = quote(name, "~()*!.\'")
             if url:
@@ -207,7 +207,6 @@ class Server(object):
 
         url = urljoin(self.url, url)
 
-        # Pipe to the HTTP client
         return self.client.request(method, url, **kwargs)
 
 
@@ -277,10 +276,10 @@ class Database(object):
     def view(self, ddoc, _type, view, params=None):
 
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
-        # Several search parameters must be JSON-encoded
         if params:
-            # Avoid mutable pitfall
+            # Copy params dict
             p = copy(params)
+            # Search parameters must be JSON-encoded
             for i in ('counts', 'drilldown', 'group_sort', 'ranges', 'sort'):
                 if i in p:
                     p[i] = json.dumps(p[i])
@@ -319,53 +318,37 @@ class CouchDbError(Exception):
 class BadRequest(CouchDbError):
     """Exception raised when a 400 HTTP error is received."""
 
-    pass
-
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class Unauthorized(CouchDbError):
     """Exception raised when a 401 HTTP error is received."""
-
-    pass
 
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class Forbidden(CouchDbError):
     """Exception raised when a 403 HTTP error is received."""
 
-    pass
-
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class ResourceNotFound(CouchDbError):
     """Exception raised when a 404 HTTP error is received."""
-
-    pass
 
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class MethodNotAllowed(CouchDbError):
     """Exception raised when a 405 HTTP error is received."""
 
-    pass
-
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class ResourceConflict(CouchDbError):
     """Exception raised when a 409 HTTP error is received."""
-
-    pass
 
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class PreconditionFailed(CouchDbError):
     """Exception raised when a 412 HTTP error is received."""
 
-    pass
-
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class ServerError(CouchDbError):
     """Exception raised when a 500 HTTP error is received."""
-
-    pass
