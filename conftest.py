@@ -31,7 +31,7 @@ def responses(request, config):
     path = '{0}.yml'.format(os.path.join(*fixture))
 
     for i in load_fixture(path):
-        i['url'] = urljoin(config['url'], i['url'])
+        i['url'] = urljoin(config['couch'], i['url'])
         if 'json' in i:
             i['json'] = json.loads(i['json'])
         rm.add(**i)
@@ -53,7 +53,7 @@ def db_name(request):
 def server(request, config, responses, db_name):
     """Loads a test-ready Server instance."""
 
-    s = Server(config['url'])
+    s = Server(config['couch'])
 
     if request.param == 'mocked':
         # Start mocking requests
