@@ -302,6 +302,65 @@ class Database(object):
 
         return self.server.request(method, self.name, url, **kwargs)
 
+    def att_insert(self, doc, att_name, att, content_type):
+        """Inserts an attachment.
+
+        :param doc: A dict containing the ``_id`` and ``_rev`` of the document.
+        :param att_name: The name of the attachment.
+        :param att: The attachment data.
+        :param content_type: The attachment MIME type.
+
+        :rtype: requests.Response
+        """
+
+        url = os.path.join(doc['_id'], att_name)
+        params = {'rev': doc['_rev']}
+        headers = {'Content-Type': content_type}
+
+        return self.request(
+            'PUT', url, params=params, data=att, headers=headers)
+
+    def att_delete(self, doc, att_name):
+        """Deletes an attachment.
+
+        :param doc: A dict containing the ``_id`` and ``_rev`` of the document.
+        :param att_name: The name of the attachment.
+
+        :rtype: requests.Response
+        """
+
+        url = os.path.join(doc['_id'], att_name)
+        params = {'rev': doc['_rev']}
+
+        return self.request('DELETE', url, params=params)
+
+    def att_get(self, doc, att_name):
+        """Returns an attachment.
+
+        :param doc: A dict containing the ``_id`` or ``_rev`` of the document.
+        :param att_name: The name of the attachment.
+
+        :rtype: requests.Response
+        """
+
+        url = os.path.join(doc['_id'], att_name)
+        params = {'rev': doc['_rev']} if '_rev' in doc else None
+
+        return self.request('GET', url, params=params)
+
+    def att_head(self, doc, att_name):
+        """Returns the HTTP headers of an attachment.
+
+        :param doc: A dict containing the ``_id`` or ``_rev`` of the document.
+        :param att_name: The name of the attachment.
+
+        :rtype: requests.Response
+        """
+
+        url = os.path.join(doc['_id'], att_name)
+        params = {'rev': doc['_rev']} if '_rev' in doc else None
+
+        return self.request('HEAD', url, params=params)
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class CouchDbError(Exception):
