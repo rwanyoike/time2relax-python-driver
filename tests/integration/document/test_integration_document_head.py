@@ -11,6 +11,6 @@ def test_head(server, db_name):
 
     db = Database(server, db_name)
     insert_one_doc(db)
-    r = db.head('foobaz')
+    text = db.head('foobaz').text
 
-    assert not r.text
+    assert not text
