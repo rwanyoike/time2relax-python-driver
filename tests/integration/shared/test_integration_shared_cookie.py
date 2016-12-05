@@ -11,7 +11,7 @@ FIXTURE = ['shared', 'cookie']
 def test_cookie(config, server):
     """Should be able to setup admin and login."""
 
-    pr = urlparse(config['auth'])
+    pr = urlparse(config['admin'])
     username = pr.username
     password = pr.password
     url = os.path.join('_config', 'admins', username)
@@ -31,7 +31,7 @@ def test_insert(server, db_name):
 def test_session(config, server):
     """Should be able to get the session."""
 
-    pr = urlparse(config['auth'])
+    pr = urlparse(config['admin'])
     username = pr.username
     json = server.session().json()
 
@@ -41,7 +41,7 @@ def test_session(config, server):
 def test_delete(config, server):
     """Should restore noadmin for other tests."""
 
-    pr = urlparse(config['auth'])
+    pr = urlparse(config['admin'])
     username = pr.username
     url = os.path.join('_config', 'admins', username)
     server.request('DELETE', url)
