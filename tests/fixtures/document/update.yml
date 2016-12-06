@@ -5,14 +5,18 @@
   json: '{ "ok": true }'
 
 - method: PUT
-  url: '/document_update/foobar'
+  url: '/document_update/foobaz'
   status: 201
-  json: '{ "id": "foobar", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+  json: '{ "id": "foobaz", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+
+- method: GET
+  url: '/document_update/foobaz'
+  json: '{ "_id": "foobaz", "_rev": "1-cfa20dddac397da5bf0be2b50fb472fe", "foo": "baz" }'
 
 - method: PUT
-  url: '/document_update/foobar'
+  url: '/document_update/foobaz'
   status: 201
-  json: '{ "id": "foobar", "ok": true, "rev": "2-4fdb6e4b4ac9fbd810a0eeba1d7e67eb" }'
+  json: '{ "id": "foobaz", "ok": true, "rev": "2-cfa20dddac397da5bf0be2b50fb472fe" }'
 
 - method: DELETE
   url: '/document_update'

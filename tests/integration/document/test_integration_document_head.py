@@ -7,10 +7,10 @@ FIXTURE = ['document', 'head']
 
 
 def test_head(server, db_name):
-    """Should get a status code when you do head."""
+    """Should fetch a document."""
 
     db = Database(server, db_name)
-    insert_one_doc(db)
-    text = db.head('foobaz').text
+    _id = insert_one_doc(db).json()['id']
+    t = db.head(_id).text
 
-    assert not text
+    assert not t

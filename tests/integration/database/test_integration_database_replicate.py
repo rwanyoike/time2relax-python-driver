@@ -4,29 +4,26 @@ from conftest import insert_three_docs
 from time2relax import Database
 
 FIXTURE = ['database', 'replicate']
-DATABASE_REPLICA = 'database_replica'
+REPLICA = 'database_replica'
 
 
 def test_replicate(server, db_name):
-    """Should be able to replicate three docs."""
+    """Should replicate the documents."""
 
-    insert_three_docs(Database(server, db_name))
+    db = Database(server, db_name)
+    insert_three_docs(db)
+
     # Create a database replica
-    server.create(DATABASE_REPLICA)
-    server.replicate(db_name, DATABASE_REPLICA)
-    db = Database(server, DATABASE_REPLICA)
-    json = db.list().json()
+    server.create(REPLICA)
+    server.replicate(db_name, REPLICA, {'continuous': False})
 
-    assert json['total_rows'] == 3
+    db = Database(server, REPLICA)
+    j = db.list().json()
 
-
-def test_params(server, db_name):
-    """Should be able to replicate with params."""
-
-    server.replicate(db_name, DATABASE_REPLICA, {'continuous': False})
+    assert j['total_rows'] == 3
 
 
-def test_destroy(server):
-    """Should destroy the extra database."""
+def test_delete(server):
+    """Should delete the replica."""
 
-    server.delete(DATABASE_REPLICA)
+    assert server.delete(REPLICA).json()

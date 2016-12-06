@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
+from conftest import insert_one_doc, select_one_doc
 from time2relax import Database
 
 FIXTURE = ['document', 'update']
 
 
 def test_update(server, db_name):
-    """Should update the document."""
+    """Should update a document."""
 
     db = Database(server, db_name)
-    # Insert a single doc
-    doc_1 = {'_id': 'foobar', 'foo': 'baz'}
-    rev = db.insert(doc_1).json()['rev']
-    # Update a single doc
-    doc_2 = {'_id': 'foobar', '_rev': rev, 'foo': 'bar'}
-    json = db.insert(doc_2).json()
+    insert_one_doc(db)
 
-    assert json['id'] == 'foobar'
-    assert json['rev'] != rev
+    # Update document '_rev'
+    doc = select_one_doc(db).json()
+    j = db.insert(doc).json()
+
+    assert j['id'] == doc['_id']
+    assert j['rev'] != doc['_rev']

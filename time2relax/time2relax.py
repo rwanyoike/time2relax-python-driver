@@ -214,7 +214,11 @@ class Database(object):
     """Representation of a CouchDB database."""
 
     def __init__(self, server, name):
-        """Initialize the database object."""
+        """Initialize the database object.
+
+        :param server: The CouchDB :class:`Server` instance.
+        :param name: The name of the database.
+        """
 
         self.name = name
         self.server = server
@@ -226,7 +230,11 @@ class Database(object):
     # http://docs.couchdb.org/en/latest/api/document/common.html#put--db-docid
     # http://docs.couchdb.org/en/latest/api/database/common.html#post--db
     def insert(self, doc, params=None):
-        """Creates or updates a document."""
+        """Inserts or updates a document.
+
+        :param doc: The document to insert.
+        :param params: Optional query parameters.
+        """
 
         if '_id' in doc:
             method = 'PUT'
@@ -238,27 +246,43 @@ class Database(object):
         return self.request(method, url, params=params, json=doc)
 
     # http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
-    def delete(self, _id, rev):
-        """Deletes the document."""
+    def delete(self, doc):
+        """Deletes a document.
 
-        return self.request('DELETE', _id, params={'rev': rev})
+        :param doc: A dict of the document ``_id`` and ``_rev``.
+        """
+
+        url = doc['_id']
+        params = {'rev': doc['_rev']}
+
+        return self.request('DELETE', url, params=params)
 
     # http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
     def get(self, _id, params=None):
-        """Returns the document."""
+        """Returns a document.
+
+        :param _id: The name of the document.
+        :param params: Optional query parameters.
+        """
 
         return self.request('GET', _id, params=params)
 
     # http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid
     def head(self, _id):
-        """Returns bare information in the HTTP Headers for the document."""
+        """Returns the HTTP headers of a document.
+
+        :param _id: The name of the document.
+        """
 
         return self.request('HEAD', _id)
 
     # http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_bulk_docs
     def bulk(self, docs, options=None):
-        """Inserts or updates multiple documents in to the database in a single
-        request."""
+        """Inserts or updates multiple documents in a single request.
+
+        :param docs: A sequence of document objects.
+        :param options: Optional bulk arguments.
+        """
 
         data = {'docs': docs}
 
@@ -269,7 +293,10 @@ class Database(object):
 
     # http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
     def list(self, params=None):
-        """Returns a built-in view of all documents in this database."""
+        """Returns a built-in view of all documents.
+
+        :param params: Optional query parameters.
+        """
 
         return self.request('GET', '_all_docs', params=params)
 
@@ -297,17 +324,13 @@ class Database(object):
 
         return self.view(ddoc, 'show', os.path.join(view, _id), params)
 
-    def request(self, method, url=None, **kwargs):
-        """Constructs and sends a request."""
-
-        return self.server.request(method, self.name, url, **kwargs)
-
+    # http://docs.couchdb.org/en/latest/api/document/attachments.html#put--db-docid-attname
     def att_insert(self, doc, att_name, att, content_type):
         """Inserts an attachment.
 
-        :param doc: A dict containing the ``_id`` and ``_rev`` of the document.
+        :param doc: A dict of the document ``_id`` and ``_rev``.
         :param att_name: The name of the attachment.
-        :param att: The attachment data.
+        :param att: The attachment to insert.
         :param content_type: The attachment MIME type.
 
         :rtype: requests.Response
@@ -320,10 +343,11 @@ class Database(object):
         return self.request(
             'PUT', url, params=params, data=att, headers=headers)
 
+    # http://docs.couchdb.org/en/latest/api/document/attachments.html#delete--db-docid-attname
     def att_delete(self, doc, att_name):
         """Deletes an attachment.
 
-        :param doc: A dict containing the ``_id`` and ``_rev`` of the document.
+        :param doc: A dict of the document ``_id`` and ``_rev``.
         :param att_name: The name of the attachment.
 
         :rtype: requests.Response
@@ -334,10 +358,11 @@ class Database(object):
 
         return self.request('DELETE', url, params=params)
 
+    # http://docs.couchdb.org/en/latest/api/document/attachments.html#get--db-docid-attname
     def att_get(self, doc, att_name):
         """Returns an attachment.
 
-        :param doc: A dict containing the ``_id`` or ``_rev`` of the document.
+        :param doc: A dict of the document ``_id`` and ``_rev``.
         :param att_name: The name of the attachment.
 
         :rtype: requests.Response
@@ -348,10 +373,11 @@ class Database(object):
 
         return self.request('GET', url, params=params)
 
+    # http://docs.couchdb.org/en/latest/api/document/attachments.html#head--db-docid-attname
     def att_head(self, doc, att_name):
         """Returns the HTTP headers of an attachment.
 
-        :param doc: A dict containing the ``_id`` or ``_rev`` of the document.
+        :param doc: A dict of the document ``_id`` and ``_rev``.
         :param att_name: The name of the attachment.
 
         :rtype: requests.Response
@@ -361,6 +387,12 @@ class Database(object):
         params = {'rev': doc['_rev']} if '_rev' in doc else None
 
         return self.request('HEAD', url, params=params)
+
+    def request(self, method, url=None, **kwargs):
+        """Constructs and sends a request."""
+
+        return self.server.request(method, self.name, url, **kwargs)
+
 
 # http://docs.couchdb.org/en/latest/api/basics.html?#http-status-codes
 class CouchDbError(Exception):
