@@ -5,12 +5,16 @@
   json: '{ "ok": true }'
 
 - method: PUT
-  url: '/database_compact/goofy'
+  url: '/database_compact/foobaz'
   status: 201
-  json: '{ "id": "goofy", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+  json: '{ "id": "foobaz", "ok": true, "rev": "1-cfa20dddac397da5bf0be2b50fb472fe" }'
+
+- method: GET
+  url: '/database_compact/foobaz'
+  json: '{ "_id": "foobaz", "_rev": "1-cfa20dddac397da5bf0be2b50fb472fe", "foo": "baz" }'
 
 - method: DELETE
-  url: '/database_compact/goofy?rev=1-cfa20dddac397da5bf0be2b50fb472fe'
+  url: '/database_compact/foobaz?rev=1-cfa20dddac397da5bf0be2b50fb472fe'
   json: '{ "ok": true }'
   match_querystring: True
 
@@ -22,10 +26,6 @@
 - method: GET
   url: '/database_compact'
   json: '{ "committed_update_seq": 0, "compact_running": true, "db_name": "database_compact", "doc_count": 0, "doc_del_count": 1, "purge_seq": 0, "update_seq": 2 }'
-
-- method: GET
-  url: '/database_compact'
-  json: '{ "compact_running": false, "db_name": "database_compact" }'
 
 - method: DELETE
   url: '/database_compact'

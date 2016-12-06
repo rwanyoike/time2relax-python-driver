@@ -4,8 +4,8 @@ FIXTURE = ['database', 'list']
 
 
 def test_list(server, db_name):
-    """Should list the correct databases."""
+    """Should list the databases."""
 
-    json = server.list().json()
+    j = server.list().json()
 
-    assert db_name in json
+    assert db_name in j

@@ -99,7 +99,13 @@ def prepare_a_view(db):
 def insert_one_doc(db):
     """Inserts a single CouchDB document."""
 
-    db.insert({'_id': 'foobaz', 'foo': 'baz'})
+    return db.insert({'_id': 'foobaz', 'foo': 'baz'})
+
+
+def select_one_doc(db):
+    """Selects a single CouchDB document."""
+
+    return db.get('foobaz')
 
 
 def insert_three_docs(db):
