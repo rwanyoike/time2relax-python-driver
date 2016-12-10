@@ -201,7 +201,7 @@ class Server(object):
             if not name.startswith('_'):
                 name = quote(name, "~()*!.\'")
             if url:
-                url = os.path.join(name, url)
+                url = os.path.join(name, str(url))
             else:
                 url = name
 
