@@ -369,7 +369,10 @@ class Database(object):
         """
 
         url = os.path.join(doc['_id'], att_name)
-        params = {'rev': doc['_rev']} if '_rev' in doc else None
+        params = None
+
+        if '_rev' in doc:
+            params = {'rev': doc['_rev']}
 
         return self.request('GET', url, params=params)
 
@@ -384,7 +387,10 @@ class Database(object):
         """
 
         url = os.path.join(doc['_id'], att_name)
-        params = {'rev': doc['_rev']} if '_rev' in doc else None
+        params = None
+
+        if '_rev' in doc:
+            params = {'rev': doc['_rev']}
 
         return self.request('HEAD', url, params=params)
 
