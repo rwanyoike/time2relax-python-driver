@@ -73,10 +73,10 @@ class Server(object):
 
     def __init__(self, url=COUCHDB_URL):
         self.client = HTTPClient()
-        self.base_url = url
+        self.url = url
 
     def __repr__(self):
-        return '<{0} [{1}]>'.format(self.__class__.__name__, self.base_url)
+        return '<{0} [{1}]>'.format(self.__class__.__name__, self.url)
 
     # http://docs.couchdb.org/en/latest/api/server/authn.html#post--_session
     def auth(self, username, password):
@@ -97,8 +97,7 @@ class Server(object):
         :param ddoc: TODO: Document
         """
 
-        path = '_compact'
-        path = os.path.join(path, ddoc) if ddoc else path
+        path = os.path.join('_compact', ddoc) if ddoc else '_compact'
         return self.request('POST', name, path, json={})
 
     # http://docs.couchdb.org/en/latest/api/database/common.html#put--db
@@ -132,8 +131,7 @@ class Server(object):
     def list(self):
         """Returns a list of all databases."""
 
-        path = '_all_dbs'
-        return self.request('GET', path)
+        return self.request('GET', '_all_dbs')
 
     # http://docs.couchdb.org/en/latest/api/server/common.html#replicate
     def replicate(self, name, target, options=None):
@@ -144,36 +142,33 @@ class Server(object):
         :param options: Optional replication arguments.
         """
 
-        path = '_replicate'
         data = {'source': name, 'target': target}
         data.update(options) if options else None
-        return self.request('POST', path, json=data)
+        return self.request('POST', '_replicate', json=data)
 
     # http://docs.couchdb.org/en/latest/api/server/authn.html#get--_session
     def session(self):
         """Returns Cookie-based login information."""
 
-        path = '_session'
-        return self.request('GET', path)
+        return self.request('GET', '_session')
 
-    def request(self, method, name=None, url=None, **kwargs):
+    def request(self, method, name=None, path=None, **kwargs):
         """Constructs a :class:`requests.Request` and sends it.
 
         :rtype: requests.Response
         """
 
         # http://wiki.apache.org/couchdb/HTTP_database_API#Naming_and_Addressing
-        if name:
+        if name and not name.startswith('_'):
             # Special CouchDB components
-            if not name.startswith('_'):
-                name = quote(name, "~()*!.\'")
-            if url:
-                url = os.path.join(name, str(url))  # handle numeric url's
-            else:
-                url = name
+            name = quote(name, "~()*!.\'")
 
-        # Join url (path) with base_url
-        url = urljoin(self.base_url, url)
+        if name and path:
+            path = os.path.join(name, str(path))  # handle numeric paths
+        elif name:
+            path = name
+
+        url = urljoin(self.url, path)
 
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
         if 'params' in kwargs and kwargs['params']:
@@ -212,7 +207,7 @@ class Database(object):
 
         method = 'PUT' if '_id' in doc else 'POST'
         path = doc['_id'] if '_id' in doc else None
-        return self.request(method, path, params=params, json=doc)
+        return self._request(method, path, params=params, json=doc)
 
     # http://docs.couchdb.org/en/latest/api/document/common.html#delete--db-docid
     def delete(self, doc):
@@ -221,9 +216,8 @@ class Database(object):
         :param doc: A dict of the document ``_id`` and ``_rev``.
         """
 
-        path = doc['_id']
         params = {'rev': doc['_rev']}
-        return self.request('DELETE', path, params=params)
+        return self._request('DELETE', doc['_id'], params=params)
 
     # http://docs.couchdb.org/en/latest/api/document/common.html#get--db-docid
     def get(self, _id, params=None):
@@ -233,7 +227,7 @@ class Database(object):
         :param params: Optional query parameters.
         """
 
-        return self.request('GET', _id, params=params)
+        return self._request('GET', _id, params=params)
 
     # http://docs.couchdb.org/en/latest/api/document/common.html#head--db-docid
     def head(self, _id):
@@ -242,7 +236,7 @@ class Database(object):
         :param _id: The name of the document.
         """
 
-        return self.request('HEAD', _id)
+        return self._request('HEAD', _id)
 
     # http://docs.couchdb.org/en/latest/api/database/bulk-api.html#post--db-_bulk_docs
     def bulk(self, docs, options=None):
@@ -252,10 +246,9 @@ class Database(object):
         :param options: Optional bulk arguments.
         """
 
-        path = '_bulk_docs'
         data = {'docs': docs}
         data.update(options) if options else None
-        return self.request('POST', path, json=data)
+        return self._request('POST', '_bulk_docs', json=data)
 
     # http://docs.couchdb.org/en/latest/api/database/bulk-api.html#get--db-_all_docs
     def list(self, params=None):
@@ -264,8 +257,7 @@ class Database(object):
         :param params: Optional query parameters.
         """
 
-        path = '_all_docs'
-        return self.request('GET', path, params=params)
+        return self._request('GET', '_all_docs', params=params)
 
     def view(self, ddoc, _type, view, params=None):
 
@@ -278,9 +270,9 @@ class Database(object):
                     p[i] = json.dumps(p[i])
             params = p
 
-        url = os.path.join('_design', ddoc, '_{0}'.format(_type), view)
-
-        return self.request('GET', url, params=params)
+        type_ = '_{0}'.format(_type)
+        path = os.path.join('_design', ddoc, type_, view)
+        return self._request('GET', path, params=params)
 
     def ddoc_list(self, ddoc, view, _list, params=None):
 
@@ -304,9 +296,8 @@ class Database(object):
 
         path = os.path.join(doc['_id'], att_name)
         params = {'rev': doc['_rev']}
-        headers = {'Content-Type': content_type}
-        return self.request(
-            'PUT', path, params=params, data=att, headers=headers)
+        h = {'Content-Type': content_type}
+        return self._request('PUT', path, params=params, data=att, headers=h)
 
     # http://docs.couchdb.org/en/latest/api/document/attachments.html#delete--db-docid-attname
     def att_delete(self, doc, att_name):
@@ -320,7 +311,7 @@ class Database(object):
 
         path = os.path.join(doc['_id'], att_name)
         params = {'rev': doc['_rev']}
-        return self.request('DELETE', path, params=params)
+        return self._request('DELETE', path, params=params)
 
     # http://docs.couchdb.org/en/latest/api/document/attachments.html#get--db-docid-attname
     def att_get(self, doc, att_name):
@@ -334,7 +325,7 @@ class Database(object):
 
         path = os.path.join(doc['_id'], att_name)
         params = {'rev': doc['_rev']} if '_rev' in doc else None
-        return self.request('GET', path, params=params)
+        return self._request('GET', path, params=params)
 
     # http://docs.couchdb.org/en/latest/api/document/attachments.html#head--db-docid-attname
     def att_head(self, doc, att_name):
@@ -348,12 +339,12 @@ class Database(object):
 
         path = os.path.join(doc['_id'], att_name)
         params = {'rev': doc['_rev']} if '_rev' in doc else None
-        return self.request('HEAD', path, params=params)
+        return self._request('HEAD', path, params=params)
 
-    def request(self, method, url=None, **kwargs):
+    def _request(self, method, path=None, **kwargs):
         """Constructs and sends a request."""
 
-        return self.server.request(method, self.name, url, **kwargs)
+        return self.server.request(method, self.name, path, **kwargs)
 
 
 class CouchDbError(Exception):
