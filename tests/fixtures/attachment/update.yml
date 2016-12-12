@@ -31,7 +31,7 @@
 
 - method: GET
   url: '/attachment_update/foobaz/att'
-  body: '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+  body: 'World Hello!'
 
 - method: DELETE
   url: '/attachment_update'

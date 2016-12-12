@@ -7,11 +7,10 @@
 
 import json
 import os
-from copy import copy
-from urllib import quote
-from urlparse import urljoin
 
 from requests import Session
+from requests.compat import urljoin, quote
+from six import iteritems
 
 __version__ = '0.1.0'
 
@@ -178,13 +177,13 @@ class Server(object):
 
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
         if 'params' in kwargs and kwargs['params']:
-            p = copy(kwargs['params'])  # mutable!
+            p = kwargs['params'].copy()  # mutable!
             # Search parameters must be JSON-encoded
             for i in ('startkey', 'endkey', 'key', 'keys'):
                 if i in p:
                     p[i] = json.dumps(p[i])
             # And Python titlecased booleans
-            for k, v in p.iteritems():
+            for k, v in iteritems(p):
                 if v is True or v is False:
                     p[k] = json.dumps(v)
             kwargs['params'] = p
@@ -272,8 +271,7 @@ class Database(object):
 
         # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
         if params:
-            # Copy params dict
-            p = copy(params)
+            p = params.copy()  # mutable!
             # Search parameters must be JSON-encoded
             for i in ('counts', 'drilldown', 'group_sort', 'ranges', 'sort'):
                 if i in p:

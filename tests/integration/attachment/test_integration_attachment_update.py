@@ -18,10 +18,10 @@ def test_update(server, db_name):
 
     # Update document '_rev'
     doc = select_one_doc(db).json()
-    db.att_insert(doc, 'att', bytearray(20), 'image/bmp')
+    db.att_insert(doc, 'att', 'World Hello!', 'text/plain')
 
     # Remove document '_rev'
     del doc['_rev']
     t = db.att_get(doc, 'att').text
 
-    assert t.decode('unicode-escape') == str(bytearray(20))
+    assert t == 'World Hello!'
