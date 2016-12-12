@@ -1,20 +1,25 @@
+# This file will be regenerated if you run travis_pypi_setup.py
+
 language: python
-python: 2.7
+python: 3.5
 
 cache: pip
 
 env:
-  - TOXENV=py27
   - TOXENV=py26
+  - TOXENV=py27
+  - TOXENV=py33
+  - TOXENV=py34
+  - TOXENV=py35
   # - TOXENV=pypy
 
 services:
   - couchdb
 
-# Command to install dependencies, e.g. pip install -r requirements.txt
+# Command to install dependencies
 install: pip install -U tox
 
-# Command to run tests, e.g. python setup.py test
+# Command to run tests
 script: tox -e ${TOXENV}
 
 branches:

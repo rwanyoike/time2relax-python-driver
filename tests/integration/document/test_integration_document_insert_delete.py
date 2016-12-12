@@ -25,7 +25,7 @@ def test_conflict(server, db_name):
     with pytest.raises(ResourceConflict) as ex:
         insert_one_doc(db)
 
-    assert ex.value.message['error'] == 'conflict'
+    assert 'conflict' in str(ex.value)
     assert ex.value.response.status_code == 409
 
 

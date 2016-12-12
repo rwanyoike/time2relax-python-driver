@@ -78,8 +78,9 @@ def test_error_object():
     """Tests. Tests. Tests."""
 
     message = {'error': 'time2relax', 'reason': 'CouchDB'}
+    res = Response()
 
     with pytest.raises(CouchDbError) as ex:
-        raise CouchDbError(message, Response())
+        raise CouchDbError(message, res)
 
-    assert ex.value.message == message
+    assert ex.value.response == res

@@ -2,10 +2,10 @@
 
 import json
 import os
-from urlparse import urljoin
 
 import pytest
 import yaml
+from requests.compat import urljoin
 from responses import RequestsMock
 
 from time2relax import Server

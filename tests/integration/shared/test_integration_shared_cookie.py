@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from urlparse import urlparse
+from requests.compat import urlparse
 
 from time2relax import Database
 
