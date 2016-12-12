@@ -12,7 +12,7 @@ from requests import Session
 from requests.compat import urljoin, quote
 from six import iteritems
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
