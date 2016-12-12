@@ -14,7 +14,7 @@ time2relax
 
 CouchDB driver for Python.
 
-* Free software: ISC license
+* Free software: MIT license
 * Documentation: https://time2relax.readthedocs.org.
 
 Features
