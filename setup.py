@@ -14,11 +14,11 @@ setup_requires = [
 ]
 
 requirements = [
-    'requests==2.11.1',
+    'requests==2.12.3',
 ]
 
 test_requirements = [
-    'pytest==3.0.3',
+    'pytest==3.0.5',
     'PyYAML==3.12',
     'responses==0.5.1',
 ]
