@@ -3,8 +3,7 @@
 import pytest
 
 from conftest import insert_one_doc, select_one_doc
-from time2relax import Database
-from time2relax.time2relax import ResourceConflict
+from time2relax import Database, ResourceConflict
 
 FIXTURE = ['document', 'insert_delete']
 

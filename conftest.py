@@ -8,7 +8,7 @@ import pytest
 import yaml
 from responses import RequestsMock
 
-from time2relax.time2relax import Server
+from time2relax import Server
 
 
 @pytest.fixture(scope='session')

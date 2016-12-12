@@ -5,12 +5,9 @@ import responses
 from requests.models import Response
 from responses import RequestsMock
 
-from time2relax import HTTPClient, Server, Database
-from time2relax.time2relax import (CouchDbError, BadRequest, Forbidden,
-                                   MethodNotAllowed, PreconditionFailed,
-                                   ResourceConflict, ResourceNotFound,
-                                   ServerError, Unauthorized)
-
+from time2relax import HTTPClient, Server, Database, CouchDbError, \
+    BadRequest, Unauthorized, Forbidden, ResourceNotFound, MethodNotAllowed, \
+    ResourceConflict, PreconditionFailed, ServerError
 
 @responses.activate
 def test_client_request():
@@ -63,7 +60,7 @@ def test_server_object():
     """Tests. Tests. Tests."""
 
     server = Server()
-    r = '<{0} [{1}]>'.format(server.__class__.__name__, server.url)
+    r = '<{0} [{1}]>'.format(server.__class__.__name__, server.base_url)
 
     assert repr(server) == r
 
