@@ -34,7 +34,9 @@ setup(
     packages=[
         'time2relax',
     ],
-    package_dir={'time2relax': 'time2relax'},
+    package_dir={
+        'time2relax': 'time2relax'
+    },
     include_package_data=True,
     setup_requires=setup_requires,
     install_requires=requirements,
