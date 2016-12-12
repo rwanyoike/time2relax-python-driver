@@ -26,9 +26,9 @@ test_requirements = [
 setup(
     name='time2relax',
     version='0.1.0',
-    description="CouchDB driver for Python.",
+    description='CouchDB driver for Python.',
     long_description=readme + '\n\n' + history,
-    author="Raymond Wanyoike",
+    author='Raymond Wanyoike',
     author_email='raymond.wanyoike@gmail.com',
     url='https://github.com/rwanyoike/time2relax',
     packages=[

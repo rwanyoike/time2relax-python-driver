@@ -9,6 +9,7 @@ from time2relax import HTTPClient, Server, Database, CouchDbError, \
     BadRequest, Unauthorized, Forbidden, ResourceNotFound, MethodNotAllowed, \
     ResourceConflict, PreconditionFailed, ServerError
 
+
 @responses.activate
 def test_client_request():
     """Tests. Tests. Tests."""
@@ -39,7 +40,6 @@ def test_client_errors():
     client = HTTPClient()
     url = 'http://example.com'
     data = {'py.test': 100}
-
     rm = RequestsMock()
     rm.start()
 
@@ -60,7 +60,7 @@ def test_server_object():
     """Tests. Tests. Tests."""
 
     server = Server()
-    r = '<{0} [{1}]>'.format(server.__class__.__name__, server.base_url)
+    r = '<{0} [{1}]>'.format(server.__class__.__name__, server.url)
 
     assert repr(server) == r
 
@@ -79,7 +79,6 @@ def test_error_object():
 
     message = {'error': 'time2relax', 'reason': 'CouchDB'}
     res = Response()
-
     with pytest.raises(CouchDbError) as ex:
         raise CouchDbError(message, res)
 
