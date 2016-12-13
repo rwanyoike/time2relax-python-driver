@@ -15,7 +15,7 @@ time2relax
         :target: https://readthedocs.org/projects/time2relax/?badge=latest
         :alt: Documentation Status
 
-CouchDB driver for Python.
+A CouchDB driver for Python.
 
 * Free software: MIT license
 * Documentation: https://time2relax.readthedocs.org.
