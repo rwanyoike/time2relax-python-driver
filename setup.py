@@ -26,23 +26,18 @@ test_requirements = [
 setup(
     name='time2relax',
     version='0.2.0',
-    description='CouchDB driver for Python.',
+    description='A CouchDB driver for Python.',
     long_description=readme + '\n\n' + history,
     author='Raymond Wanyoike',
     author_email='raymond.wanyoike@gmail.com',
     url='https://github.com/rwanyoike/time2relax',
-    packages=[
-        'time2relax',
-    ],
-    package_dir={
-        'time2relax': 'time2relax'
-    },
+    packages=['time2relax'],
+    package_dir={'time2relax': 'time2relax'},
     include_package_data=True,
     setup_requires=setup_requires,
     install_requires=requirements,
-    license='MIT license',
+    license='MIT',
     zip_safe=False,
-    keywords='couchdb, time2relax',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
