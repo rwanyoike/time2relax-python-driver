@@ -10,17 +10,17 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 setup_requires = [
-    'pytest-runner==2.9',
+    'pytest-runner',
 ]
 
 requirements = [
-    'requests==2.12.3',
+    'requests',
 ]
 
 test_requirements = [
-    'pytest==3.0.5',
-    'PyYAML==3.12',
-    'responses==0.5.1',
+    'pytest',
+    'PyYAML',
+    'responses',
 ]
 
 setup(
