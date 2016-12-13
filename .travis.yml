@@ -3,6 +3,8 @@
 language: python
 python: 3.5
 
+services: couchdb
+
 cache: pip
 
 env:
@@ -13,21 +15,9 @@ env:
   - TOXENV=py35
   # - TOXENV=pypy
 
-services:
-  - couchdb
-
-# Command to install dependencies
 install: pip install -U tox
 
-# Command to run tests
-script: tox -e ${TOXENV}
-
-branches:
-  only:
-  - master
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+script: tox
 
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
