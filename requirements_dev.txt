@@ -4,7 +4,6 @@ cryptography
 flake8
 pip
 pytest
-PyYAML
 responses
 Sphinx
 tox
