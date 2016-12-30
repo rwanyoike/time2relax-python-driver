@@ -17,19 +17,19 @@ time2relax
 
 A CouchDB driver for Python.
 
+.. code:: python
+
+    >>> import time2relax
+    >>> db = time2relax.CouchDB('http://localhost:5984/dbname')
+    >>> db.info()
+    <Response [200]>
+
 * Free software: MIT license
 * Documentation: https://time2relax.readthedocs.org.
 
 Features
 --------
 
-* TODO
+* Uses `python-requests`_ ☺.
 
-Credits
--------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_
-project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _python-requests: http://docs.python-requests.org/en/latest/
