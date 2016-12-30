@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from responses import RequestsMock
-
-import time2relax
 from time2relax import CouchDB, BadRequest, Unauthorized, Forbidden, \
     ResourceNotFound, MethodNotAllowed, ResourceConflict, PreconditionFailed, \
     ServerError, CouchDBError
 
 
-def test_time2relax():
-    assert time2relax.__version__
+def test_check_response():
+    class Response:
+        def __init__(self, status_code):
+            self.status_code = status_code
 
-
-def test_time2relax_exceptions(db):
-    db = CouchDB(db.url, True)
+        def json(self):
+            return {'reason': None}
 
     exceptions = {
         400: BadRequest,
@@ -28,13 +26,6 @@ def test_time2relax_exceptions(db):
         999: CouchDBError,
     }
 
-    rm = RequestsMock()
-    rm.start()
-
     for i in exceptions:
-        rm.add('GET', db.url, status=i)
         with pytest.raises(exceptions[i]):
-            db.request('GET', db.url)
-
-    rm.stop()
-    rm.reset()
+            CouchDB._check_response(Response(i))
