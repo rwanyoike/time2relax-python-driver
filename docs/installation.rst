@@ -13,7 +13,8 @@ To install time2relax, run this command in your terminal:
 
     $ pip install time2relax
 
-This is the preferred method to install time2relax, as it will always install the most recent stable release.
+This is the preferred method to install time2relax, as it will always install
+the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -36,14 +37,13 @@ Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/rwanyoike/time2relax/tarball/master
+    $ curl -OL https://github.com/rwanyoike/time2relax/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
 .. code-block:: console
 
     $ python setup.py install
-
 
 .. _Github repo: https://github.com/rwanyoike/time2relax
 .. _tarball: https://github.com/rwanyoike/time2relax/tarball/master
