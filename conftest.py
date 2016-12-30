@@ -16,18 +16,18 @@ def test_url():
 
 
 @pytest.fixture(scope='module')
-def cleanup_test(test_url):
+def cleanup(test_url):
     yield
-    destroy_test(test_url)
+    destroy(test_url)
 
 
 @pytest.fixture()
-def db(test_url, cleanup_test):
-    destroy_test(test_url)
+def db(test_url, cleanup):
+    destroy(test_url)
     yield CouchDB(test_url)
 
 
-def destroy_test(test_url):
+def destroy(test_url):
     try:
         db = CouchDB(test_url)
         db.destroy()
