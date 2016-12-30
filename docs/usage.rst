@@ -4,153 +4,222 @@ Usage
 
 To use time2relax in a project::
 
-    import time2relax
+    >>> import time2relax
 
-Server functions
+Create a database
+-----------------
+
+This method creates a database or opens an existing one::
+
+    >>> db = time2relax.CouchDB('http://localhost:5984/dbname')
+
+Initially ``CouchDB`` checks if the database exists, and tries to create it if
+it does not exist yet. You can use ``skip_setup`` to skip this setup::
+
+    >>> db = time2relax.CouchDB('http://localhost:5984/dbname', skip_setup=True)
+
+Delete a database
+-----------------
+
+Delete the database::
+
+    >>> db.destroy()
+    <Response [200]>
+
+Create/update a document
+------------------------
+
+Create a new document or update an existing document. If the document already
+exists, you must specify its revision ``_rev``, otherwise a conflict will
+occur.
+
+There are some `restrictions on valid property names`_ of the documents.
+
+Create a new doc with an ``_id`` of ``'mydoc'``::
+
+    >>> db.insert({'_id': 'mydoc', 'title': 'Heros'})
+    <Response [201]>
+
+Create a new document and let CouchDB auto-generate an ``_id`` for it::
+
+    >>> db.insert({'title': 'Ziggy Stardust'})
+    <Response [201]>
+
+You can update an existing doc using ``_rev``::
+
+    >>> r = db.get('mydoc')
+    >>> result = r.json()
+    >>> db.insert({'_id': 'mydoc', '_rev': result['_rev'], 'title': "Let's Dance"})
+    <Response [201]>
+
+.. _restrictions on valid property names: http://wiki.apache.org/couchdb/HTTP_Document_API#Special_Fields
+
+Fetch a document
 ----------------
 
-Representation of a CouchDB server:
+Retrieves a document, specified by ``_id``::
 
-.. code:: python
+    >>> db.get('mydoc')
+    <Response [200]>
 
-    from time2relax import Server
+Delete a document
+-----------------
 
-    couchdb = Server()
+Deletes the document::
 
-server.auth(username, password)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    >>> r = db.get('mydoc')
+    >>> result = r.json()
+    >>> db.remove(result['_id'], result['_rev'])
+    <Response [200]>
 
-time2relax supports making requests using CouchDB's cookie authentication:
+You can also delete a document by using ``insert()`` with
+``{'_deleted': True}``::
 
-.. code:: python
+    >>> r = db.get('mydoc')
+    >>> result = r.json()
+    >>> result['_deleted'] = True
+    >>> db.insert(result)
+    <Response [200]>
 
-    couchdb.auth('admin', 'hackme')
+Create/update a batch of documents
+----------------------------------
 
-Getting the cookie:
+Create, update or delete multiple documents::
 
-.. code:: python
+    >>> db.bulk_docs([
+            {'_id': 'doc1', 'title': 'Lisa Says'},
+            {'_id': 'doc2', 'title': 'Space Oddity'},
+        ])
+    <Response [201]>
 
-    auth = couchdb.client.session.cookies['AuthSession']
+If you omit an ``_id`` parameter on a given document, the database will create
+a new document and assign the ID for you::
 
-Reusing a cookie:
+    >>> db.bulk_docs([
+            {'title': 'Lisa Says'},
+            {'title': 'Space Oddity'},
+        ])
+    <Response [201]>
 
-.. code:: python
+To update a document, you must include both an ``_id`` parameter and a ``_rev``
+parameter, which should match the ID and revision of the document on which to
+base your updates::
 
-    couchdb.client.session.cookies['AuthSession'] = auth
+    >>> db.bulk_docs([
+            {
+                '_id': 'doc1',
+                '_rev': '1-84abc2a942007bee7cf55007cba56198',
+                'title': 'Lisa Says',
+                'artist': 'Velvet Underground',
 
-Getting the current session:
+            },
+            {
+                '_id': 'doc2',
+                '_rev': '1-7b80fc50b6af7a905f368670429a757e',
+                'title': 'Space Oddity',
+                'artist': 'David Bowie',
+            },
+        ])
+    <Response [201]>
 
-.. code:: python
+Finally, to delete a document, include a ``_deleted`` parameter with the value
+``True``::
 
-    r = couchdb.session()
-    session = r.json()
+    >>> db.bulk_docs([
+            {
+                '_id': 'doc1',
+                '_rev': '1-84abc2a942007bee7cf55007cba56198',
+                'title': 'Lisa Says',
+                '_deleted': True,
 
-    print 'User is {0} and has these roles {1}'.format(
-        session['userCtx']['name'], session['userCtx']['roles'])
+            },
+            {
+                '_id': 'doc2',
+                '_rev': '1-7b80fc50b6af7a905f368670429a757e',
+                'title': 'Space Oddity',
+                '_deleted': True,
+            },
+        ])
+    <Response [201]>
 
-server.compact(name, ddoc=None)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fetch a batch of documents
+--------------------------
 
-Compacts a CouchDB database, ``name``, if ``ddoc`` is specified also compacts its views:
+Fetch multiple documents, indexed and sorted by the ``_id``::
 
-.. code:: python
+    >>> payload = {'include_docs': True, 'attachments': True}
+    >>> db.all_docs(params=payload)
+    <Response [200]>
 
-    couchdb.compact('alice')
+You can use ``startkey``/``endkey`` to find all docs in a range::
 
-server.create(name)
-~~~~~~~~~~~~~~~~~~~
+    >>> payload = {'include_docs': True, 'attachments': True, 'startkey': 'bar', 'endkey': 'quux'}
+    >>> db.all_docs(params=payload)
+    <Response [200]>
 
-Creates a CouchDB database with the given ``name``:
+You can also do a prefix search – i.e. "give me all the documents whose ``_id``
+start with ``'foo'``" – by using the special high Unicode character
+``'\uffff'``::
 
-.. code:: python
+    >>> payload = {'include_docs': True, 'attachments': True, 'startkey': 'foo', 'endkey': 'foo\uffff'}
+    >>> db.all_docs(params=payload)
+    <Response [200]>
 
-    couchdb.create('alice')
-
-    # No exception thrown
-    print 'Database alice created!'
-
-server.delete(name)
-~~~~~~~~~~~~~~~~~~~
-
-Deletes a CouchDB database with the given ``name``:
-
-.. code:: python
-
-    couchdb.delete('alice')
-
-server.get(name)
-~~~~~~~~~~~~~~~~
-
-Get information about a CouchDB database, ``name``:
-
-.. code:: python
-
-    r = couchdb.get('alice')
-    info = r.json()
-
-    print info
-
-server.list(name)
-~~~~~~~~~~~~~~~~~
-
-Lists all the databases in CouchDB:
-
-.. code:: python
-
-    r = couchdb.list()
-
-    # Body is an array
-    for i in r.json():
-        print i
-
-server.replicate(name, target, options=None)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Replicates a CouchDB database, ``name``, on ``target`` with options ``options``. ``target`` has to exist, add ``create_target: True`` to ``options`` to create it prior to replication.
-
-.. code:: python
-
-    target = 'http://admin:hackme@otherhost.com:5984/alice'
-    couchdb.replicate('alice', target, {'create_target': True})
-
-Database functions
+Save an attachment
 ------------------
 
-Representation of a CouchDB database:
+Attaches a binary object to a document.
 
-.. code:: python
+This method will update an existing document to add the attachment, so it
+requires a ``rev`` if the document already exists. If the document doesn't
+already exist, then this method will create an empty document containing the
+attachment::
 
-    from time2relax import Server, Database
+    >>> attachment = open('/tmp/att.txt')
+    >>> db.insert_att('doc', None, 'att.txt', attachment, 'text/plain')
+    <Response [201]>
 
-    couchdb = Server()
-    db = Database(couchdb, 'alice')
+Get an attachment
+-----------------
 
-db.insert(doc, params=None)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get attachment data.
 
-* TODO
+Get an attachment with filename ``'att.txt'`` from document with ID ``'doc'``::
 
-db.delete(_id, rev)
-~~~~~~~~~~~~~~~~~~~
+    >>> db.get_att('doc', 'att.txt')
+    <Response [200]>
 
-* TODO
+Get an attachment with filename ``'att.txt'`` from document with ID ``'doc'``,
+at the revision ``'1-abcd'``::
 
-db.get(_id, params=None)
-~~~~~~~~~~~~~~~~~~~~~~~~
+    >>> payload = {'rev': '1-abcd'}
+    >>> db.get_att('doc', 'att.txt', params=payload)
 
-* TODO
+Delete an attachment
+--------------------
 
-db.head(_id)
-~~~~~~~~~~~~
+Delete an attachment from a doc. You must supply the ``rev`` of the existing
+doc::
 
-* TODO
+    >>> r = db.get('mydoc')
+    >>> result = r.json()
+    >>> db.remove_att('doc', result['_rev'], 'att.txt')
+    <Response [200]>
 
-db.bulk(docs, options=None)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get database information
+------------------------
 
-* TODO
+Get information about a database::
 
-db.list(params=None)
-~~~~~~~~~~~~~~~~~~~~
+    >>> db.info()
+    <Response [200]>
 
-* TODO
+Compact the database
+--------------------
+
+Triggers a compaction operation in the database. This reduces the database's
+size by removing unused and old data, namely non-leaf revisions and attachments
+that are no longer referenced by those revisions::
+
+    >>> db.compact()
+    <Response [202]>
