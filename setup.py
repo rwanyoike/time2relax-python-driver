@@ -9,18 +9,9 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-setup_requires = [
-    'pytest-runner',
-]
-
-requirements = [
-    'requests',
-]
-
-test_requirements = [
-    'pytest',
-    'responses',
-]
+setup_requires = ['pytest-runner']
+test_requirements = ['pytest']
+requirements = ['requests', 'six']
 
 setup(
     name='time2relax',
