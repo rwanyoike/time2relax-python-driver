@@ -5,16 +5,14 @@ from time2relax import CouchDB
 
 
 def test_create(db):
-    response = db.info()
-    result = response.json()
-
+    r = db.info()
+    result = r.json()
     assert result['db_name'] == db.name
 
 
 def test_create_complex():
     db_name = 'az09_$()+-'
     result = _put_db_name(db_name)
-
     assert result['db_name'] == db_name
 
 
@@ -30,7 +28,7 @@ def test_create_escaped():
 
 def _put_db_name(db_name):
     db = CouchDB(COUCHDB_URL + db_name)
-    response = db.info()
+    r = db.info()
     db.destroy()
 
-    return response.json()
+    return r.json()

@@ -11,9 +11,9 @@ def test_bulk_docs(db):
         {'_id': '2'},
         {'_id': '3'},
     ]
-    response = db.bulk_docs(docs)
-    result = response.json()
 
+    r = db.bulk_docs(docs)
+    result = r.json()
     assert len(result) == 4
 
     for i, doc in enumerate(result):
@@ -30,5 +30,5 @@ def test_bulk_docs_params_new_edits(db):
 
 
 def test_bulk_docs_kwargs(db):
-    response = db.bulk_docs([], headers={'X-Assert': 'true'})
-    assert 'X-Assert' in response.request.headers
+    r = db.bulk_docs([], headers={'X-Assert': 'true'})
+    assert 'X-Assert' in r.request.headers

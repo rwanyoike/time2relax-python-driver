@@ -2,21 +2,21 @@
 
 
 def test_insert_post(db):
-    response = db.insert({'test': 'somestuff'})
-    result = response.json()
+    r = db.insert({'test': 'somestuff'})
+    result = r.json()
 
-    assert response.request.method == 'POST'
+    assert r.request.method == 'POST'
     assert 'ok' in result
 
 
 def test_insert_put(db):
-    response = db.insert({'_id': 'someid'})
-    result = response.json()
+    r = db.insert({'_id': 'someid'})
+    result = r.json()
 
-    assert response.request.method == 'PUT'
+    assert r.request.method == 'PUT'
     assert 'ok' in result
 
 
 def test_insert_kwargs(db):
-    response = db.insert({}, headers={'X-Assert': 'true'})
-    assert 'X-Assert' in response.request.headers
+    r = db.insert({}, headers={'X-Assert': 'true'})
+    assert 'X-Assert' in r.request.headers
