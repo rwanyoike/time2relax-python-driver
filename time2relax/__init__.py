@@ -47,7 +47,8 @@ class CouchDB(object):
 
         :param params: (optional) Dictionary of URL parameters to append to the
             URL.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -78,15 +79,17 @@ class CouchDB(object):
         """Create, update or delete multiple documents.
 
         :param docs: Sequence of document objects to be sent.
-        :param json: (optional) JSON to send in the body of the ``request``.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param json: (optional) JSON to send in the body of the
+            :class:`requests.Request`.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
+        url = self._get_db_url('_bulk_docs')
+
         if not json:
             json = {}
-
-        url = self._get_db_url('_bulk_docs')
         json.update({'docs': docs})
 
         kwargs['json'] = json
@@ -97,15 +100,15 @@ class CouchDB(object):
     def compact(self, **kwargs):
         """Trigger a compaction operation.
 
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
         url = self._get_db_url('_compact')
 
         if 'json' not in kwargs:
-            # Set application/json content type
-            kwargs['json'] = {}
+            kwargs['json'] = {}  # application/json
 
         return self.request('POST', url, **kwargs)
 
@@ -113,12 +116,13 @@ class CouchDB(object):
     def destroy(self, **kwargs):
         """Delete the database.
 
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
         # Don't setup the database
-        response = self.request('DELETE', self.url, skip_setup=True, **kwargs)
+        response = self.request('DELETE', self.url, True, **kwargs)
         # Prevent further requests
         self._destroyed = True
 
@@ -131,7 +135,8 @@ class CouchDB(object):
         :param doc_id: Document ``_id`` to retrieve.
         :param params: (optional) Dictionary of URL parameters to append to the
             URL.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -153,7 +158,8 @@ class CouchDB(object):
 
         :param doc_id: Document ``_id`` of attachment.
         :param att_id: Attachment name to retrieve.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -167,7 +173,8 @@ class CouchDB(object):
     def info(self, **kwargs):
         """Get information about the database.
 
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -179,7 +186,8 @@ class CouchDB(object):
         """Create or update an existing document.
 
         :param doc: Document dictionary to insert.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -190,7 +198,7 @@ class CouchDB(object):
             method = 'POST'
             url = self.url
 
-        kwargs['json'] = doc  # hijack kwargs['json']
+        kwargs['json'] = doc  # hijack
 
         return self.request(method, url, **kwargs)
 
@@ -204,7 +212,8 @@ class CouchDB(object):
         :param att: Attachment dictionary, bytes, or file-like object to
             insert.
         :param att_type: Attachment MIME type.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -221,7 +230,7 @@ class CouchDB(object):
             kwargs['headers'] = {}
 
         kwargs['headers']['Content-Type'] = att_type
-        kwargs['data'] = att
+        kwargs['data'] = att  # hijack
 
         return self.request('PUT', url, **kwargs)
 
@@ -231,7 +240,8 @@ class CouchDB(object):
 
         :param doc_id: Document ``_id`` to remove.
         :param doc_rev: Document revision.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -239,7 +249,6 @@ class CouchDB(object):
 
         if 'params' not in kwargs:
             kwargs['params'] = {}
-
         kwargs['params']['rev'] = doc_rev
 
         return self.request('DELETE', url, **kwargs)
@@ -251,7 +260,8 @@ class CouchDB(object):
         :param doc_id: Document ``_id`` of attachment.
         :param doc_rev: Document revision.
         :param att_id: Attachment name to remove.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -261,7 +271,6 @@ class CouchDB(object):
 
         if 'params' not in kwargs:
             kwargs['params'] = {}
-
         kwargs['params']['rev'] = doc_rev
 
         return self.request('DELETE', url, **kwargs)
@@ -271,17 +280,21 @@ class CouchDB(object):
         """Replicate data from source (this) to target.
 
         :param target: URL or name of the target database.
-        :param json: (optional) JSON to send in the body of the ``request``.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param json: (optional) JSON to send in the body of the
+            :class:`requests.Request`.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
+        url = urljoin(self.host, '_replicate')
+
         if json is None:
             json = {}
-
-        url = urljoin(self.host, '_replicate')
-        data = {'source': self.url, 'target': target}
-        json.update(data)
+        json.update({
+            'source': self.url,
+            'target': target,
+        })
 
         kwargs['json'] = json
 
@@ -290,10 +303,11 @@ class CouchDB(object):
     def request(self, method, url, skip_setup=False, **kwargs):
         """Construct a :class:`requests.Request` object and send it.
 
-        :param method: Method for the new ``request`` object.
-        :param url: URL for the new ``request`` object.
+        :param method: Method for the new :class:`requests.Request` object.
+        :param url: URL for the new :class:`requests.Request` object.
         :param skip_setup: Don't setup the database.
-        :param kwargs: (optional) Arguments that ``request`` takes.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
         :rtype: requests.Response
         """
 
@@ -383,7 +397,7 @@ class CouchDB(object):
         uri = urlparse(url)
         name = uri.path.strip('/').split('/').pop()
 
-        # Prevent double encoding of the name
+        # Prevent double encoding
         if '%' not in name:
             name = CouchDB._encode_uri_component(name)
 
