@@ -52,25 +52,11 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        if not params:
-            params = {}
-
         url = self._get_db_url('_all_docs')
-        params = params.copy()  # mutable!
+        meta = self._special_params(params)
+        method = meta.pop('method')
 
-        if 'keys' in params:
-            method = 'POST'
-            kwargs['json'] = {'keys': params['keys']}  # hijack kwargs['json']
-            params.pop('keys', None)
-        else:
-            method = 'GET'
-
-        # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
-        for i in ('start_key', 'startkey', 'end_key', 'endkey', 'key'):
-            if i in params:
-                params[i] = dumps(params[i])
-
-        kwargs['params'] = params
+        kwargs.update(meta)
 
         return self.request(method, url, **kwargs)
 
@@ -439,6 +425,32 @@ class CouchDB(object):
             self._request('PUT', self.url)
 
         self._setup = True
+
+    @staticmethod
+    def _special_params(params):
+        """Handle special CouchDB query arguments."""
+
+        meta = {'method': 'GET'}
+
+        if params:
+            params = params.copy()  # mutable!
+
+            # If `keys` are supplied, issue a POST to circumvent GET query
+            # string limits.
+            # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
+            if 'keys' in params:
+                meta['method'] = 'POST'
+                meta['json'] = {'keys': params['keys']}
+                params.pop('keys', None)
+
+            # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
+            for i in ('start_key', 'startkey', 'end_key', 'endkey', 'key'):
+                if i in params:
+                    params[i] = dumps(params[i])
+
+            meta['params'] = params
+
+        return meta
 
 
 class CouchDBError(Exception):
