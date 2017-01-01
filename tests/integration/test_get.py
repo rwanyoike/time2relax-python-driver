@@ -8,19 +8,18 @@ from time2relax import ResourceNotFound
 
 
 def test_get(db):
-    response = db.insert({'test': 'somestuff'})
-    result = response.json()
+    r = db.insert({'test': 'somestuff'})
+    result = r.json()
 
-    response = db.get(result['id'])
-    doc = response.json()
-
+    r = db.get(result['id'])
+    doc = r.json()
     assert 'test' in doc
 
     with pytest.raises(ResourceNotFound) as ex:
         db.get(result['id'] + 'asdf')
 
-    response = ex.value.response
-    assert response.status_code == 404
+    r = ex.value.response
+    assert r.status_code == 404
 
     message = ex.value.response.json()
     assert message['reason'] == 'missing'
@@ -28,34 +27,32 @@ def test_get(db):
 
 
 def test_get_design(db):
-    response = db.insert({
+    r = db.insert({
         '_id': '_design/someid',
         'test': 'somestuff',
     })
-    result = response.json()
+    result = r.json()
 
-    response = db.get(result['id'])
-    doc = response.json()
-
+    r = db.get(result['id'])
+    doc = r.json()
     assert 'test' in doc
 
 
 def test_get_local(db):
-    response = db.insert({
+    r = db.insert({
         '_id': '_local/someid',
         'test': 'somestuff',
     })
-    result = response.json()
+    result = r.json()
 
-    response = db.get(result['id'])
-    doc = response.json()
-
+    r = db.get(result['id'])
+    doc = r.json()
     assert 'test' in doc
 
 
 def test_get_params_rev(db):
-    response = db.insert({'version': 'first'})
-    result = response.json()
+    r = db.insert({'version': 'first'})
+    result = r.json()
 
     db.insert({
         '_id': result['id'],
@@ -63,9 +60,8 @@ def test_get_params_rev(db):
         'version': 'second',
     })
 
-    response = db.get(result['id'], {'rev': result['rev']})
-    doc = response.json()
-
+    r = db.get(result['id'], {'rev': result['rev']})
+    doc = r.json()
     assert doc['version'] == 'first'
 
     with pytest.raises(ResourceNotFound) as ex:
@@ -79,24 +75,23 @@ def test_get_params_rev(db):
 def test_get_params_open_revs_all(db):
     _put_conflicts(db)
 
-    response = db.get('3', {'open_revs': 'all'})
-    doc = response.json()
+    r = db.get('3', {'open_revs': 'all'})
+    doc = r.json()
 
     revs = map(itemgetter('ok'), doc)
     revs = sorted(revs, key=itemgetter('_rev'))
-
     assert len(revs) == 3
 
 
 def test_get_params_open_revs_list(db):
     _put_conflicts(db)
 
-    response = db.get('3', {'open_revs': [
+    r = db.get('3', {'open_revs': [
         '2-aaa',
         '5-nonexistent',
         '3-bbb',
     ]})
-    doc = response.json()
+    doc = r.json()
 
     rev = map(lambda d: d['ok'] if 'ok' in d else d, doc)
     rev = sorted(rev, key=lambda d: d['_rev'] if '_rev' in d else 'z')
@@ -111,13 +106,13 @@ def test_get_kwargs(db):
     with pytest.raises(ResourceNotFound) as ex:
         db.get('null', headers={'X-Assert': 'true'})
 
-    response = ex.value.response
-    assert 'X-Assert' in response.request.headers
+    r = ex.value.response
+    assert 'X-Assert' in r.request.headers
 
 
 def _put_conflicts(db):
-    response = db.insert({'_id': '3'})
-    result = response.json()
+    r = db.insert({'_id': '3'})
+    result = r.json()
 
     rev_id = result['rev'].split('-')[1]
     conflicts = [

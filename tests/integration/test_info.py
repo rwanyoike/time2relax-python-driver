@@ -3,13 +3,13 @@
 
 def test_info(db):
     db.insert({'_id': 'someid'})
-    response = db.info()
-    result = response.json()
+    r = db.info()
+    result = r.json()
 
     assert result['doc_count'] == 1
     assert result['doc_del_count'] == 0
 
 
 def test_info_kwargs(db):
-    response = db.info(headers={'X-Assert': 'true'})
-    assert 'X-Assert' in response.request.headers
+    r = db.info(headers={'X-Assert': 'true'})
+    assert 'X-Assert' in r.request.headers

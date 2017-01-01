@@ -21,17 +21,19 @@ def test_replicate_to(db):
 
     db2.request('HEAD', db2.url)  # setup db
     db.replicate_to(db2.url)
-    response = db2.info()
-    db2.destroy()
-    result = response.json()
 
+    r = db2.info()
+    db2.destroy()
+
+    result = r.json()
     assert result['doc_count'] == 3
 
 
 def test_replicate_to_kwargs(db):
     db2 = CouchDB(db.host + '/testdb2')
     db2.request('HEAD', db2.url)  # setup db
-    response = db.replicate_to(db2.url, json={}, headers={'X-Assert': 'true'})
+
+    r = db.replicate_to(db2.url, json={}, headers={'X-Assert': 'true'})
     db2.destroy()
 
-    assert 'X-Assert' in response.request.headers
+    assert 'X-Assert' in r.request.headers

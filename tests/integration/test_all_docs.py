@@ -16,56 +16,24 @@ ORIGINAL_DOCS = [
 
 def test_all_docs(db):
     db.bulk_docs(ORIGINAL_DOCS)
-    response = db.all_docs()
-    result = response.json()
 
+    r = db.all_docs()
+    result = r.json()
     assert len(result['rows']) == 4
 
     for doc in result['rows']:
         assert 0 <= int(doc['id']) < 4
 
 
-def test_all_docs_params_startkey(db):
-    db.bulk_docs(ORIGINAL_DOCS)
-    response = db.all_docs({
-        'startkey': '2',
-        'include_docs': True,
-    })
-    result = response.json()
-
-    assert len(result['rows']) == 2
-    assert result['rows'][0]['id'] == '2'
-
-
 def test_all_docs_params_keys(db):
     db.bulk_docs(ORIGINAL_DOCS)
+
     keys = ['3', '1']
-    response = db.all_docs({'keys': keys})
-    result = response.json()
+    r = db.all_docs({'keys': keys})
+    result = r.json()
 
+    assert r.request.method == 'POST'
     assert list(map(itemgetter('key'), result['rows'])) == keys
-
-
-def test_all_docs_params_keys_exception(db):
-    db.bulk_docs(ORIGINAL_DOCS)
-
-    with pytest.raises(BadRequest):
-        db.all_docs({
-            'keys': ['2', '0', '1000'],
-            'startkey': 'a',
-        })
-        db.all_docs({
-            'keys': [],
-            'endkey': 'a',
-        })
-
-
-def test_all_docs_params_keys_empty(db):
-    db.bulk_docs(ORIGINAL_DOCS)
-    response = db.all_docs({'keys': []})
-    result = response.json()
-
-    assert len(result['rows']) == 0
 
 
 def test_all_docs_params_startkey_endkey(db):
@@ -74,40 +42,34 @@ def test_all_docs_params_startkey_endkey(db):
         {'_id': '"weird id!" z'},
     ]
     db.bulk_docs(docs)
-    response = db.all_docs({
-        'startkey': docs[0]['_id'],
-        'endkey': docs[1]['_id'],
-    })
-    result = response.json()
 
+    params = {'startkey': docs[0]['_id'], 'endkey': docs[1]['_id']}
+    r = db.all_docs(params)
+    result = r.json()
     assert result['total_rows'] == 2
 
 
-def test_all_docs_params_aliases(db):
+def test_all_docs_params_startkey_endkey_synonyms(db):
     db.bulk_docs(ORIGINAL_DOCS)
-    response = db.all_docs({
-        'start_key': 'org.couchdb.user:',
-        'end_key': 'org.couchdb.user;',
-    })
-    result = response.json()
 
+    params = {'start_key': 'org.couchdb.user:', 'end_key': 'org.couchdb.user;'}
+    r = db.all_docs(params)
+    result = r.json()
     assert len(result['rows']) == 0
 
 
 def test_all_docs_params_key(db):
     db.bulk_docs(ORIGINAL_DOCS)
-    response = db.all_docs({'key': '1'})
-    result = response.json()
 
+    r = db.all_docs({'key': '1'})
+    result = r.json()
     assert len(result['rows']) == 1
 
     with pytest.raises(BadRequest):
-        db.all_docs({
-            'key': '1',
-            'keys': ['1', '2'],
-        })
+        params = {'key': '1', 'keys': ['1', '2']}
+        db.all_docs(params)
 
 
 def test_all_docs_kwargs(db):
-    response = db.all_docs(headers={'X-Assert': 'true'})
-    assert 'X-Assert' in response.request.headers
+    r = db.all_docs(headers={'X-Assert': 'true'})
+    assert 'X-Assert' in r.request.headers

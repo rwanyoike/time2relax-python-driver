@@ -6,15 +6,15 @@ from time2relax import ResourceNotFound
 
 
 def test_remove_att(db):
-    response = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
-    result = response.json()
+    r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
+    result = r.json()
 
-    response = db.remove_att('doc', result['rev'], 'att.txt')
+    r = db.remove_att('doc', result['rev'], 'att.txt')
 
     with pytest.raises(ResourceNotFound) as ex:
         db.get_att('doc', 'att.txt')
 
-    result = response.json()
+    result = r.json()
     assert 'ok' in result
 
     message = ex.value.response.json()
@@ -23,20 +23,18 @@ def test_remove_att(db):
 
 
 def test_remove_att_params(db):
-    response = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
-    result = response.json()
+    r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
+    result = r.json()
 
-    response = db.remove_att('doc', result['rev'], 'att.txt',
-                             params={'x-assert': True})
-
-    assert 'x-assert' in response.request.url
+    r = db.remove_att('doc', result['rev'], 'att.txt',
+                      params={'x-assert': True})
+    assert 'x-assert' in r.request.url
 
 
 def test_remove_att_kwargs(db):
-    response = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
-    result = response.json()
+    r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
+    result = r.json()
 
-    response = db.remove_att('doc', result['rev'], 'att.txt',
-                             headers={'X-Assert': 'true'})
-
-    assert 'X-Assert' in response.request.headers
+    r = db.remove_att('doc', result['rev'], 'att.txt',
+                      headers={'X-Assert': 'true'})
+    assert 'X-Assert' in r.request.headers
