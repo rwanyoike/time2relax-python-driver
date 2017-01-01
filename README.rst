@@ -1,6 +1,5 @@
-==========
-time2relax
-==========
+time2relax - A CouchDB driver
+=============================
 
 .. image:: https://img.shields.io/pypi/v/time2relax.svg
         :target: https://pypi.python.org/pypi/time2relax
@@ -15,21 +14,21 @@ time2relax
         :target: https://readthedocs.org/projects/time2relax/?badge=latest
         :alt: Documentation Status
 
-A CouchDB driver for Python.
-
-.. code:: python
-
-    >>> import time2relax
-    >>> db = time2relax.CouchDB('http://localhost:5984/dbname')
-    >>> db.info()
-    <Response [200]>
+A `CouchDB`_ driver for Python.
 
 * Free software: MIT license
 * Documentation: https://time2relax.readthedocs.org.
 
+.. _CouchDB: http://couchdb.com/
+
 Features
 --------
 
-* Uses `python-requests`_ ☺.
+* Runs `python-requests`_ under the hood ⚡️.
+* Only a minimum of abstraction between you and CouchDB.
+* Errors are proxied directly from CouchDB: if you know CouchDB you already
+  know `time2relax`.
+* Python 2.6–2.7 & 3.3–3.5 support.
+* Transparent URL and parameter encoding.
 
-.. _python-requests: http://docs.python-requests.org/en/latest/
+.. _python-requests: http://requests.readthedocs.io/en/latest/#supported-features
