@@ -14,6 +14,10 @@ from six import iteritems
 
 __version__ = '0.3.0'
 
+_LIST = '_list'
+_SHOW = '_show'
+_VIEW = '_view'
+
 
 class CouchDB(object):
     """Representation of a CouchDB database."""
@@ -97,6 +101,66 @@ class CouchDB(object):
             kwargs['json'] = {}  # application/json
 
         return self.request('POST', url, **kwargs)
+
+    # http://docs.couchdb.org/en/stable/api/ddoc/render.html#get--db-_design-ddoc-_list-func-view
+    def ddoc_list(self, ddoc_id, func_id, view_id, other_id=None, **kwargs):
+        """Apply a list function against a view.
+
+        :param ddoc_id: Design document name.
+        :param func_id: List function name.
+        :param view_id: View function name.
+        :param other_id: Other design document name that holds the view
+            function.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
+        :rtype: requests.Response
+        """
+
+        if other_id:
+            path = urljoin(self._encode_doc_id(other_id), view_id)
+        else:
+            path = view_id
+
+        return self._ddoc('GET', ddoc_id, _LIST, func_id, path, **kwargs)
+
+    # http://docs.couchdb.org/en/stable/api/ddoc/render.html#get--db-_design-ddoc-_show-func
+    def ddoc_show(self, ddoc_id, func_id, doc_id=None, **kwargs):
+        """Apply a show function against a document.
+
+        :param ddoc_id: Design document name.
+        :param func_id: Show function name.
+        :param doc_id: Document ``_id`` to execute the show function on.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
+        :rtype: requests.Response
+        """
+
+        if doc_id:
+            path = self._encode_doc_id(doc_id)
+        else:
+            path = None
+
+        return self._ddoc('GET', ddoc_id, _SHOW, func_id, path, **kwargs)
+
+    # http://docs.couchdb.org/en/stable/api/ddoc/views.html#get--db-_design-ddoc-_view-view
+    def ddoc_view(self, ddoc_id, func_id, params=None, **kwargs):
+        """Execute a view function.
+
+        :param ddoc_id: Design document name.
+        :param func_id: View function name.
+        :param params: (optional) Dictionary of URL parameters to append to the
+            URL.
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
+        :rtype: requests.Response
+        """
+
+        meta = self._special_params(params)
+        method = meta.pop('method')
+
+        kwargs.update(meta)
+
+        return self._ddoc(method, ddoc_id, _VIEW, func_id, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/database/common.html#delete--db
     def destroy(self, **kwargs):
@@ -339,6 +403,29 @@ class CouchDB(object):
             raise ex(message, response)
 
         raise CouchDBError(None, response)
+
+    def _ddoc(self, method, ddoc_id, func_type, func_id, extra=None, **kwargs):
+        """Apply or execute a design document function.
+
+        :param method: Method for the new :class:`requests.Request` object.
+        :param ddoc_id: Design document name.
+        :param func_type: Function type.
+        :param func_id: Function name.
+        :param extra: FIXME: What is this?
+        :param kwargs: (optional) Arguments that :class:`requests.Request`
+            takes.
+        :rtype: requests.Response
+        """
+
+        doc_id = urljoin('_design', ddoc_id)
+        path = urljoin(self._encode_doc_id(doc_id), func_type, func_id)
+
+        if extra:
+            path = urljoin(path, extra)
+
+        url = self._get_db_url(path)
+
+        return self.request(method, url, **kwargs)
 
     @staticmethod
     def _encode_att_id(att_id):

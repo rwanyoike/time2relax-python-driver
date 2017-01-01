@@ -223,3 +223,73 @@ that are no longer referenced by those revisions::
 
     >>> db.compact()
     <Response [202]>
+
+Run a list function
+-------------------
+
+First, make sure you understand how list functions work in CouchDB. A good
+start is `the CouchDB guide entry on lists`_::
+
+    >>> db.insert({
+    ...     '_id': '_design/testid',
+    ...     'views': {
+    ...         'viewid': {
+    ...             'map': "function (doc) {"
+    ...                    "    emit(doc._id, 'value');"
+    ...                    "}",
+    ...         },
+    ...     },
+    ...     'lists': {
+    ...         'listid': "function (head, req) {"
+    ...                   "    return 'Hello World!';"
+    ...                   "}",
+    ...     },
+    ... })
+    <Response [201]>
+    >>> db.ddoc_list('testid', 'listid', 'viewid')
+    <Response [200]>
+
+.. _the CouchDB guide entry on lists: http://guide.couchdb.org/draft/transforming.html
+
+Run a show function
+-------------------
+
+First, make sure you understand how show functions work in CouchDB. A good
+start is `the CouchDB guide entry on shows`_::
+
+    >>> db.insert({
+    ...     '_id': '_design/testid',
+    ...     'shows': {
+    ...         'showid': "function (doc, req) {"
+    ...                   "    return {body: 'relax!'}"
+    ...                   "}",
+    ...     },
+    ... })
+    <Response [201]>
+    >>> db.ddoc_show('testid', 'showid')
+    <Response [200]>
+
+.. _the CouchDB guide entry on shows: http://guide.couchdb.org/draft/show.html
+
+Run a view function
+-------------------
+
+First, make sure you understand how view functions work in CouchDB. A good
+start is `the CouchDB guide entry on views`_::
+
+    >>> db.insert({
+    ...     '_id': '_design/testid',
+    ...     'views': {
+    ...         'viewid': {
+    ...             'map': "function (doc) {"
+    ...                    "    emit(doc.key);"
+    ...                    "}",
+    ...         },
+    ...     },
+    ... })
+    <Response [201]>
+    >>> params = {'reduce': False, 'key': 'key2'}
+    >>> db.ddoc_view('testid', 'viewid', params)
+    <Response [200]>
+
+.. _the CouchDB guide entry on views: http://guide.couchdb.org/draft/views.html
