@@ -26,9 +26,10 @@ Features
 
 * Runs `python-requests`_ under the hood ⚡️.
 * Only a minimum of abstraction between you and CouchDB.
-* Errors are proxied directly from CouchDB: if you know CouchDB you already
-  know `time2relax`.
-* Python 2.6–2.7 & 3.3–3.5 support.
 * Transparent URL and parameter encoding.
+* Errors are proxied directly from CouchDB: if you know CouchDB you already
+  know ``time2relax``.
+* Python 2.6–2.7 & 3.3–3.5 support.
+* Tested with CouchDB 1.6.x (2.0.x pending)
 
 .. _python-requests: http://requests.readthedocs.io/en/latest/#supported-features
