@@ -26,8 +26,8 @@ def test_create_escaped():
     assert result['db_name'] == 'escaped/1'
 
 
-def _put_db_name(db_name):
-    db = CouchDB(COUCHDB_URL + db_name)
+def _put_db_name(name):
+    db = CouchDB(COUCHDB_URL + name)
     r = db.info()
     db.destroy()
 
