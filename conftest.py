@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from posixpath import join as urljoin
 
 import pytest
 
@@ -10,26 +11,25 @@ COUCHDB_URL = os.environ.get('COUCHDB_URL', 'http://localhost:5984/')
 
 
 @pytest.fixture(scope='module')
-def test_url():
-    url = os.path.join(COUCHDB_URL, 'testdb')
-    return url
+def url():
+    return urljoin(COUCHDB_URL, 'testdb')
 
 
 @pytest.fixture(scope='module')
-def cleanup(test_url):
+def cleanup(url):
     yield
-    destroy(test_url)
+    destroy(url)
 
 
 @pytest.fixture()
-def db(test_url, cleanup):
-    destroy(test_url)
-    yield CouchDB(test_url)
+def db(url, cleanup):
+    destroy(url)
+    yield CouchDB(url)
 
 
-def destroy(test_url):
+def destroy(url):
     try:
-        db = CouchDB(test_url)
+        db = CouchDB(url)
         db.destroy()
     except ResourceNotFound:
         pass
