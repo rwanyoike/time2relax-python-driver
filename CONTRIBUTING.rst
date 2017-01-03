@@ -3,8 +3,8 @@
 Contributing
 ============
 
-Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given.
+Contributions are welcome, and they are greatly appreciated! Every little bit
+helps, and credit will always be given.
 
 You can contribute in many ways:
 
@@ -25,8 +25,8 @@ If you are reporting a bug, please include:
 Fix Bugs
 ~~~~~~~~
 
-Look through the GitHub issues for bugs. Anything tagged with "bug"
-and "help wanted" is open to whoever wants to implement it.
+Look through the GitHub issues for bugs. Anything tagged with "bug" and
+"help wanted" is open to whoever wants to implement it.
 
 Implement Features
 ~~~~~~~~~~~~~~~~~~
@@ -37,14 +37,15 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-time2relax could always use more documentation, whether as part of the
-official time2relax docs, in docstrings, or even on the web in blog posts,
-articles, and such.
+time2relax could always use more documentation, whether as part of the official
+time2relax docs, in docstrings, or even on the web in blog posts, articles, and
+such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/rwanyoike/time2relax/issues.
+The best way to send feedback is to file an issue at
+https://github.com/rwanyoike/time2relax/issues.
 
 If you are proposing a feature:
 
@@ -100,9 +101,9 @@ Pull Request Guidelines
 Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
-   your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
+2. If the pull request adds functionality, the docs should be updated. Put your
+   new functionality into a function with a docstring, and add the feature to
+   the list in README.rst.
 3. The pull request should work for Python 2.6, 2.7, 3.3, 3.4 and 3.5, and for
    PyPy. Check https://travis-ci.org/rwanyoike/time2relax/pull_requests and
    make sure that the tests pass for all supported Python versions.

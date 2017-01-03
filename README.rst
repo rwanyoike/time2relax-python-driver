@@ -24,12 +24,15 @@ A `CouchDB`_ driver for Python.
 Features
 --------
 
-* Runs `python-requests`_ under the hood ⚡️.
+* Runs `python-requests`_ under the hood.
 * Only a minimum of abstraction between you and CouchDB.
 * Transparent URL and parameter encoding.
-* Errors are proxied directly from CouchDB: if you know CouchDB you already
-  know ``time2relax``.
+* Exceptions are modelled from CouchDB.
 * Python 2.6–2.7 & 3.3–3.5 support.
-* Tested with CouchDB 1.6.x (2.0.x pending)
+* Tested with CouchDB 1.6.x (2.0 pending)
+
+Inspired by `pouchdb`_ and `nano`_ APIs.
 
 .. _python-requests: http://requests.readthedocs.io/en/latest/#supported-features
+.. _pouchdb: https://github.com/pouchdb/pouchdb
+.. _nano: https://github.com/dscape/nano
