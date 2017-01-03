@@ -33,7 +33,7 @@ def test_ddoc_list(db):
     with pytest.raises(ServerError) as ex:
         db.ddoc_list('test', 'mylist', 'myview')
 
-    r = ex.value.response
+    r = ex.value.args[1]
     assert r.headers['Transfer-Encoding'] == 'chunked'
 
     parts = r.text.split('\n')

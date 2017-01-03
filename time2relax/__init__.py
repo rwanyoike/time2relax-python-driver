@@ -543,17 +543,6 @@ class CouchDB(object):
 class CouchDBError(Exception):
     """Class for errors based on bad HTTP status codes."""
 
-    # http://docs.couchdb.org/en/stable/api/basics.html?#http-status-codes
-    def __init__(self, message, response=None):
-        """Initialize the exception object.
-
-        :param message: Exception message.
-        :param response: ``response`` object.
-        """
-
-        super(CouchDBError, self).__init__(message)
-        self.response = response
-
 
 class BadRequest(CouchDBError):
     """Exception raised when a 400 HTTP error is received."""
