@@ -28,7 +28,7 @@ class CouchDB(object):
     def __init__(self, url, skip_setup=False):
         """Initialize the database object.
 
-        :param url: Database url to use.
+        :param url: Database URL to use.
         :param skip_setup: Don't setup the database.
         """
 
@@ -36,8 +36,8 @@ class CouchDB(object):
         self.name = self._get_db_name(url)
         self.url = urljoin(self.host, self.name)
         self.skip_setup = skip_setup
-        self.session = Session()
 
+        self.session = Session()
         # http://docs.couchdb.org/en/stable/api/basics.html#request-headers
         self.session.headers['Accept'] = 'application/json'
 
@@ -56,13 +56,10 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        url = self._get_db_url('_all_docs')
-        meta = self._special_params(params)
-        method = meta.pop('method')
-
+        method, meta = self._special_params(params)
         kwargs.update(meta)
 
-        return self.request(method, url, **kwargs)
+        return self.request(method, '_all_docs', **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/database/bulk-api.html#post--db-_bulk_docs
     def bulk_docs(self, docs, json=None, **kwargs):
@@ -76,15 +73,12 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        url = self._get_db_url('_bulk_docs')
-
         if not json:
             json = {}
         json.update({'docs': docs})
-
         kwargs['json'] = json
 
-        return self.request('POST', url, **kwargs)
+        return self.request('POST', '_bulk_docs', **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/database/compact.html#post--db-_compact
     def compact(self, **kwargs):
@@ -95,12 +89,10 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        url = self._get_db_url('_compact')
-
         if 'json' not in kwargs:
             kwargs['json'] = {}  # application/json
 
-        return self.request('POST', url, **kwargs)
+        return self.request('POST', '_compact', **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/ddoc/render.html#get--db-_design-ddoc-_list-func-view
     def ddoc_list(self, ddoc_id, func_id, view_id, other_id=None, **kwargs):
@@ -155,9 +147,7 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        meta = self._special_params(params)
-        method = meta.pop('method')
-
+        method, meta = self._special_params(params)
         kwargs.update(meta)
 
         return self._ddoc(method, ddoc_id, _VIEW, func_id, **kwargs)
@@ -172,11 +162,11 @@ class CouchDB(object):
         """
 
         # Don't setup the database
-        response = self.request('DELETE', self.url, True, **kwargs)
-        # Prevent further requests
+        r = self.request('DELETE', skip_setup=True, **kwargs)
+        # Prevent further requests to the database
         self._destroyed = True
 
-        return response
+        return r
 
     # http://docs.couchdb.org/en/stable/api/document/common.html#get--db-docid
     def get(self, doc_id, params=None, **kwargs):
@@ -190,17 +180,16 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        url = self._get_db_url(self._encode_doc_id(doc_id))
+        path = self._encode_doc_id(doc_id)
 
         if params and 'open_revs' in params:
             # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
             if params['open_revs'] != 'all':
                 params = params.copy()  # mutable!
                 params['open_revs'] = dumps(params['open_revs'])
-
         kwargs['params'] = params
 
-        return self.request('GET', url, **kwargs)
+        return self.request('GET', path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/attachments.html#get--db-docid-attname
     def get_att(self, doc_id, att_id, **kwargs):
@@ -215,9 +204,8 @@ class CouchDB(object):
 
         path = urljoin(self._encode_doc_id(doc_id),
                        self._encode_att_id(att_id))
-        url = self._get_db_url(path)
 
-        return self.request('GET', url, **kwargs)
+        return self.request('GET', path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/database/common.html#get--db
     def info(self, **kwargs):
@@ -228,7 +216,7 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        return self.request('GET', self.url, **kwargs)
+        return self.request('GET', **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/common.html#put--db-docid
     # http://docs.couchdb.org/en/stable/api/database/common.html#post--db
@@ -243,14 +231,14 @@ class CouchDB(object):
 
         if '_id' in doc:
             method = 'PUT'
-            url = self._get_db_url(self._encode_doc_id(doc['_id']))
+            path = self._encode_doc_id(doc['_id'])
         else:
             method = 'POST'
-            url = self.url
+            path = ''
 
         kwargs['json'] = doc  # hijack
 
-        return self.request(method, url, **kwargs)
+        return self.request(method, path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/attachments.html#put--db-docid-attname
     def insert_att(self, doc_id, doc_rev, att_id, att, att_type, **kwargs):
@@ -269,7 +257,6 @@ class CouchDB(object):
 
         path = urljoin(self._encode_doc_id(doc_id),
                        self._encode_att_id(att_id))
-        url = self._get_db_url(path)
 
         if doc_rev:
             if 'params' not in kwargs:
@@ -282,7 +269,7 @@ class CouchDB(object):
         kwargs['headers']['Content-Type'] = att_type
         kwargs['data'] = att  # hijack
 
-        return self.request('PUT', url, **kwargs)
+        return self.request('PUT', path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/common.html#delete--db-docid
     def remove(self, doc_id, doc_rev, **kwargs):
@@ -295,13 +282,13 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        url = self._get_db_url(self._encode_doc_id(doc_id))
+        path = self._encode_doc_id(doc_id)
 
         if 'params' not in kwargs:
             kwargs['params'] = {}
         kwargs['params']['rev'] = doc_rev
 
-        return self.request('DELETE', url, **kwargs)
+        return self.request('DELETE', path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/attachments.html#delete--db-docid-attname
     def remove_att(self, doc_id, doc_rev, att_id, **kwargs):
@@ -317,13 +304,12 @@ class CouchDB(object):
 
         path = urljoin(self._encode_doc_id(doc_id),
                        self._encode_att_id(att_id))
-        url = self._get_db_url(path)
 
         if 'params' not in kwargs:
             kwargs['params'] = {}
         kwargs['params']['rev'] = doc_rev
 
-        return self.request('DELETE', url, **kwargs)
+        return self.request('DELETE', path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/server/common.html#replicate
     def replicate_to(self, target, json=None, **kwargs):
@@ -341,20 +327,16 @@ class CouchDB(object):
 
         if json is None:
             json = {}
-        json.update({
-            'source': self.url,
-            'target': target,
-        })
-
+        json.update({'source': self.url, 'target': target})
         kwargs['json'] = json
 
-        return self.request('POST', url, **kwargs)
+        return self._request('POST', url, **kwargs)
 
-    def request(self, method, url, skip_setup=False, **kwargs):
+    def request(self, method, path='', skip_setup=False, **kwargs):
         """Construct a :class:`requests.Request` object and send it.
 
         :param method: Method for the new :class:`requests.Request` object.
-        :param url: URL for the new :class:`requests.Request` object.
+        :param path: Path to add to the :class:`requests.Request` URL.
         :param skip_setup: Don't setup the database.
         :param kwargs: (optional) Arguments that :class:`requests.Request`
             takes.
@@ -364,45 +346,18 @@ class CouchDB(object):
         if self._destroyed:
             raise CouchDBError('Database is destroyed :(')
 
+        url = urljoin(self.url, path)
+
+        # Check if the database exists or create it
         if not skip_setup and not self.skip_setup:
             if not self._setup:
-                self._setup_database()
-
-        if 'params' in kwargs and kwargs['params']:
-            params = self._prepare_params(kwargs['params'])
-            kwargs['params'] = params
+                try:
+                    self._request('HEAD', self.url)
+                except ResourceNotFound:
+                    self._request('PUT', self.url)
+                self._setup = True
 
         return self._request(method, url, **kwargs)
-
-    @staticmethod
-    def _check_response(response):
-        """Raise a :class:`CouchDBError` on a bad response."""
-
-        if 200 <= response.status_code < 300:
-            return
-
-        exceptions = {
-            400: BadRequest,
-            401: Unauthorized,
-            403: Forbidden,
-            404: ResourceNotFound,
-            405: MethodNotAllowed,
-            409: ResourceConflict,
-            412: PreconditionFailed,
-            500: ServerError,
-        }
-
-        if response.status_code in exceptions:
-            try:
-                body = response.json()
-                message = body['reason']
-            except ValueError:
-                message = None
-
-            ex = exceptions[response.status_code]
-            raise ex(message, response)
-
-        raise CouchDBError(None, response)
 
     def _ddoc(self, method, ddoc_id, func_type, func_id, extra=None, **kwargs):
         """Apply or execute a design document function.
@@ -423,101 +378,96 @@ class CouchDB(object):
         if extra:
             path = urljoin(path, extra)
 
-        url = self._get_db_url(path)
+        return self.request(method, path, **kwargs)
 
-        return self.request(method, url, **kwargs)
-
-    @staticmethod
-    def _encode_att_id(att_id):
+    def _encode_att_id(self, att_id):
         """Encode an attachment id."""
 
-        parts = map(CouchDB._encode_uri_component, att_id.split('/'))
+        parts = map(self._encode_uri_component, att_id.split('/'))
         return urljoin(*parts)
 
-    @staticmethod
-    def _encode_doc_id(doc_id):
+    def _encode_doc_id(self, doc_id):
         """Encode a document id."""
 
         if doc_id.startswith('_design'):
-            uri = CouchDB._encode_uri_component(doc_id[8:])
+            uri = self._encode_uri_component(doc_id[8:])
             return '_design/{0}'.format(uri)
 
         if doc_id.startswith('_local'):
-            uri = CouchDB._encode_uri_component(doc_id[7:])
+            uri = self._encode_uri_component(doc_id[7:])
             return '_local/{0}'.format(uri)
 
-        return CouchDB._encode_uri_component(doc_id)
+        return self._encode_uri_component(doc_id)
 
-    @staticmethod
-    def _encode_uri_component(component):
+    def _encode_uri_component(self, component):
         """Encode a uri component."""
 
         # http://stackoverflow.com/a/6618858/2497865
         return quote(component, "~()*!.\'")
 
-    @staticmethod
-    def _get_db_host(url):
-        """Get the database host from a url."""
+    def _get_db_host(self, url):
+        """Get the database host from a URL."""
 
-        uri = urlparse(url)
-        # http://stackoverflow.com/a/9627834/2497865
-        return urlunparse(uri[:2] + ('',) * 4)
+        return urlunparse(urlparse(url)[:2] + ('',) * 4)
 
-    @staticmethod
-    def _get_db_name(url):
-        """Get the database name from a url."""
+    def _get_db_name(self, url):
+        """Get the database name from a URL."""
 
         uri = urlparse(url)
         name = uri.path.strip('/').split('/').pop()
 
         # Prevent double encoding
         if '%' not in name:
-            name = CouchDB._encode_uri_component(name)
+            name = self._encode_uri_component(name)
 
         return name
-
-    def _get_db_url(self, path):
-        """Build a database url from a path."""
-
-        return urljoin(self.url, path)
-
-    @staticmethod
-    def _prepare_params(params):
-        """Prepare a ``params`` dictionary."""
-
-        params = params.copy()  # mutable!
-
-        for key, val in iteritems(params):
-            # Handle Python titlecase booleans
-            if type(val) == bool:
-                params[key] = dumps(val)
-
-        return params
 
     def _request(self, method, url, **kwargs):
         """Construct a request, prepare it and send it."""
 
-        response = self.session.request(method, url, **kwargs)
-        self._check_response(response)
+        # Prepare the params dictionary
+        if 'params' in kwargs and kwargs['params']:
+            params = kwargs['params'].copy()  # mutable!
 
-        return response
+            for key, val in iteritems(params):
+                # Handle Python titlecase booleans
+                if type(val) == bool:
+                    params[key] = dumps(val)
+            kwargs['params'] = params
 
-    # http://docs.couchdb.org/en/stable/api/database/common.html#put--db
-    def _setup_database(self):
-        """Check if the database exists or create it."""
+        r = self.session.request(method, url, **kwargs)
 
-        try:
-            self._request('HEAD', self.url)
-        except ResourceNotFound:
-            self._request('PUT', self.url)
+        # Raise a CouchDBError on a bad response
+        if not (200 <= r.status_code < 300):
+            exceptions = {
+                400: BadRequest,
+                401: Unauthorized,
+                403: Forbidden,
+                404: ResourceNotFound,
+                405: MethodNotAllowed,
+                409: ResourceConflict,
+                412: PreconditionFailed,
+                500: ServerError,
+            }
 
-        self._setup = True
+            try:
+                message = r.json()
+            except ValueError:
+                message = None
+
+            # http://docs.couchdb.org/en/stable/api/basics.html?#http-status-codes
+            if r.status_code in exceptions:
+                ex = exceptions[r.status_code]
+                raise ex(message, r)
+            raise CouchDBError(message, r)
+
+        return r
 
     @staticmethod
     def _special_params(params):
         """Handle special CouchDB query arguments."""
 
-        meta = {'method': 'GET'}
+        method, meta = 'GET', {}
 
         if params:
             params = params.copy()  # mutable!
@@ -526,18 +476,17 @@ class CouchDB(object):
             # string limits.
             # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
             if 'keys' in params:
-                meta['method'] = 'POST'
-                meta['json'] = {'keys': params['keys']}
+                method = 'POST'
+                meta['json'] = {'keys': params['keys']}  # hijack
                 params.pop('keys', None)
 
             # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
             for i in ('start_key', 'startkey', 'end_key', 'endkey', 'key'):
                 if i in params:
                     params[i] = dumps(params[i])
-
             meta['params'] = params
 
-        return meta
+        return method, meta
 
 
 class CouchDBError(Exception):

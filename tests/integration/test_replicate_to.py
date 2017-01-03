@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pytest
-
-from time2relax import CouchDB, ServerError
+from time2relax import CouchDB
 
 
 def test_replicate_to(db):
@@ -10,18 +8,10 @@ def test_replicate_to(db):
     db.insert({'test': 'somestuff'})
     db.insert({'test': 'somestuff'})
 
-    db2 = CouchDB(db.host + '/testdb2')
+    db2 = CouchDB(db.host + '/dbtest')
+    db2.request('HEAD')  # setup db
 
-    with pytest.raises(ServerError) as ex:
-        db.replicate_to(db2.url)
-
-    message = ex.value.response.json()
-    assert message['error'] == 'db_not_found'
-    assert message['reason'] == 'could not open {0}/'.format(db2.url)
-
-    db2.request('HEAD', db2.url)  # setup db
     db.replicate_to(db2.url)
-
     r = db2.info()
     db2.destroy()
 
@@ -30,8 +20,9 @@ def test_replicate_to(db):
 
 
 def test_replicate_to_kwargs(db):
-    db2 = CouchDB(db.host + '/testdb2')
-    db2.request('HEAD', db2.url)  # setup db
+    db.request('HEAD')  # setup db
+    db2 = CouchDB(db.host + '/dbtest')
+    db2.request('HEAD')  # setup db
 
     r = db.replicate_to(db2.url, json={}, headers={'X-Assert': 'true'})
     db2.destroy()

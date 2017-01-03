@@ -10,7 +10,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 setup_requires = ['pytest-runner']
-test_requirements = ['pytest']
+test_requirements = ['pytest', 'responses']
 requirements = ['requests', 'six']
 
 setup(

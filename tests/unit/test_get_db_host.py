@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from time2relax import CouchDB
 
-
-def test_get_db_host():
+def test_get_db_host(db):
     url = 'http://foobar.com:5984/testdb'
-    assert CouchDB._get_db_host(url) == 'http://foobar.com:5984'
+    assert db._get_db_host(url) == 'http://foobar.com:5984'
 
 
-def test_get_db_host_complex():
+def test_get_db_host_complex(db):
     url = 'http://user:pass@foo.com/baz/bar/index.html?hey=yo'
-    assert CouchDB._get_db_host(url) == 'http://user:pass@foo.com'
+    assert db._get_db_host(url) == 'http://user:pass@foo.com'
