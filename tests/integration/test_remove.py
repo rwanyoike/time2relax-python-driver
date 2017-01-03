@@ -17,7 +17,7 @@ def test_remove(db):
     result = r.json()
     assert 'ok' in result
 
-    message = ex.value.response.json()
+    message = ex.value.args[1].json()
     assert message['error'] == 'not_found'
     assert message['reason'] == 'deleted'
 

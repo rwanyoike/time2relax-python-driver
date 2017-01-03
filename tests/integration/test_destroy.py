@@ -19,5 +19,5 @@ def test_destroy_kwargs(db):
     with pytest.raises(ResourceNotFound) as ex:
         db.destroy(headers={'X-Assert': 'true'})
 
-    r = ex.value.response
+    r = ex.value.args[1]
     assert 'X-Assert' in r.request.headers

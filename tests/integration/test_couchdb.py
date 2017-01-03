@@ -11,7 +11,7 @@ def test_couchdb_skip_setup(db):
     with pytest.raises(ResourceNotFound) as ex:
         db.info()
 
-    message = ex.value.response.json()
+    message = ex.value.args[1].json()
     assert message['error'] == 'not_found'
     assert message['reason'] == 'no_db_file'
 

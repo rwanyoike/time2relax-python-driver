@@ -18,10 +18,10 @@ def test_get(db):
     with pytest.raises(ResourceNotFound) as ex:
         db.get(result['id'] + 'asdf')
 
-    r = ex.value.response
+    r = ex.value.args[1]
     assert r.status_code == 404
 
-    message = ex.value.response.json()
+    message = ex.value.args[1].json()
     assert message['reason'] == 'missing'
     assert message['error'] == 'not_found'
 
@@ -67,7 +67,7 @@ def test_get_params_rev(db):
     with pytest.raises(ResourceNotFound) as ex:
         db.get(result['id'], {'rev': '1-nonexistent-rev'})
 
-    message = ex.value.response.json()
+    message = ex.value.args[1].json()
     assert message['error'] == 'not_found'
     assert message['reason'] == 'missing'
 
@@ -106,7 +106,7 @@ def test_get_kwargs(db):
     with pytest.raises(ResourceNotFound) as ex:
         db.get('null', headers={'X-Assert': 'true'})
 
-    r = ex.value.response
+    r = ex.value.args[1]
     assert 'X-Assert' in r.request.headers
 
 
