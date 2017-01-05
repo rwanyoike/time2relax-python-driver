@@ -344,7 +344,7 @@ class CouchDB(object):
         """
 
         if self._destroyed:
-            raise CouchDBError('Database is destroyed :(')
+            raise CouchDBError('Database is destroyed')
 
         url = urljoin(self.url, path)
 
@@ -467,7 +467,8 @@ class CouchDB(object):
     def _special_params(params):
         """Handle special CouchDB query arguments."""
 
-        method, meta = 'GET', {}
+        method = 'GET'
+        meta = {}
 
         if params:
             params = params.copy()  # mutable!
