@@ -1,5 +1,3 @@
-# This file will be regenerated if you run travis_pypi_setup.py
-
 language: python
 python: 3.5
 
@@ -18,6 +16,9 @@ env:
 install: pip install -U tox
 
 script: tox
+
+notifications:
+  email: false
 
 # After you create the Github repo and add it to Travis, run the
 # travis_pypi_setup.py script to finish PyPI deployment setup
