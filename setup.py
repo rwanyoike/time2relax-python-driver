@@ -10,8 +10,16 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 setup_requires = ['pytest-runner']
-test_requirements = ['pytest', 'responses']
-requirements = ['requests', 'six']
+
+requirements = [
+    'requests',
+    'six',
+]
+
+test_requirements = [
+    'pytest',
+    'responses',
+]
 
 setup(
     name='time2relax',
@@ -21,8 +29,12 @@ setup(
     author='Raymond Wanyoike',
     author_email='raymond.wanyoike@gmail.com',
     url='https://github.com/rwanyoike/time2relax',
-    packages=['time2relax'],
-    package_dir={'time2relax': 'time2relax'},
+    packages=[
+        'time2relax',
+    ],
+    package_dir={
+        'time2relax': 'time2relax',
+    },
     include_package_data=True,
     setup_requires=setup_requires,
     install_requires=requirements,

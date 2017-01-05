@@ -1,19 +1,12 @@
-# Byte-compiled / optimized
-__pycache__/
-*.py[cod]
 *$py.class
-
-# Distribution / packaging
+*.egg-info/
+*.py[cod]
+.cache
+.coverage
+.eggs/
+.tox/
+__pycache__/
 build/
 dist/
-.eggs/
-*.egg-info/
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.cache
-
-# Sphinx documentation
 docs/_build/
+htmlcov/
