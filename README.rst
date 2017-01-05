@@ -1,21 +1,21 @@
 time2relax - Python CouchDB driver
 ==================================
 
-.. image:: https://img.shields.io/pypi/v/time2relax.svg
-        :target: https://pypi.python.org/pypi/time2relax
-.. image:: https://img.shields.io/travis/rwanyoike/time2relax.svg
-        :target: https://travis-ci.org/rwanyoike/time2relax
-.. image:: https://img.shields.io/codecov/c/gh/rwanyoike/time2relax.svg
-        :target: https://codecov.io/gh/rwanyoike/time2relax
-.. image:: https://readthedocs.org/projects/time2relax/badge/?version=latest
-        :target: https://readthedocs.org/projects/time2relax/?badge=latest
-        :alt: Documentation Status
+|PyPI version| |Build status| |Coverage status| |Documentation status|
 
 A `CouchDB`_ driver for Python.
 
 * Documentation: https://time2relax.readthedocs.org.
 * Free software: MIT license
 
+.. |PyPI version| image:: https://img.shields.io/pypi/v/time2relax.svg
+   :target: https://pypi.python.org/pypi/time2relax
+.. |Build status| image:: https://img.shields.io/travis/rwanyoike/time2relax.svg
+   :target: https://travis-ci.org/rwanyoike/time2relax
+.. |Coverage status| image:: https://img.shields.io/codecov/c/gh/rwanyoike/time2relax.svg
+   :target: https://codecov.io/gh/rwanyoike/time2relax
+.. |Documentation status| image:: https://readthedocs.org/projects/time2relax/badge/?version=latest
+   :target: https://readthedocs.org/projects/time2relax/?badge=latest
 .. _CouchDB: http://couchdb.com/
 
 Features
