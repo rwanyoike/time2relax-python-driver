@@ -15,8 +15,8 @@ Where ``**kwargs`` are optional arguments that :class:`requests.Request` takes.
 Create a database
 -----------------
 
-Initially ``CouchDB`` checks if the database exists, and tries to create it if
-it does not exist yet. You can use ``skip_setup`` to skip this setup::
+Initially the ``CouchDB`` object will check if the database exists, and try to
+create it if it does not. You can use ``skip_setup=True`` to skip this setup::
 
     >>> db = CouchDB('http://localhost:5984/dbname', skip_setup=True)
 
@@ -28,36 +28,48 @@ Delete the database::
     >>> db.destroy()
     <Response [200]>
 
+Further requests with the ``CouchDB`` object will raise a
+:class:`time2relax.CouchDBError`::
+
+    >>> db.info()
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "time2relax/__init__.py", line 243, in info
+        return self.request('GET', **kwargs)
+      File "time2relax/__init__.py", line 371, in request
+        raise CouchDBError('Database is destroyed')
+    time2relax.CouchDBError: Database is destroyed
+
 Create/update a document
 ------------------------
 
-Create a new document or update an existing document. If the document already
-exists, you must specify its revision ``_rev``, otherwise a conflict will
-occur::
+Note: There are some `restrictions on valid property names`_ of the documents.
+
+Create a new document::
 
     >>> db.insert({'_id': 'docid', 'title': 'Heros'})
     <Response [201]>
 
-Create a new document and let CouchDB auto-generate an ``_id`` for it::
+To create a new document and let CouchDB auto-generate an ``_id`` for it::
 
     >>> db.insert({'title': 'Ziggy Stardust'})
     <Response [201]>
 
-You can update an existing doc using ``_rev``::
+If the document already exists, you must specify its revision ``_rev``,
+otherwise a conflict will occur. You can update an existing document using
+``_rev``::
 
     >>> r = db.get('docid')
     >>> result = r.json()
-    >>> db.insert({'_id': 'docid', '_rev': result['_rev'], 'title': 'Dance'})
+    >>> db.insert({'_id': result['_id'], '_rev': result['_rev'], 'title': 'Dance'})
     <Response [201]>
-
-There are some `restrictions on valid property names`_ of the documents.
 
 .. _restrictions on valid property names: http://wiki.apache.org/couchdb/HTTP_Document_API#Special_Fields
 
 Fetch a document
 ----------------
 
-Retrieves a document, specified by ``_id``::
+Retrieve a document::
 
     >>> db.get('docid')
     <Response [200]>
@@ -65,15 +77,16 @@ Retrieves a document, specified by ``_id``::
 Delete a document
 -----------------
 
-Deletes a document::
+You must supply the ``_rev`` of the existing document.
+
+Delete a document::
 
     >>> r = db.get('docid')
     >>> result = r.json()
     >>> db.remove(result['_id'], result['_rev'])
     <Response [200]>
 
-You can also delete a document by using
-:meth:`CouchDB.insert() <time2relax.CouchDB.insert>` with
+You can also delete a document by using :meth:`time2relax.CouchDB.insert` with
 ``{'_deleted': True}``::
 
     >>> r = db.get('docid')
@@ -85,7 +98,7 @@ You can also delete a document by using
 Create/update a batch of documents
 ----------------------------------
 
-Create, update or delete multiple documents::
+Create multiple documents::
 
     >>> db.bulk_docs([
     ...     {'_id': 'doc1', 'title': 'Lisa Says'},
@@ -144,7 +157,7 @@ Finally, to delete a document, include a ``_deleted`` parameter with the value
 Fetch a batch of documents
 --------------------------
 
-Fetch multiple documents, indexed and sorted by the ``_id``::
+Fetch multiple documents::
 
     >>> params = {'include_docs': True, 'attachments': True}
     >>> db.all_docs(params=params)
@@ -167,24 +180,27 @@ start with ``'foo'``" – by using the special high Unicode character
 Replicate a database
 --------------------
 
-Replicate the database to a target. The target has to exist, add
-``json={'create_target': True}`` to create it prior to replication::
+Replicate the database to a target::
 
-    >>> db.replicate_to('http://localhost:5984/other')
+    >>> db.replicate_to('http://localhost:5984/otherdb')
     <Response [200]>
+
+The target has to exist, add ``json={'create_target': True}`` to create it
+prior to replication.
 
 Save an attachment
 ------------------
 
-Attaches a binary object to a document.
-
 This method will update an existing document to add the attachment, so it
-requires a ``rev`` if the document already exists. If the document doesn't
+requires a ``_rev`` if the document already exists. If the document doesn't
 already exist, then this method will create an empty document containing the
-attachment::
+attachment.
 
-    >>> attachment = open('/tmp/att.txt')
-    >>> db.insert_att('docid', None, 'att.txt', attachment, 'text/plain')
+Attach a binary object::
+
+    >>> with open('/tmp/att.txt') as att:
+    ...     db.insert_att('docid', None, 'att.txt', att, 'text/plain')
+    ...
     <Response [201]>
 
 Get an attachment
@@ -198,18 +214,19 @@ Get attachment data::
 Delete an attachment
 --------------------
 
-Delete an attachment from a doc. You must supply the ``rev`` of the existing
-doc::
+You must supply the ``_rev`` of the existing document.
+
+Delete an attachment::
 
     >>> r = db.get('docid')
     >>> result = r.json()
-    >>> db.remove_att('docid', result['_rev'], 'att.txt')
+    >>> db.remove_att(result['_id'], result['_rev'], 'att.txt')
     <Response [200]>
 
 Get database information
 ------------------------
 
-Get information about a database::
+Get information about the database::
 
     >>> db.info()
     <Response [200]>
@@ -217,9 +234,11 @@ Get information about a database::
 Compact the database
 --------------------
 
-Triggers a compaction operation in the database. This reduces the database's
-size by removing unused and old data, namely non-leaf revisions and attachments
-that are no longer referenced by those revisions::
+This reduces the database's size by removing unused and old data, namely
+non-leaf revisions and attachments that are no longer referenced by those
+revisions.
+
+Trigger a compaction operation::
 
     >>> db.compact()
     <Response [202]>
@@ -227,8 +246,8 @@ that are no longer referenced by those revisions::
 Run a list function
 -------------------
 
-First, make sure you understand how list functions work in CouchDB. A good
-start is `the CouchDB guide entry on lists`_::
+Make sure you understand how list functions work in CouchDB. A good start is
+`the CouchDB guide entry on lists`_::
 
     >>> db.insert({
     ...     '_id': '_design/testid',
@@ -254,8 +273,8 @@ start is `the CouchDB guide entry on lists`_::
 Run a show function
 -------------------
 
-First, make sure you understand how show functions work in CouchDB. A good
-start is `the CouchDB guide entry on shows`_::
+Make sure you understand how show functions work in CouchDB. A good start is
+`the CouchDB guide entry on shows`_::
 
     >>> db.insert({
     ...     '_id': '_design/testid',
@@ -274,8 +293,8 @@ start is `the CouchDB guide entry on shows`_::
 Run a view function
 -------------------
 
-First, make sure you understand how view functions work in CouchDB. A good
-start is `the CouchDB guide entry on views`_::
+Make sure you understand how view functions work in CouchDB. A good start is
+`the CouchDB guide entry on views`_::
 
     >>> db.insert({
     ...     '_id': '_design/testid',
@@ -289,7 +308,7 @@ start is `the CouchDB guide entry on views`_::
     ... })
     <Response [201]>
     >>> params = {'reduce': False, 'key': 'key2'}
-    >>> db.ddoc_view('testid', 'viewid', params)
+    >>> db.ddoc_view('testid', 'viewid', params=params)
     <Response [200]>
 
 .. _the CouchDB guide entry on views: http://guide.couchdb.org/draft/views.html
