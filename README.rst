@@ -26,7 +26,7 @@ Features
 * Transparent URL and parameter encoding.
 * Exceptions are modelled from CouchDB errors.
 * Python 2.6–2.7 & 3.3–3.5 support.
-* Tested with CouchDB 1.6.x (2.0 pending)
+* Tested with CouchDB 1.6.x (2.0?).
 
 Inspired by `pouchdb`_ and `nano`_ APIs.
 
