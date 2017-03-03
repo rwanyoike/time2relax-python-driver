@@ -1,12 +1,12 @@
 History
 =======
 
-0.3.0 (2017-xx-xx)
+0.3.0 (2017-03-03)
 ------------------
 
 * Thin python-requests wrapper.
 * New driver API.
-* Add design document functions.
+* Add design document functions; list, show, view.
 
 0.2.0 (2016-12-10)
 ------------------

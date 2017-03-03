@@ -12,7 +12,7 @@ from requests import Session
 from requests.compat import quote, urlparse, urlunparse
 from six import iteritems
 
-__version__ = '0.3.0'
+__version__ = '0.2.0'
 
 _LIST = '_list'
 _SHOW = '_show'
