@@ -1,4 +1,4 @@
 [run]
-branch = True
+branch = true
 source = time2relax
 omit = tests/*
