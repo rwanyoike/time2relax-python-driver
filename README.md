@@ -9,13 +9,13 @@
 
 > A CouchDB driver for Python.
 
-**time2relax** is a Python [CouchDB](http://couchdb.com/) driver powered by [Requests](https://github.com/kennethreitz/requests#feature-support). It tries to offer a tiny level of abstraction between you, Requests, and CouchDB.
+**time2relax** is a Python [CouchDB](http://couchdb.com/) driver that tries to offer a minimal level of abstraction between you and CouchDB.
 
 Inspired by [pouchdb](https://github.com/pouchdb/pouchdb) and [nano](https://github.com/dscape/nano) APIs, it features:
 
-- Requests (HTTP for Humans) under the hood
-- Transparent URL and parameter encoding
-- Exceptions modeled from CouchDB errors
+* [Requests](https://github.com/kennethreitz/requests#feature-support) (HTTP for Humans) under the hood
+* Transparent URL and [parameter encoding](https://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)
+* Exceptions modeled from [CouchDB errors](http://docs.couchdb.org/en/1.6.1/api/basics.html#http-status-codes)
 
 **time2relax** officially supports Python 2.6–2.7 & 3.3–3.5, and works on PyPy.
 
@@ -23,27 +23,27 @@ Tested on CouchDB 1.6.x.
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [time2relax.CouchDB(url, skip_setup=False)](#time2relaxcouchdburl-skipsetupfalse)
-    - [db.destroy(**kwargs)](#dbdestroykwargs)
-    - [db.insert(doc, **kwargs)](#dbinsertdoc-kwargs)
-    - [db.get(doc_id, params=None, **kwargs)](#dbgetdocid-paramsnone-kwargs)
-    - [db.remove(doc_id, doc_rev, **kwargs)](#dbremovedocid-docrev-kwargs)
-    - [db.bulk_docs(docs, json=None, **kwargs)](#dbbulkdocsdocs-jsonnone-kwargs)
-    - [db.all_docs(params=None, **kwargs)](#dballdocsparamsnone-kwargs))
-    - [db.replicate_to(target, json=None, **kwargs)](#dbreplicatetotarget-jsonnone-kwargs)
-    - [db.insert_att(doc_id, doc_rev, att_id, att, att_type, **kwargs)](#dbinsertattdocid-docrev-attid-att-atttype-kwargs)
-    - [db.get_att(doc_id, att_id, **kwargs)](#dbgetattdocid-attid-kwargs)
-    - [db.remove_att(doc_id, doc_rev, att_id, **kwargs)](#dbremoveattdocid-docrev-attid-kwargs)
-    - [db.info(**kwargs)](#dbinfokwargs)
-    - [db.compact(**kwargs)](#dbcompactkwargs)
-    - [db.ddoc_list(ddoc_id, func_id, view_id, other_id=None, **kwargs)](#dbddoclistddocid-funcid-viewid-otheridnone-kwargs)
-    - [db.ddoc_show(ddoc_id, func_id, doc_id=None, **kwargs)](#dbddocshowddocid-funcid-docidnone-kwargs)
-    - [db.ddoc_view(ddoc_id, func_id, params=None, **kwargs)](#dbddocviewddocid-funcid-paramsnone-kwargs)
-- [Maintainers](#maintainers)
-- [Contribute](#contribute)
-- [License](#license)
+* [Installation](#installation)
+* [Usage](#usage)
+  * [time2relax.CouchDB(url, skip_setup=False)](#time2relaxcouchdburl-skip_setupfalse)
+    * [db.destroy(**kwargs)](#dbdestroykwargs)
+    * [db.insert(doc, **kwargs)](#dbinsertdoc-kwargs)
+    * [db.get(doc_id, params=None, **kwargs)](#dbgetdoc_id-paramsnone-kwargs)
+    * [db.remove(doc_id, doc_rev, **kwargs)](#dbremovedoc_id-doc_rev-kwargs)
+    * [db.bulk_docs(docs, json=None, **kwargs)](#dbbulk_docsdocs-jsonnone-kwargs)
+    * [db.all_docs(params=None, **kwargs)](#dball_docsparamsnone-kwargs)
+    * [db.replicate_to(target, json=None, **kwargs)](#dbreplicate_totarget-jsonnone-kwargs)
+    * [db.insert_att(doc_id, doc_rev, att_id, att, att_type, **kwargs)](#dbinsert_attdoc_id-doc_rev-att_id-att-att_type-kwargs)
+    * [db.get_att(doc_id, att_id, **kwargs)](#dbget_attdoc_id-att_id-kwargs)
+    * [db.remove_att(doc_id, doc_rev, att_id, **kwargs)](#dbremove_attdoc_id-doc_rev-att_id-kwargs)
+    * [db.info(**kwargs)](#dbinfokwargs)
+    * [db.compact(**kwargs)](#dbcompactkwargs)
+    * [db.ddoc_list(ddoc_id, func_id, view_id, other_id=None, **kwargs)](#dbddoc_listddoc_id-func_id-view_id-other_idnone-kwargs)
+    * [db.ddoc_show(ddoc_id, func_id, doc_id=None, **kwargs)](#dbddoc_showddoc_id-func_id-doc_idnone-kwargs)
+    * [db.ddoc_view(ddoc_id, func_id, params=None, **kwargs)](#dbddoc_viewddoc_id-func_id-paramsnone-kwargs)
+* [Maintainers](#maintainers)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## Installation
 
@@ -73,7 +73,7 @@ Most of the API is exposed as:
 >>> db.function(*args, **kwargs)
 ```
 
-Where `**kwargs` are optional arguments that `requests.Request` can take.
+Where `**kwargs` are optional arguments that [`requests.Request`](https://requests.readthedocs.io/en/latest/api/#requests.Request) can take.
 
 Initially **time2relax** will check if the database exists, or try to create it. `skip_setup=True` disables this behavior:
 
@@ -176,7 +176,7 @@ Delete an attachment:
 <Response [200]>
 ```
 
-#### db.info(**kwargs):
+#### db.info(**kwargs)
 
 Get information about the database:
 
@@ -185,7 +185,7 @@ Get information about the database:
 <Response [200]>
 ```
 
-#### db.compact(**kwargs):
+#### db.compact(**kwargs)
 
 Trigger a compaction operation:
 
