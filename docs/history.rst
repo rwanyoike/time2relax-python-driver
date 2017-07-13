@@ -1,6 +1,8 @@
 History
 =======
 
+* Python 2.6 is no longer supported by the Python core team.
+
 0.3.0 (2017-03-03)
 ------------------
 

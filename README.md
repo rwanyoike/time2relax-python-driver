@@ -17,7 +17,7 @@ Inspired by [pouchdb](https://github.com/pouchdb/pouchdb) and [nano](https://git
 * Transparent URL and [parameter encoding](https://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options)
 * Exceptions modeled from [CouchDB errors](http://docs.couchdb.org/en/1.6.1/api/basics.html#http-status-codes)
 
-**time2relax** officially supports Python 2.6–2.7 & 3.3–3.5, and works on PyPy.
+**time2relax** officially supports Python 2.7 & 3.3–3.5, and works on PyPy.
 
 Tested on CouchDB 1.6.x.
 
