@@ -25,7 +25,7 @@ Features
 * Only a minimum level of abstraction between you and CouchDB.
 * Transparent URL and parameter encoding.
 * Exceptions are modelled from CouchDB errors.
-* Python 2.6–2.7 & 3.3–3.5 support.
+* Python 2.7 & 3.3–3.5 support.
 * Tested with CouchDB 1.6.x (2.0?).
 
 .. _python-requests: http://requests.readthedocs.io/en/latest/#supported-features
