@@ -22,13 +22,10 @@ def test_request(db):
         999: time2relax.CouchDBError,
     }
 
-    rm = RequestsMock()
-    rm.start()
-
-    for i in exceptions:
-        rm.add('GET', db.url, status=i)
-        with pytest.raises(exceptions[i]):
-            db._request('GET', db.url)
-
-    rm.stop()
-    rm.reset()
+    with RequestsMock() as rm:
+        # BUG: Mismatch if rm.add() and db._request() are in the same loop
+        for i in exceptions:
+            rm.add('GET', db.url, status=i)
+        for i in exceptions:
+            with pytest.raises(exceptions[i]):
+                db._request('GET', db.url)
