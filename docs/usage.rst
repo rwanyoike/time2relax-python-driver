@@ -16,9 +16,9 @@ Create a database
 -----------------
 
 Initially the ``CouchDB`` object will check if the database exists, and try to
-create it if it does not. You can use ``skip_setup=True`` to skip this setup::
+create it if it does not. You can use ``create_database=False`` to skip this setup::
 
-    >>> db = CouchDB('http://localhost:5984/dbname', skip_setup=True)
+    >>> db = CouchDB('http://localhost:5984/dbname', create_database=False)
 
 Delete a database
 -----------------

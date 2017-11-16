@@ -5,8 +5,8 @@ import pytest
 from time2relax import CouchDB, ResourceNotFound
 
 
-def test_couchdb_skip_setup(db):
-    db = CouchDB(db.url, skip_setup=True)
+def test_couchdb_create_database(db):
+    db = CouchDB(db.url, create_database=False)
 
     with pytest.raises(ResourceNotFound) as ex:
         db.info()

@@ -2,6 +2,7 @@ History
 =======
 
 * Python 2.6 is no longer supported by the Python core team.
+* Changed CouchDB(skip_setup=False) to CouchDB(create_database=True)
 
 0.3.0 (2017-03-03)
 ------------------
