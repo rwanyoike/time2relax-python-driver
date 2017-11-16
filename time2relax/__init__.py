@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+__author__ = """Raymond Wanyoike"""
+__email__ = 'raymond.wanyoike@gmail.com'
+__version__ = '0.3.0'
+
 #             __
 # _|_ o __  _  _) __ _  |  _
 #  |_ | |||(/_/__ | (/_ | (_|><
@@ -11,8 +15,6 @@ from posixpath import join as urljoin
 from requests import Session
 from requests.compat import quote, urlparse, urlunparse
 from six import iteritems
-
-__version__ = '0.3.0'
 
 _LIST = '_list'
 _SHOW = '_show'
