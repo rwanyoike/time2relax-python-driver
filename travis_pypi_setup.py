@@ -17,7 +17,7 @@ from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 try:
     from urllib import urlopen
-except:
+except ImportError:
     from urllib.request import urlopen
 
 GITHUB_REPO = 'rwanyoike/time2relax'
@@ -26,8 +26,9 @@ TRAVIS_CONFIG_FILE = os.path.join(
 
 
 def load_key(pubkey):
-    """Load public RSA key, with work-around for keys using incorrect
-    header/footer format.
+    """Load public RSA key.
+
+    Work around keys with incorrect header/footer format.
 
     Read more about RSA encryption with cryptography:
     https://cryptography.io/latest/hazmat/primitives/asymmetric/rsa/
@@ -81,18 +82,21 @@ def prepend_line(filepath, line):
 
 
 def load_yaml_config(filepath):
+    """Load yaml config file at the given path."""
+
     with open(filepath) as f:
         return yaml.load(f)
 
 
 def save_yaml_config(filepath, config):
+    """Save yaml config file at the given path."""
+
     with open(filepath, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
 
 
 def update_travis_deploy_password(encrypted_password):
-    """Update the deploy section of the .travis.yml file to use the given
-    encrypted password."""
+    """Put `encrypted_password` into the deploy section of .travis.yml."""
 
     config = load_yaml_config(TRAVIS_CONFIG_FILE)
     config['deploy']['password'] = dict(secure=encrypted_password)
@@ -103,6 +107,13 @@ def update_travis_deploy_password(encrypted_password):
 
 
 def main(args):
+    """Add a PyPI password to .travis.yml so that Travis can deploy to PyPI.
+
+    Fetch the Travis public key for the repo, and encrypt the PyPI password
+    with it before adding, so that only Travis can decrypt and use the PyPI
+    password.
+    """
+
     public_key = fetch_public_key(args.repo)
     password = args.password or getpass('PyPI password: ')
     update_travis_deploy_password(encrypt(public_key, password.encode()))
