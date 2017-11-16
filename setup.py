@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('docs/readme.rst') as readme_file:
     readme = readme_file.read()
@@ -9,11 +9,13 @@ with open('docs/readme.rst') as readme_file:
 with open('docs/history.rst') as history_file:
     history = history_file.read()
 
-setup_requires = ['pytest-runner']
-
 requirements = [
     'requests',
     'six',
+]
+
+setup_requirements = [
+    'pytest-runner',
 ]
 
 test_requirements = [
@@ -29,14 +31,8 @@ setup(
     author='Raymond Wanyoike',
     author_email='raymond.wanyoike@gmail.com',
     url='https://github.com/rwanyoike/time2relax',
-    packages=[
-        'time2relax',
-    ],
-    package_dir={
-        'time2relax': 'time2relax',
-    },
+    packages=find_packages(include=['time2relax']),
     include_package_data=True,
-    setup_requires=setup_requires,
     install_requires=requirements,
     license='MIT',
     zip_safe=False,
@@ -54,4 +50,5 @@ setup(
     ],
     test_suite='tests',
     tests_require=test_requirements,
+    setup_requires=setup_requirements,
 )
