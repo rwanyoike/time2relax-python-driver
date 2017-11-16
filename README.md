@@ -25,7 +25,7 @@ Tested on CouchDB 1.6.x.
 
 * [Installation](#installation)
 * [Usage](#usage)
-  * [time2relax.CouchDB(url, skip_setup=False)](#time2relaxcouchdburl-skip_setupfalse)
+  * [time2relax.CouchDB(url, create_database=True)](#time2relaxcouchdburl-create_databasetrue)
     * [db.destroy(**kwargs)](#dbdestroykwargs)
     * [db.insert(doc, **kwargs)](#dbinsertdoc-kwargs)
     * [db.get(doc_id, params=None, **kwargs)](#dbgetdoc_id-paramsnone-kwargs)
@@ -58,7 +58,7 @@ $ pip install -U time2relax
 
 Detailed documentation is available at [https://time2relax.readthedocs.org](https://time2relax.readthedocs.org).
 
-### time2relax.CouchDB(url, skip_setup=False)
+### time2relax.CouchDB(url, create_database=True)
 
 To use **time2relax**, you need to connect it to a CouchDB instance:
 
@@ -75,10 +75,10 @@ Most of the API is exposed as:
 
 Where `**kwargs` are optional arguments that [`requests.Request`](https://requests.readthedocs.io/en/latest/api/#requests.Request) can take.
 
-Initially **time2relax** will check if the database exists, or try to create it. `skip_setup=True` disables this behavior:
+Initially **time2relax** will check if the database exists, or try to create it. `create_database=False` disables this behavior:
 
 ```python
->>> db = CouchDB('http://localhost:5984/dbname', skip_setup=True)
+>>> db = CouchDB('http://localhost:5984/dbname', create_database=False)
 ```
 
 #### db.destroy(**kwargs)

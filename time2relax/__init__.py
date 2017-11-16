@@ -27,17 +27,17 @@ class CouchDB(object):
     _destroyed = False
     _setup = False
 
-    def __init__(self, url, skip_setup=False):
+    def __init__(self, url, create_database=True):
         """Initialize the database object.
 
         :param url: Database URL to use.
-        :param skip_setup: Don't setup the database.
+        :param create_database: Setup the database.
         """
 
         self.host = self._get_db_host(url)
         self.name = self._get_db_name(url)
         self.url = urljoin(self.host, self.name)
-        self.skip_setup = skip_setup
+        self.create_database = create_database
 
         self.session = Session()
         # http://docs.couchdb.org/en/stable/api/basics.html#request-headers
@@ -164,7 +164,7 @@ class CouchDB(object):
         """
 
         # Don't setup the database
-        r = self.request('DELETE', skip_setup=True, **kwargs)
+        r = self.request('DELETE', create_database=False, **kwargs)
         # Prevent further requests to the database
         self._destroyed = True
 
@@ -334,12 +334,12 @@ class CouchDB(object):
 
         return self._request('POST', url, **kwargs)
 
-    def request(self, method, path='', skip_setup=False, **kwargs):
+    def request(self, method, path='', create_database=True, **kwargs):
         """Construct a :class:`requests.Request` object and send it.
 
         :param method: Method for the new :class:`requests.Request` object.
         :param path: Path to add to the :class:`requests.Request` URL.
-        :param skip_setup: Don't setup the database.
+        :param create_database: Setup the database.
         :param kwargs: (optional) Arguments that :class:`requests.Request`
             takes.
         :rtype: requests.Response
@@ -351,7 +351,7 @@ class CouchDB(object):
         url = urljoin(self.url, path)
 
         # Check if the database exists or create it
-        if not skip_setup and not self.skip_setup:
+        if create_database and self.create_database:
             if not self._setup:
                 try:
                     self._request('HEAD', self.url)
