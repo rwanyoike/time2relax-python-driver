@@ -1,40 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
-with open('docs/readme.rst') as readme_file:
-    readme = readme_file.read()
-
-with open('docs/history.rst') as history_file:
-    history = history_file.read()
+about = {}
+with open('time2relax/__version__.py') as fp:
+    exec(fp.read(), about)
+with open('docs/readme.rst') as fp:
+    readme = fp.read()
+with open('docs/history.rst') as fp:
+    history = fp.read()
 
 requirements = [
     'requests',
     'six',
 ]
-
 setup_requirements = [
     'pytest-runner',
 ]
-
 test_requirements = [
     'pytest',
     'responses',
 ]
 
 setup(
-    name='time2relax',
-    version='0.3.0',
-    description='A CouchDB driver for Python.',
+    name=about['__title__'],
+    version=about['__version__'],
+    description=about['__description__'],
     long_description=readme + '\n\n' + history,
-    author='Raymond Wanyoike',
-    author_email='raymond.wanyoike@gmail.com',
-    url='https://github.com/rwanyoike/time2relax',
-    packages=find_packages(include=['time2relax']),
+    author=about['__author__'],
+    author_email=about['__author_email__'],
+    url=about['__url__'],
+    packages=['time2relax'],
     include_package_data=True,
     install_requires=requirements,
-    license='MIT',
+    license=about['__license__'],
     zip_safe=False,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -50,7 +50,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: PyPy',
     ],
+    setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    setup_requires=setup_requirements,
 )

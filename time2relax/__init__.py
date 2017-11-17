@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-__author__ = """Raymond Wanyoike"""
-__email__ = 'raymond.wanyoike@gmail.com'
-__version__ = '0.3.0'
-
 #             __
 # _|_ o __  _  _) __ _  |  _
 #  |_ | |||(/_/__ | (/_ | (_|><
 #
+
+from .__version__ import (  # noqa: F401
+    __title__, __description__, __url__, __version__, __author__,
+    __author_email__, __license__, __copyright__, __relax__)
 
 from json import dumps
 from posixpath import join as urljoin
