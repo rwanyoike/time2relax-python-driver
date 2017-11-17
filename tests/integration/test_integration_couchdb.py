@@ -17,6 +17,6 @@ def test_couchdb_create_database(db):
 
 
 def test_couchdb_setup(db):
-    assert db._setup is False
+    assert db._created is False
     db.info()
-    assert db._setup is True
+    assert db._created is True

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from requests.exceptions import ConnectionError
+from requests import ConnectionError
 
 
 def test_bulk_docs(db):
