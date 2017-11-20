@@ -12,16 +12,10 @@ time2relax: Python CouchDB Driver
 time2relax is a Python CouchDB driver that tries to offer a minimal level of
 abstraction between you and CouchDB. Basic insert usage::
 
-    >>> import time2relax
-    >>> db = time2relax.CouchDB('http://localhost:5984/testdb')
-    >>> r = db.insert({'title': 'Ziggy Stardust'})
-    >>> r.status_code
-    201
-    >>> r.json()['ok']
-    True
-
-:copyright: \(c\) Raymond Wanyoike.
-:license: MIT, see LICENSE for more details.
+    >>> from time2relax import CouchDB
+    >>> db = CouchDB('http://localhost:5984/dbname')
+    >>> db.insert({'title': 'Ziggy Stardust'})
+    <Response [201]>
 """
 
 from .__version__ import (  # noqa: F401
