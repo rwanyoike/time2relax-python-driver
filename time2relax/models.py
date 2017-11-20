@@ -32,7 +32,7 @@ class CouchDB(object):
     Provides URL-parameter encoding, modeled Exceptions, a Requests session,
     and database initialization.
 
-    Basic usage::
+    Example::
 
         >>> import time2relax
         >>> db = time2relax.CouchDB('http://localhost:5984/testdb')
@@ -43,8 +43,8 @@ class CouchDB(object):
     def __init__(self, url, create_database=True):
         """Initialize the database object.
 
-        :param url: Database URL.
-        :param create_database: (optional) Set to True by default.
+        :param str url: Database URL.
+        :param bool create_db: (optional) Create the database.
         """
 
         # Database created, destroyed
@@ -62,9 +62,9 @@ class CouchDB(object):
         #: Handle database initialization
         self.create_database = create_database
 
-        #: Default requests.Session
+        #: Default :class:`requests.Session`
         self.session = Session()
-        #: http://docs.couchdb.org/en/stable/api/basics.html#request-headers
+        # http://docs.couchdb.org/en/stable/api/basics.html#request-headers
         self.session.headers['Accept'] = 'application/json'
 
     def __repr__(self):
@@ -75,10 +75,8 @@ class CouchDB(object):
     def all_docs(self, params=None, **kwargs):
         """Fetch multiple documents.
 
-        :param params: (optional) Dictionary of URL parameters to append to the
-            URL.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param params: (optional) Parameters to append to the URL.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -91,11 +89,9 @@ class CouchDB(object):
     def bulk_docs(self, docs, json=None, **kwargs):
         """Create, update or delete multiple documents.
 
-        :param docs: Sequence of document objects to be sent.
-        :param json: (optional) JSON to send in the body of the
-            :class:`requests.Request`.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param list docs: Sequence of document objects to be sent.
+        :param dict json: (optional) JSON to send in the body of the :class:`requests.Request`.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -108,8 +104,7 @@ class CouchDB(object):
     def compact(self, **kwargs):
         """Trigger a compaction operation.
 
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -122,13 +117,11 @@ class CouchDB(object):
     def ddoc_list(self, ddoc_id, func_id, view_id, other_id=None, **kwargs):
         """Apply a list function against a view.
 
-        :param ddoc_id: Design document name.
-        :param func_id: List function name.
-        :param view_id: View function name.
-        :param other_id: Other design document name that holds the view
-            function.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str ddoc_id: Design document name.
+        :param str func_id: List function name.
+        :param str view_id: View function name.
+        :param str other_id: (optional) Other design document name that holds the view function.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -143,11 +136,10 @@ class CouchDB(object):
     def ddoc_show(self, ddoc_id, func_id, doc_id=None, **kwargs):
         """Apply a show function against a document.
 
-        :param ddoc_id: Design document name.
-        :param func_id: Show function name.
-        :param doc_id: Document ``_id`` to execute the show function on.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str ddoc_id: Design document name.
+        :param str func_id: Show function name.
+        :param str doc_id: (optional) Document ``_id`` to execute the show function on.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -162,12 +154,10 @@ class CouchDB(object):
     def ddoc_view(self, ddoc_id, func_id, params=None, **kwargs):
         """Execute a view function.
 
-        :param ddoc_id: Design document name.
-        :param func_id: View function name.
-        :param params: (optional) Dictionary of URL parameters to append to the
-            URL.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str ddoc_id: Design document name.
+        :param str func_id: View function name.
+        :param dict params: (optional) Parameters to append to the URL.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -180,8 +170,7 @@ class CouchDB(object):
     def destroy(self, **kwargs):
         """Delete the database.
 
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -196,11 +185,9 @@ class CouchDB(object):
     def get(self, doc_id, params=None, **kwargs):
         """Retrieve a document.
 
-        :param doc_id: Document ``_id`` to retrieve.
-        :param params: (optional) Dictionary of URL parameters to append to the
-            URL.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str doc_id: Document ``_id`` to retrieve.
+        :param dict params: (optional) Parameters to append to the URL.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -219,10 +206,9 @@ class CouchDB(object):
     def get_att(self, doc_id, att_id, **kwargs):
         """Retrieve an attachment.
 
-        :param doc_id: Document ``_id`` of attachment.
-        :param att_id: Attachment name to retrieve.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str doc_id: Document ``_id`` of attachment.
+        :param str att_id: Attachment name to retrieve.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -234,8 +220,7 @@ class CouchDB(object):
     def info(self, **kwargs):
         """Get information about the database.
 
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -246,9 +231,8 @@ class CouchDB(object):
     def insert(self, doc, **kwargs):
         """Create or update an existing document.
 
-        :param doc: Document dictionary to insert.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param dict doc: Document to insert.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -267,14 +251,12 @@ class CouchDB(object):
     def insert_att(self, doc_id, doc_rev, att_id, att, att_type, **kwargs):
         """Create or update an existing attachment.
 
-        :param doc_id: Document ``_id`` of attachment.
-        :param doc_rev: Document revision. (Can be ``None``)
-        :param att_id: Attachment name.
-        :param att: Attachment dictionary, bytes, or file-like object to
-            insert.
-        :param att_type: Attachment MIME type.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str doc_id: Document ``_id`` of attachment.
+        :param str doc_rev: Document revision. (Can be ``None``)
+        :param str att_id: Attachment name.
+        :param att: Attachment dictionary, bytes, or file-like object to insert.
+        :param str att_type: Attachment MIME type.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -295,10 +277,9 @@ class CouchDB(object):
     def remove(self, doc_id, doc_rev, **kwargs):
         """Delete a document.
 
-        :param doc_id: Document ``_id`` to remove.
-        :param doc_rev: Document revision.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str doc_id: Document ``_id`` to remove.
+        :param str doc_rev: Document revision.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -314,11 +295,10 @@ class CouchDB(object):
     def remove_att(self, doc_id, doc_rev, att_id, **kwargs):
         """Delete an attachment.
 
-        :param doc_id: Document ``_id`` of attachment.
-        :param doc_rev: Document revision.
-        :param att_id: Attachment name to remove.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str doc_id: Document ``_id`` of attachment.
+        :param str doc_rev: Document revision.
+        :param str att_id: Attachment name to remove.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -334,11 +314,9 @@ class CouchDB(object):
     def replicate_to(self, target, json=None, **kwargs):
         """Replicate data from source (this) to target.
 
-        :param target: URL or name of the target database.
-        :param json: (optional) JSON to send in the body of the
-            :class:`requests.Request`.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str target: URL or name of the target database.
+        :param dict json: (optional) JSON to send in the body of the :class:`requests.Request`.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -354,11 +332,10 @@ class CouchDB(object):
     def request(self, method, path='', create_database=True, **kwargs):
         """Construct a :class:`requests.Request` object and send it.
 
-        :param method: Method for the new :class:`requests.Request` object.
-        :param path: Path to add to the :class:`requests.Request` URL.
-        :param create_database: Setup the database.
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str method: Method for the :class:`requests.Request` object.
+        :param str path: (optional) Path to join with :attr:`CouchDB.url`.
+        :param bool _init: (internal) Initialize the database.
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
@@ -378,24 +355,23 @@ class CouchDB(object):
 
         return self._request(method, url, **kwargs)
 
-    def _ddoc(self, method, ddoc_id, func_type, func_id, extra=None, **kwargs):
+    def _ddoc(self, method, ddoc_id, func_type, func_id, _path=None, **kwargs):
         """Apply or execute a design document function.
 
-        :param method: Method for the new :class:`requests.Request` object.
-        :param ddoc_id: Design document name.
-        :param func_type: Function type.
-        :param func_id: Function name.
-        :param extra: FIXME: What is this?
-        :param kwargs: (optional) Arguments that :class:`requests.Request`
-            takes.
+        :param str method: Method for the :class:`requests.Request` object.
+        :param str ddoc_id: Design document name.
+        :param str func_type: Design function type.
+        :param str func_id: Design function name.
+        :param str _path: (optional) FIXME: What is this?
+        :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
         :rtype: requests.Response
         """
 
         doc_id = urljoin('_design', ddoc_id)
         path = urljoin(encode_doc_id(doc_id), func_type, func_id)
 
-        if extra:
-            path = urljoin(path, extra)
+        if _path:
+            path = join(path, _path)
 
         return self.request(method, path, **kwargs)
 

@@ -36,10 +36,12 @@ QUERY_ARGS = ('start_key', 'startkey', 'end_key', 'endkey', 'key')
 def encode_uri_component(component):
     """Encode a uri component:
 
-    >>> encode_uri_component('escaped%2F1')
-    'escaped%252F1'
+    Example::
 
-    :param component: The URI component.
+        >>> encode_uri_component('escaped%2F1')
+        'escaped%252F1'
+
+    :param str component: The URI component.
     :rtype: str
     """
 
@@ -50,10 +52,12 @@ def encode_uri_component(component):
 def encode_att_id(_id):
     """Encode an attachment id:
 
-    >>> encode_att_id('a0+$/9_()')
-    'a0%2B%24/9_()'
+    Example::
 
-    :param _id: The attachment id.
+        >>> encode_att_id('a0+$/9_()')
+        'a0%2B%24/9_()'
+
+    :param str _id: The attachment id.
     :rtype: str
     """
 
@@ -63,10 +67,12 @@ def encode_att_id(_id):
 def encode_doc_id(_id):
     """Encode a document id:
 
-    >>> encode_doc_id('some+id')
-    'some%2Bid'
+    Example::
 
-    :param _id: The document id.
+        >>> encode_doc_id('some+id')
+        'some%2Bid'
+
+    :param str _id: The document id.
     :rtype: str
     """
 
@@ -81,26 +87,30 @@ def encode_doc_id(_id):
     return encode_uri_component(_id)
 
 
-def get_database_host(url):
+def get_db_host(url):
     """Get the database host from a URL:
 
-    >>> get_database_host('http://foobar.com:5984/testdb')
-    'http://foobar.com:5984'
+    Example::
 
-    :param url: The URL to parse.
+        >>> get_db_host('http://foobar.com:5984/testdb')
+        'http://foobar.com:5984'
+
+    :param str url: The URL to parse.
     :rtype: str
     """
 
     return urlunparse(urlparse(url)[:2] + ('',) * 4)
 
 
-def get_database_name(url):
-    """Get the database name from a URL:
+def get_db_name(url):
+    """Get the database name from a URL.
 
-    >>> get_database_name('http://foobar.com:5984/testdb')
-    'testdb'
+    Example::
 
-    :param url: The URL to parse.
+        >>> get_db_name('http://foobar.com:5984/testdb')
+        'testdb'
+
+    :param str url: The URL to parse.
     :rtype: str
     """
 
@@ -118,12 +128,14 @@ def get_database_name(url):
 def handle_query_args(params):
     """Handle special CouchDB query arguments:
 
-    >>> params = {'start_key': ['x'], 'endkey': 2}
-    >>> handle_query_args(params)
-    ('GET', {'params': {'start_key': '["x"]', 'endkey': '2'}})
+    Example::
 
-    :param params: Dictionary of URL parameters.
-    :rtype: str, dict
+        >>> params = {'start_key': ['x'], 'endkey': 2}
+        >>> handle_query_args(params)
+        ('GET', {'params': {'start_key': '["x"]', 'endkey': '2'}})
+
+    :param dict params: URL parameters.
+    :rtype: (str, dict)
     """
 
     method = 'GET'
