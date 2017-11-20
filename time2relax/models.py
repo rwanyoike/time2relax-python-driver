@@ -8,18 +8,15 @@ This module contains the primary objects that power time2relax.
 """
 
 from json import dumps
-from posixpath import join as urljoin
+from posixpath import join
 
 from requests import Session
+from requests.compat import urlparse
 from six import iteritems
 
-from .exceptions import (
-    BadRequest, ResourceConflict, MethodNotAllowed, ServerError,
-    ResourceNotFound, Unauthorized, Forbidden, PreconditionFailed,
-    CouchDBError)
+from .exceptions import ResourceNotFound
 from .utils import (
-    encode_att_id, handle_query_args, encode_doc_id, get_database_host,
-    get_database_name)
+    encode_att_id, encode_doc_id, get_db_host, get_db_name, get_http_exception, handle_query_args)
 
 _LIST = '_list'
 _SHOW = '_show'
@@ -40,32 +37,32 @@ class CouchDB(object):
         <Response [201]>
     """
 
-    def __init__(self, url, create_database=True):
+    def __init__(self, url, create_db=True):
         """Initialize the database object.
 
         :param str url: Database URL.
         :param bool create_db: (optional) Create the database.
         """
 
-        # Database created, destroyed
-        self._created, self._destroyed = False, False
+        #: Database host
+        self.host = get_db_host(url)
 
-        #: CouchDB database host
-        self.host = get_database_host(url)
+        #: Database name
+        self.name = get_db_name(url)
 
-        #: CouchDB database name
-        self.name = get_database_name(url)
+        #: Database URL
+        self.url = join(self.host, self.name)
 
-        #: CouchDB database URL
-        self.url = urljoin(self.host, self.name)
-
-        #: Handle database initialization
-        self.create_database = create_database
+        #: Database initialization
+        self.create_db = create_db
 
         #: Default :class:`requests.Session`
         self.session = Session()
         # http://docs.couchdb.org/en/stable/api/basics.html#request-headers
         self.session.headers['Accept'] = 'application/json'
+
+        #: Database created
+        self._created = False
 
     def __repr__(self):
         return '<{0} [{1}]>'.format(self.__class__.__name__, self.url)
@@ -126,7 +123,7 @@ class CouchDB(object):
         """
 
         if other_id:
-            path = urljoin(encode_doc_id(other_id), view_id)
+            path = join(encode_doc_id(other_id), view_id)
         else:
             path = view_id
 
@@ -174,12 +171,8 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        try:
-            # Don't setup the database
-            return self.request('DELETE', create_database=False, **kwargs)
-        finally:
-            # Prevent further requests
-            self._destroyed = True
+        # Don't try to setup the database
+        return self.request('DELETE', _init=False, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/common.html#get--db-docid
     def get(self, doc_id, params=None, **kwargs):
@@ -212,8 +205,7 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        path = urljoin(encode_doc_id(doc_id), encode_att_id(att_id))
-
+        path = join(encode_doc_id(doc_id), encode_att_id(att_id))
         return self.request('GET', path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/database/common.html#get--db
@@ -243,8 +235,7 @@ class CouchDB(object):
             method = 'POST'
             path = ''
 
-        kwargs['json'] = doc  # replace
-
+        kwargs['json'] = doc
         return self.request(method, path, **kwargs)
 
     # http://docs.couchdb.org/en/stable/api/document/attachments.html#put--db-docid-attname
@@ -267,9 +258,9 @@ class CouchDB(object):
         if 'headers' not in kwargs:
             kwargs['headers'] = {}
 
-        path = urljoin(encode_doc_id(doc_id), encode_att_id(att_id))
+        path = join(encode_doc_id(doc_id), encode_att_id(att_id))
         kwargs['headers']['Content-Type'] = att_type
-        kwargs['data'] = att  # replace
+        kwargs['data'] = att
 
         return self.request('PUT', path, **kwargs)
 
@@ -305,7 +296,7 @@ class CouchDB(object):
         if 'params' not in kwargs:
             kwargs['params'] = {}
 
-        path = urljoin(encode_doc_id(doc_id), encode_att_id(att_id))
+        path = join(encode_doc_id(doc_id), encode_att_id(att_id))
         kwargs['params']['rev'] = doc_rev
 
         return self.request('DELETE', path, **kwargs)
@@ -320,16 +311,16 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        url = urljoin(self.host, '_replicate')
+        url = join(self.host, '_replicate')
         kwargs['json'] = {} if not json else json
         kwargs['json'].update({
             'source': self.url,
             'target': target,
         })
 
-        return self._request('POST', url, **kwargs)
+        return self.request('POST', url, _init=False, **kwargs)
 
-    def request(self, method, path='', create_database=True, **kwargs):
+    def request(self, method, path='', _init=True, **kwargs):
         """Construct a :class:`requests.Request` object and send it.
 
         :param str method: Method for the :class:`requests.Request` object.
@@ -339,21 +330,34 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        if self._destroyed:
-            raise CouchDBError('Database is destroyed')
+        # Check if the database exists
+        if _init and self.create_db and (not self._created):
+            try:
+                self.request('HEAD', _init=False)
+            except ResourceNotFound:
+                # Or create it
+                self.request('PUT', _init=False)
+            self._created = True
 
-        url = urljoin(self.url, path)
+        # Prepare the params dictionary
+        if 'params' in kwargs and kwargs['params']:
+            params = kwargs['params'].copy()
+            for key, val in iteritems(params):
+                # Handle Python booleans
+                if type(val) == bool:
+                    params[key] = dumps(val)
+            kwargs['params'] = params
 
-        # Check if the database exists or create it
-        if create_database and self.create_database:
-            if not self._created:
-                try:
-                    self._request('HEAD', self.url)
-                except ResourceNotFound:
-                    self._request('PUT', self.url)
-                self._created = True
+        if urlparse(path).scheme:
+            url = path  # Handle absolute URLs
+        else:
+            url = join(self.url, path).strip('/')
 
-        return self._request(method, url, **kwargs)
+        r = self.session.request(method, url, **kwargs)
+        if not (200 <= r.status_code < 300):
+            raise get_http_exception(r)
+
+        return r
 
     def _ddoc(self, method, ddoc_id, func_type, func_id, _path=None, **kwargs):
         """Apply or execute a design document function.
@@ -367,50 +371,10 @@ class CouchDB(object):
         :rtype: requests.Response
         """
 
-        doc_id = urljoin('_design', ddoc_id)
-        path = urljoin(encode_doc_id(doc_id), func_type, func_id)
+        doc_id = join('_design', ddoc_id)
+        path = join(encode_doc_id(doc_id), func_type, func_id)
 
         if _path:
             path = join(path, _path)
 
         return self.request(method, path, **kwargs)
-
-    def _request(self, method, url, **kwargs):
-        """Construct a request, prepare it and send it."""
-
-        # Prepare the params dictionary
-        if 'params' in kwargs and kwargs['params']:
-            params = kwargs['params'].copy()  # mutable!
-            for key, val in iteritems(params):
-                # Handle Python titlecase booleans
-                if type(val) == bool:
-                    params[key] = dumps(val)
-            kwargs['params'] = params
-
-        r = self.session.request(method, url, **kwargs)
-        if 200 <= r.status_code < 300:
-            return r
-
-        try:
-            message = r.json()
-        except ValueError:
-            message = None
-
-        # Raise a CouchDBError on a bad HTTP response
-        errors = {
-            400: BadRequest,
-            401: Unauthorized,
-            403: Forbidden,
-            404: ResourceNotFound,
-            405: MethodNotAllowed,
-            409: ResourceConflict,
-            412: PreconditionFailed,
-            500: ServerError,
-        }
-
-        # http://docs.couchdb.org/en/stable/api/basics.html?#http-status-codes
-        if r.status_code in errors:
-            ex = errors[r.status_code]
-            raise ex(message, r)
-
-        raise CouchDBError(message, r)
