@@ -6,9 +6,9 @@ from setuptools import setup
 about = {}
 with open('time2relax/__version__.py') as fp:
     exec(fp.read(), about)
-with open('docs/readme.rst') as fp:
+with open('README.rst') as fp:
     readme = fp.read()
-with open('docs/history.rst') as fp:
+with open('HISTORY.rst') as fp:
     history = fp.read()
 
 requirements = [

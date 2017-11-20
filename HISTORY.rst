@@ -1,6 +1,9 @@
 Version History
 ===============
 
+0.4.0 (2017-11-21)
+------------------
+
 * ``CouchDBError`` is now ``HTTPError`` (*Backwards Incompatible*)
 * ``CouchDB(skip_setup=False)`` is now ``CouchDB(create_db=True)`` (*Backwards
   Incompatible*)
