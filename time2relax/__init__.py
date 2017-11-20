@@ -25,11 +25,12 @@ abstraction between you and CouchDB. Basic insert usage::
 """
 
 from .__version__ import (  # noqa: F401
-    __title__, __description__, __url__, __version__, __author__,
-    __author_email__, __license__, __copyright__, __relax__)
+    __title__, __description__, __url__, __version__, __author__, __author_email__, __license__,
+    __copyright__, __relax__)
 
 from . import utils  # noqa: F401
+
 from .models import CouchDB  # noqa: F401
 from .exceptions import (  # noqa: F401
-    BadRequest, Unauthorized, Forbidden, ResourceNotFound, MethodNotAllowed,
-    ResourceConflict, PreconditionFailed, ServerError, CouchDBError)
+    BadRequest, Unauthorized, Forbidden, ResourceNotFound, MethodNotAllowed, ResourceConflict,
+    PreconditionFailed, ServerError, HTTPError)

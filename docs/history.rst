@@ -5,6 +5,7 @@ History
 * Added Python 3.6 support.
 * Added PyPy test support.
 * Changed CouchDB(skip_setup=False) to CouchDB(create_database=True)
+* ``CouchDBError`` is now ``HTTPError`` (*Backwards Incompatible*)
 
 0.3.0 (2017-03-03)
 ------------------
