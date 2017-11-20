@@ -3,8 +3,7 @@
 
 def test_insert_att(db):
     r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
-    result = r.json()
-    assert 'ok' in result
+    assert 'ok' in r.json()
 
 
 def test_insert_att_update(db):
@@ -19,15 +18,12 @@ def test_insert_att_update(db):
 
 
 def test_insert_att_params(db):
-    r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain',
-                      params={'x-assert': True})
+    r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain', params={'x-assert': True})
     assert 'x-assert' in r.request.url
 
 
 def test_insert_att_kwargs(db):
     r = db.insert_att('doc', None, 'att.txt', 'Zm9v', 'text/plain')
-    result = r.json()
-
-    r = db.insert_att('doc', result['rev'], 'att.txt', 'v9mZ', 'text/raw',
-                      params={}, headers={'X-Assert': 'true'})
+    r = db.insert_att('doc', r.json()['rev'], 'att.txt', 'v9mZ', 'text/raw',
+                      headers={'X-Assert': 'true'})
     assert 'X-Assert' in r.request.headers

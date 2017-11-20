@@ -33,7 +33,6 @@ def test_ddoc_show_doc_id(db):
                       "}",
         },
     })
-
     db.insert({'_id': 'mydoc', 'description': 'Hello World!'})
 
     r = db.ddoc_show('test', 'myshow', 'mydoc')
