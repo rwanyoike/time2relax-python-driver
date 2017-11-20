@@ -5,7 +5,7 @@ import pytest
 from time2relax import CouchDB, ResourceNotFound
 
 
-def test_couchdb_create_database(db):
+def test_couchdb_create_db(db):
     db = CouchDB(db.url, create_db=False)
 
     with pytest.raises(ResourceNotFound) as ex:

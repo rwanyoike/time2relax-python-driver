@@ -1,11 +1,11 @@
-*$py.class
-*.egg-info/
-*.py[cod]
+__pycache__/
 .cache
 .coverage
 .eggs/
 .tox/
-__pycache__/
+*.egg-info/
+*.py[cod]
+*$py.class
 build/
 dist/
 docs/_build/
