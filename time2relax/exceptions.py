@@ -8,37 +8,37 @@ This module contains the set of time2relax exceptions.
 """
 
 
-class CouchDBError(Exception):
+class HTTPError(Exception):
     """A HTTP error occurred."""
 
 
-class BadRequest(CouchDBError):
+class BadRequest(HTTPError):
     """A 400 HTTP error."""
 
 
-class Unauthorized(CouchDBError):
+class Unauthorized(HTTPError):
     """A 401 HTTP error."""
 
 
-class Forbidden(CouchDBError):
+class Forbidden(HTTPError):
     """A 403 HTTP error."""
 
 
-class ResourceNotFound(CouchDBError):
+class ResourceNotFound(HTTPError):
     """A 404 HTTP error."""
 
 
-class MethodNotAllowed(CouchDBError):
+class MethodNotAllowed(HTTPError):
     """A 405 HTTP error."""
 
 
-class ResourceConflict(CouchDBError):
+class ResourceConflict(HTTPError):
     """A 409 HTTP error."""
 
 
-class PreconditionFailed(CouchDBError):
+class PreconditionFailed(HTTPError):
     """A 412 HTTP error."""
 
 
-class ServerError(CouchDBError):
+class ServerError(HTTPError):
     """A 500 HTTP error."""

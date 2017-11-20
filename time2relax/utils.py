@@ -13,6 +13,22 @@ from posixpath import join as urljoin
 
 from requests.compat import quote, urlparse, urlunparse
 
+from .exceptions import (
+    BadRequest, Forbidden, HTTPError, MethodNotAllowed, PreconditionFailed, ResourceConflict,
+    ResourceNotFound, ServerError, Unauthorized)
+
+# http://docs.couchdb.org/en/stable/api/basics.html?#http-status-codes
+EXCEPTIONS = {
+    400: BadRequest,
+    401: Unauthorized,
+    403: Forbidden,
+    404: ResourceNotFound,
+    405: MethodNotAllowed,
+    409: ResourceConflict,
+    412: PreconditionFailed,
+    500: ServerError,
+}
+
 # http://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
 QUERY_ARGS = ('start_key', 'startkey', 'end_key', 'endkey', 'key')
 
@@ -130,3 +146,23 @@ def handle_query_args(params):
         kwargs['params'] = params
 
     return method, kwargs
+
+
+def get_http_exception(r):
+    """
+    :param requests.Response r:
+    :rtype: HTTPError
+    """
+
+    try:
+        message = r.json()
+    except ValueError:
+        message = None
+
+    if r.status_code in EXCEPTIONS:
+        ex = EXCEPTIONS[r.status_code]
+    else:
+        # Worst-case
+        ex = HTTPError
+
+    return ex(message, r)
