@@ -3,12 +3,12 @@
 Installation
 ============
 
-Stable release
+Stable Release
 --------------
 
 To install time2relax, run this command in your terminal::
 
-    $ pip install time2relax
+    $ pip install -U time2relax
 
 This is the preferred method to install time2relax, as it will always install
 the most recent stable release.
@@ -19,7 +19,7 @@ you through the process.
 .. _pip: https://pip.pypa.io
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
-From sources
+From Sources
 ------------
 
 The sources for time2relax can be downloaded from the `Github repo`_.

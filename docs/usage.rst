@@ -6,44 +6,33 @@ To use time2relax in a project::
     >>> from time2relax import CouchDB
     >>> db = CouchDB('http://localhost:5984/dbname')
 
-Most of the API is exposed as::
-
-    >>> db.function(*args, **kwargs)
-
-Where ``**kwargs`` are optional arguments that :class:`requests.Request` takes.
-
-Create a database
+Create a Database
 -----------------
 
 Initially the ``CouchDB`` object will check if the database exists, and try to
-create it if it does not. You can use ``create_database=False`` to skip this setup::
+create it if it does not. You can use ``create_db=False`` to skip this setup::
 
-    >>> db = CouchDB('http://localhost:5984/dbname', create_database=False)
+    >>> db = CouchDB('http://localhost:5984/dbname', create_db=False)
 
-Delete a database
+Delete a Database
 -----------------
 
-Delete the database::
+Delete a database::
 
     >>> db.destroy()
     <Response [200]>
 
-Further requests with the ``CouchDB`` object will raise a
-:class:`time2relax.CouchDBError`::
+Further requests with the ``CouchDB`` object should raise a
+:class:`time2relax.ResourceNotFound`::
 
     >>> db.info()
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "time2relax/__init__.py", line 243, in info
-        return self.request('GET', **kwargs)
-      File "time2relax/__init__.py", line 371, in request
-        raise CouchDBError('Database is destroyed')
-    time2relax.CouchDBError: Database is destroyed
+    ResourceNotFound: ({'error': 'not_found', 'reason': 'missing'}, <Response [404]>)
 
-Create/update a document
+Create/Update a Document
 ------------------------
 
-Note: There are some `restrictions on valid property names`_ of the documents.
+Note: There are some CouchDB `restrictions on valid property names`_ of the
+documents.
 
 Create a new document::
 
@@ -59,14 +48,13 @@ If the document already exists, you must specify its revision ``_rev``,
 otherwise a conflict will occur. You can update an existing document using
 ``_rev``::
 
-    >>> r = db.get('docid')
-    >>> result = r.json()
+    >>> result = db.get('docid').json()
     >>> db.insert({'_id': result['_id'], '_rev': result['_rev'], 'title': 'Dance'})
     <Response [201]>
 
 .. _restrictions on valid property names: http://wiki.apache.org/couchdb/HTTP_Document_API#Special_Fields
 
-Fetch a document
+Fetch a Document
 ----------------
 
 Retrieve a document::
@@ -74,28 +62,26 @@ Retrieve a document::
     >>> db.get('docid')
     <Response [200]>
 
-Delete a document
+Delete a Document
 -----------------
 
 You must supply the ``_rev`` of the existing document.
 
 Delete a document::
 
-    >>> r = db.get('docid')
-    >>> result = r.json()
+    >>> result = db.get('docid').json()
     >>> db.remove(result['_id'], result['_rev'])
     <Response [200]>
 
 You can also delete a document by using :meth:`time2relax.CouchDB.insert` with
 ``{'_deleted': True}``::
 
-    >>> r = db.get('docid')
-    >>> result = r.json()
+    >>> result = db.get('docid').json()
     >>> result['_deleted'] = True
     >>> db.insert(result)
     <Response [200]>
 
-Create/update a batch of documents
+Create/Update a Batch of Documents
 ----------------------------------
 
 Create multiple documents::
@@ -154,56 +140,56 @@ Finally, to delete a document, include a ``_deleted`` parameter with the value
     ... ])
     <Response [201]>
 
-Fetch a batch of documents
+Fetch a Batch of Documents
 --------------------------
 
 Fetch multiple documents::
 
     >>> params = {'include_docs': True, 'attachments': True}
-    >>> db.all_docs(params=params)
+    >>> db.all_docs(params)
     <Response [200]>
 
 You can use ``startkey``/``endkey`` to find all docs in a range::
 
-    >>> params = {'include_docs': True, 'attachments': True, 'startkey': 'bar', 'endkey': 'quux'}
-    >>> db.all_docs(params=params)
+    >>> params = {'startkey': 'bar', 'endkey': 'quux'}
+    >>> db.all_docs(params)
     <Response [200]>
 
 You can also do a prefix search – i.e. "give me all the documents whose ``_id``
 start with ``'foo'``" – by using the special high Unicode character
 ``'\uffff'``::
 
-    >>> params = {'include_docs': True, 'attachments': True, 'startkey': 'foo', 'endkey': 'foo\uffff'}
-    >>> db.all_docs(params=params)
+    >>> params = {'startkey': 'foo', 'endkey': 'foo\uffff'}
+    >>> db.all_docs(params)
     <Response [200]>
 
-Replicate a database
+Replicate a Database
 --------------------
 
-Replicate the database to a target::
+Note: The target has to exist, you can use ``json={'create_target': True}`` to
+create it prior to replication.
+
+Replicate a database to a target::
 
     >>> db.replicate_to('http://localhost:5984/otherdb')
     <Response [200]>
 
-The target has to exist, add ``json={'create_target': True}`` to create it
-prior to replication.
-
-Save an attachment
+Save an Attachment
 ------------------
 
-This method will update an existing document to add the attachment, so it
+This method will update an existing document to add an attachment, so it
 requires a ``_rev`` if the document already exists. If the document doesn't
 already exist, then this method will create an empty document containing the
 attachment.
 
 Attach a binary object::
 
-    >>> with open('/tmp/att.txt') as att:
-    ...     db.insert_att('docid', None, 'att.txt', att, 'text/plain')
+    >>> with open('/tmp/att.txt') as fp:
+    ...     db.insert_att('docid', None, 'att.txt', fp, 'text/plain')
     ...
     <Response [201]>
 
-Get an attachment
+Get an Attachment
 -----------------
 
 Get attachment data::
@@ -211,39 +197,37 @@ Get attachment data::
     >>> db.get_att('docid', 'att.txt')
     <Response [200]>
 
-Delete an attachment
+Delete an Attachment
 --------------------
 
 You must supply the ``_rev`` of the existing document.
 
 Delete an attachment::
 
-    >>> r = db.get('docid')
-    >>> result = r.json()
+    >>> result = db.get('docid').json()
     >>> db.remove_att(result['_id'], result['_rev'], 'att.txt')
     <Response [200]>
 
-Get database information
+Get Database Information
 ------------------------
 
-Get information about the database::
+Get information about a database::
 
     >>> db.info()
     <Response [200]>
 
-Compact the database
---------------------
+Compact a Database
+------------------
 
-This reduces the database's size by removing unused and old data, namely
-non-leaf revisions and attachments that are no longer referenced by those
-revisions.
+This reduces a database's size by removing unused and old data, namely non-leaf
+revisions and attachments that are no longer referenced by those revisions.
 
 Trigger a compaction operation::
 
     >>> db.compact()
     <Response [202]>
 
-Run a list function
+Run a List Function
 -------------------
 
 Make sure you understand how list functions work in CouchDB. A good start is
@@ -270,7 +254,7 @@ Make sure you understand how list functions work in CouchDB. A good start is
 
 .. _the CouchDB guide entry on lists: http://guide.couchdb.org/draft/transforming.html
 
-Run a show function
+Run a Show Function
 -------------------
 
 Make sure you understand how show functions work in CouchDB. A good start is
@@ -290,7 +274,7 @@ Make sure you understand how show functions work in CouchDB. A good start is
 
 .. _the CouchDB guide entry on shows: http://guide.couchdb.org/draft/show.html
 
-Run a view function
+Run a View Function
 -------------------
 
 Make sure you understand how view functions work in CouchDB. A good start is
@@ -308,7 +292,7 @@ Make sure you understand how view functions work in CouchDB. A good start is
     ... })
     <Response [201]>
     >>> params = {'reduce': False, 'key': 'key2'}
-    >>> db.ddoc_view('testid', 'viewid', params=params)
+    >>> db.ddoc_view('testid', 'viewid', params)
     <Response [200]>
 
 .. _the CouchDB guide entry on views: http://guide.couchdb.org/draft/views.html
