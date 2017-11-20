@@ -3,9 +3,7 @@
 
 def test_info(db):
     db.insert({'_id': 'someid'})
-    r = db.info()
-    result = r.json()
-
+    result = db.info().json()
     assert result['doc_count'] == 1
     assert result['doc_del_count'] == 0
 

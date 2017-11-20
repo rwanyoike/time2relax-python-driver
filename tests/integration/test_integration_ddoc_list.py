@@ -27,7 +27,6 @@ def test_ddoc_list(db):
                       "}",
         },
     })
-
     db.insert({'_id': 'testdoc'})
 
     with pytest.raises(ServerError) as ex:
@@ -62,7 +61,6 @@ def test_ddoc_list_other_id(db):
             },
         },
     })
-
     db.insert({'_id': 'testdoc'})
 
     r = db.ddoc_list('test', 'mylist', 'myview', 'other')

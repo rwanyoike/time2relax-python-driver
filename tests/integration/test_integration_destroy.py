@@ -2,16 +2,14 @@
 
 import pytest
 
-from time2relax import CouchDBError, ResourceNotFound
+from time2relax import ResourceNotFound
 
 
 def test_destroy(db):
     db.insert({'_id': 'cleanname'})
     db.destroy()
 
-    assert db._destroyed is True
-
-    with pytest.raises(CouchDBError):
+    with pytest.raises(ResourceNotFound):
         db.get('cleanname')
 
 

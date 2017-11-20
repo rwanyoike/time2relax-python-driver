@@ -3,18 +3,14 @@
 
 def test_insert_post(db):
     r = db.insert({'test': 'somestuff'})
-    result = r.json()
-
     assert r.request.method == 'POST'
-    assert 'ok' in result
+    assert 'ok' in r.json()
 
 
 def test_insert_put(db):
     r = db.insert({'_id': 'someid'})
-    result = r.json()
-
     assert r.request.method == 'PUT'
-    assert 'ok' in result
+    assert 'ok' in r.json()
 
 
 def test_insert_kwargs(db):
