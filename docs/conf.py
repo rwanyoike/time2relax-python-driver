@@ -88,6 +88,9 @@ intersphinx_mapping = {
     'requests': ('http://requests.readthedocs.io/en/latest', None),
 }
 
+# Documented members are sorted by member type.
+autodoc_member_order = 'groupwise'
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -128,7 +131,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'time2relaxdoc'
+htmlhelp_basename = project + 'doc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -154,7 +157,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'time2relax.tex', project + ' Documentation', author,
+    (master_doc, project + '.tex', project + ' Documentation', author,
      'manual'),
 ]
 

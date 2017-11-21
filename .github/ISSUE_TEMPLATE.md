@@ -1,6 +1,6 @@
 * time2relax version:
 * Python version:
-* Operating System:
+* Operating system:
 
 Steps to reproduce:
 
