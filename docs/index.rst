@@ -1,5 +1,5 @@
-.. time2relax documentation master file, created by
-   sphinx-quickstart on Mon Nov 20 22:39:46 2017.
+.. time2relax documentation master file, created by sphinx-quickstart on Mon
+   Nov 20 22:39:46 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -50,7 +50,7 @@ Feature Support
 
 time2relax officially supports **Python 2.7, 3.3+, and PyPy**.
 
-.. _Requests: http://requests.readthedocs.io/en/latest
+.. _Requests: https://requests.readthedocs.io/en/latest
 .. _parameter encoding: https://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
 .. _error codes: http://docs.couchdb.org/en/1.6.1/api/basics.html#http-status-codes
 
