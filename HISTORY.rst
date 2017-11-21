@@ -1,6 +1,11 @@
 Version History
 ===============
 
+0.4.1 (2017-11-22)
+------------------
+
+* Fix Travis build error - invalid config
+
 0.4.0 (2017-11-21)
 ------------------
 
