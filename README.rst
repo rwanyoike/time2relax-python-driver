@@ -20,8 +20,8 @@ time2relax: Python CouchDB Driver
 
     A CouchDB driver for Python.
 
-time2relax is a Python `CouchDB`_ driver that tries to offer a minimal level of
-abstraction between you and CouchDB.
+A Python `CouchDB`_ driver that tries to offer a minimal level of abstraction
+between you and CouchDB.
 
 To use time2relax:
 
@@ -41,8 +41,8 @@ Inspired by `pouchdb`_ and `couchdb-nano`_ APIs, it features:
 
 * `Requests`_ ✨🍰✨ (HTTP for Humans) under the hood.
 * Transparent URL and `parameter encoding`_.
-* HTTP exceptions modelled from CouchDB `error codes`_.
-* Tested on CouchDB 1.6.x and 1.7.x (2.x.x *unknown*).
+* HTTP exceptions modeled from CouchDB `error codes`_.
+* Support for CouchDB 1.7.x (`tested in CI`_).
 
 time2relax officially supports **Python 2.7, 3.3+, and PyPy**.
 
@@ -51,6 +51,7 @@ time2relax officially supports **Python 2.7, 3.3+, and PyPy**.
 .. _Requests: https://requests.readthedocs.io/en/latest
 .. _parameter encoding: https://wiki.apache.org/couchdb/HTTP_view_API#Querying_Options
 .. _error codes: http://docs.couchdb.org/en/1.6.1/api/basics.html#http-status-codes
+.. _tested in CI: https://travis-ci.org/rwanyoike/time2relax
 
 Installation
 ------------
@@ -81,6 +82,6 @@ How to Contribute
 
 time2relax follows the `Contributor Covenant`_ code of conduct.
 
-.. _`the repository`: http://github.com/rwanyoike/time2relax
+.. _`the repository`: https://github.com/rwanyoike/time2relax
 .. _AUTHORS: https://github.com/rwanyoike/time2relax/blob/master/AUTHORS.rst
 .. _Contributor Covenant: https://github.com/rwanyoike/time2relax/blob/master/CODE_OF_CONDUCT.md
