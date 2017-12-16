@@ -44,7 +44,7 @@ Inspired by `pouchdb`_ and `couchdb-nano`_ APIs, it features:
 * HTTP exceptions modeled from CouchDB `error codes`_.
 * Support for CouchDB 1.7.x (`tested in CI`_).
 
-time2relax officially supports **Python 2.7, 3.3+, and PyPy**.
+time2relax officially supports **Python 2.7, 3.4+, and PyPy**.
 
 .. _pouchdb: https://github.com/pouchdb/pouchdb
 .. _couchdb-nano: https://github.com/apache/couchdb-nano
