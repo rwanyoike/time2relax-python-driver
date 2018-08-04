@@ -2,6 +2,7 @@
 
 [![Travis (.org)](https://img.shields.io/travis/rwanyoike/time2relax.svg)](https://travis-ci.org/rwanyoike/time2relax)
 [![Codecov](https://img.shields.io/codecov/c/gh/rwanyoike/time2relax.svg)](https://codecov.io/gh/rwanyoike/time2relax)
+[![PyPI](https://img.shields.io/pypi/v/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
 [![PyPI - License](https://img.shields.io/pypi/l/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
 
@@ -60,7 +61,7 @@ time2relax officially supports **Python 2.7 and 3.6+**.
 
 To install time2relax, simply run:
 
-```
+```shell
 $ pip install -U time2relax
 ✨🛋✨
 ```

@@ -21,7 +21,7 @@ setup(
     name=about['__title__'],
     version=about['__version__'],
     description=about['__description__'],
-    long_description='\n---\n'.join([readme, history]),
+    long_description='\n---\n\n'.join([readme, history]),
     long_description_content_type='text/markdown',
     author=about['__author__'],
     author_email=about['__author_email__'],
