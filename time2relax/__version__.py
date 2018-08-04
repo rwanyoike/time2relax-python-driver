@@ -1,7 +1,7 @@
 __title__ = 'time2relax'
 __description__ = 'A CouchDB driver for Python.'
 __url__ = 'https://github.com/rwanyoike/time2relax'
-__version__ = '0.4.1'
+__version__ = '0.5.2'
 __author__ = 'Raymond Wanyoike'
 __author_email__ = 'raymond.wanyoike@gmail.com'
 __license__ = 'MIT'
