@@ -4,7 +4,7 @@ __pycache__/
 .eggs/
 .tox/
 *.egg-info/
-*.py[cod]
+*.py[co]
 *$py.class
 build/
 dist/
