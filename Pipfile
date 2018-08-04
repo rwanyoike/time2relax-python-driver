@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "<3,>=2"
+six = "*"
+
+[dev-packages]
+"flake8" = "*"
+"flake8-docstrings" = "*"
+"flake8-isort" = "*"
+"pep8-naming" = "*"
+isort = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+pytest-runner = "*"
+Sphinx = "*"
+tox = "*"
+codecov = "*"
