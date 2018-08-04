@@ -22,7 +22,14 @@ Exceptions
 Encodings
 ---------
 
-.. autofunction:: time2relax.utils.encode_att_id
-.. autofunction:: time2relax.utils.encode_doc_id
+.. autofunction:: time2relax.utils.encode_attachment_id
+.. autofunction:: time2relax.utils.encode_document_id
 .. autofunction:: time2relax.utils.encode_uri_component
-.. autofunction:: time2relax.utils.handle_query_args
+.. autofunction:: time2relax.utils.query_method_kwargs
+
+Utilities
+---------
+
+.. autofunction:: time2relax.utils.get_database_host
+.. autofunction:: time2relax.utils.get_database_name
+.. autofunction:: time2relax.utils.raise_http_exception
