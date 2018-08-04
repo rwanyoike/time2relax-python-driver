@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
-
 #             __
 # _|_ o __  _  _) __ _  |  _
 #  |_ | |||(/_/__ | (/_ | (_|><
 #
 
-"""
-time2relax: Python CouchDB Driver
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""A CouchDB driver for Python.
 
-time2relax is a Python CouchDB driver that tries to offer a minimal level of
-abstraction between you and CouchDB. Basic insert usage::
+Example::
 
     >>> from time2relax import CouchDB
     >>> db = CouchDB('http://localhost:5984/dbname')
@@ -18,13 +13,12 @@ abstraction between you and CouchDB. Basic insert usage::
     <Response [201]>
 """
 
-from .__version__ import (  # noqa: F401
-    __title__, __description__, __url__, __version__, __author__, __author_email__, __license__,
-    __copyright__, __relax__)
+from __future__ import absolute_import
 
-from . import utils  # noqa: F401
-
-from .models import CouchDB  # noqa: F401
-from .exceptions import (  # noqa: F401
-    BadRequest, Unauthorized, Forbidden, ResourceNotFound, MethodNotAllowed, ResourceConflict,
-    PreconditionFailed, ServerError, HTTPError)
+from time2relax.__version__ import (  # noqa: F401
+    __author__, __author_email__, __copyright__, __couch__, __description__, __license__, __title__, __url__,
+    __version__)
+from time2relax.exceptions import (  # noqa: F401
+    BadRequest, Forbidden, HTTPError, MethodNotAllowed, PreconditionFailed, ResourceConflict, ResourceNotFound,
+    ServerError, Unauthorized)
+from time2relax.models import CouchDB  # noqa: F401

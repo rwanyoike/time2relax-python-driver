@@ -1,15 +1,8 @@
-# -*- coding: utf-8 -*-
-
-"""
-time2relax.exceptions
-~~~~~~~~~~~~~~~~~~~~~
-
-This module contains the set of time2relax exceptions.
-"""
+"""A collection of time2relax exceptions."""
 
 
 class HTTPError(Exception):
-    """A HTTP error occurred."""
+    """Representation of a HTTP error."""
 
 
 class BadRequest(HTTPError):
