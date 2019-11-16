@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 
-# io.open is needed for projects that support Python 2.7. It ensures open()
-# defaults to text mode  with universal newlines, and accepts an argument to
-# specify the text encoding. Python 3 only projects can skip this import.
-from io import open
-
 from setuptools import setup
 
 with open('time2relax/__version__.py') as fp:
@@ -35,9 +30,6 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',

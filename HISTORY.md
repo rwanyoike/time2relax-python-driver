@@ -1,5 +1,9 @@
 # Version History
 
+## 0.6.0 (unreleased)
+
+- Drop Python 2.7 support - Python 2.7 will not be maintained past 2020.
+
 ## 0.5.0 (2018-08-04)
 
 - Move the time2relax API to `time2relax.time2relax`.
