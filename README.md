@@ -55,7 +55,7 @@ Inspired by [pouchdb](https://github.com/pouchdb/pouchdb)  and [couchdb-nano](ht
 * HTTP exceptions modeled from CouchDB [error codes](http://docs.couchdb.org/en/1.6.1/api/basics.html#http-status-codes).
 * Support for CouchDB 1.7.x.
 
-time2relax officially supports **Python 2.7 and 3.6+**.
+time2relax officially supports **Python 3.6+**.
 
 ## Installation
 

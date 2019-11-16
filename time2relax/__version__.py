@@ -1,4 +1,4 @@
-__title__ = 'time2relax'
+__title__ = 'time2relax'  # noqa: D100
 __description__ = 'A CouchDB driver for Python.'
 __url__ = 'https://github.com/rwanyoike/time2relax'
 __version__ = '0.5.2'

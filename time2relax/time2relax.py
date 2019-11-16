@@ -6,7 +6,6 @@ import json
 from posixpath import join as urljoin
 
 from requests import compat
-from six import iteritems
 
 from time2relax import utils
 
@@ -304,7 +303,7 @@ def request(session, base_path, method, path, **kwargs):
     # Prepare the params dictionary
     if ('params' in kwargs) and isinstance(kwargs['params'], dict):
         params = kwargs['params'].copy()
-        for key, val in iteritems(params):
+        for key, val in params.items():
             # Handle titlecase booleans
             if isinstance(val, bool):
                 params[key] = json.dumps(val)
