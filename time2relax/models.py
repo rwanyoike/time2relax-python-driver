@@ -13,7 +13,7 @@ _SHOW = '_show'
 _VIEW = '_view'
 
 
-class CouchDB(object):
+class CouchDB:
     """Representation of a CouchDB database.
 
     Provides URL-parameter encoding, modeled Exceptions, and database initialization.
@@ -44,7 +44,7 @@ class CouchDB(object):
         self.name = utils.get_database_name(url)
 
         #: Database URL
-        # FIXME: Converts "https://test.db/a/b/index.html?e=f" to "https://test.db/index.html"
+        # FIXME: Converts "test.db/a/b/index.html?e=f" to "test.db/index.html"
         self.url = urljoin(self.host, self.name)
 
         #: Database initialization
@@ -106,6 +106,7 @@ class CouchDB(object):
         """Create or update an existing document."""
 
     @utils.relax(time2relax.insert_att)
+    # pylint: disable=too-many-arguments
     def insert_att(self, doc_id, doc_rev, att_id, att, att_type, **kwargs):
         """Create or update an existing attachment."""
 

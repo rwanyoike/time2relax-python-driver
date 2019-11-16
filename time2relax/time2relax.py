@@ -7,7 +7,7 @@ from posixpath import join as urljoin
 
 from requests import compat
 
-from time2relax import utils
+from time2relax import utils  # pylint: disable=import-self
 
 _LIST = '_list'
 _SHOW = '_show'
@@ -100,9 +100,11 @@ def ddoc_show(ddoc_id, func_id, doc_id=None, **kwargs):
     :rtype: (str, str, dict)
     """
     if doc_id:
-        return _ddoc('GET', ddoc_id, _SHOW, func_id, utils.encode_document_id(doc_id), **kwargs)
-    else:
-        return _ddoc('GET', ddoc_id, _SHOW, func_id, **kwargs)
+        return _ddoc(
+            'GET', ddoc_id, _SHOW, func_id, utils.encode_document_id(doc_id), **kwargs
+        )
+
+    return _ddoc('GET', ddoc_id, _SHOW, func_id, **kwargs)
 
 
 def ddoc_view(ddoc_id, func_id, **kwargs):
@@ -151,7 +153,7 @@ def get(doc_id, **kwargs):
             and (isinstance(kwargs['params'], dict)) \
             and ('open_revs' in kwargs['params']) \
             and (kwargs['params']['open_revs'] != 'all'):
-        # 'open_revs' needs to be properly JSON encoded
+        # 'open_revs' needs to be JSON encoded
         kwargs['params']['open_revs'] = json.dumps(kwargs['params']['open_revs'])
 
     path = utils.encode_document_id(doc_id)
@@ -199,8 +201,8 @@ def insert(doc, **kwargs):
 
     if '_id' in doc:
         return 'PUT', utils.encode_document_id(doc['_id']), kwargs
-    else:
-        return 'POST', '', kwargs
+
+    return 'POST', '', kwargs
 
 
 def insert_att(doc_id, doc_rev, att_id, att, att_type, **kwargs):

@@ -7,10 +7,7 @@ name = "pypi"
 requests = "<3,>=2"
 
 [dev-packages]
-"flake8" = "*"
-"flake8-docstrings" = "*"
-"flake8-isort" = "*"
-"pep8-naming" = "*"
+prospector = "*"
 isort = "*"
 pytest = "*"
 pytest-cov = "*"

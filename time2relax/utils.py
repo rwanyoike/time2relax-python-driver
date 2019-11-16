@@ -138,7 +138,7 @@ def query_method_kwargs(params):
     if params:
         _params = dict(params)
 
-        # If 'keys' is supplied, issue a POST request to circumvent GET query string limits
+        # If 'keys' is supplied, issue a POST request to circumvent GET query limits
         if 'keys' in _params:
             method = 'POST'
             kwargs['json'] = {'keys': _params['keys']}
