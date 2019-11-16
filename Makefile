@@ -45,8 +45,8 @@ clean-test: ## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr htmlcov/
 
-lint: ## check style with flake8
-	flake8 time2relax tests
+lint: ## check style with prospector
+	prospector time2relax
 
 test: ## run tests quickly with the default Python
 	pytest
