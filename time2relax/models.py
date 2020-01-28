@@ -1,16 +1,10 @@
 """Primary objects that power time2relax."""
 
-from __future__ import absolute_import
-
 from posixpath import join as urljoin
 
 from requests import Request, Session
 
 from time2relax import exceptions, time2relax, utils
-
-_LIST = '_list'
-_SHOW = '_show'
-_VIEW = '_view'
 
 
 class CouchDB:
@@ -35,7 +29,7 @@ class CouchDB:
         :param bool create_db: (optional) Create the database.
         """
         # Raise exception on an invalid URL
-        Request('HEAD', url).prepare()
+        Request("HEAD", url).prepare()
 
         #: Database host
         self.host = utils.get_database_host(url)
@@ -53,11 +47,11 @@ class CouchDB:
         #: Default :class:`requests.Session`
         self.session = Session()
         # http://docs.couchdb.org/en/stable/api/basics.html#request-headers
-        self.session.headers['Accept'] = 'application/json'
+        self.session.headers["Accept"] = "application/json"
 
     def __repr__(self):
         """Return repr(self)."""
-        return '<{} [{}]>'.format(self.__class__.__name__, self.url)
+        return "<{} [{}]>".format(self.__class__.__name__, self.url)
 
     @utils.relax(time2relax.all_docs)
     def all_docs(self, **kwargs):
@@ -128,9 +122,9 @@ class CouchDB:
         # Check if the database exists
         if _init and self.create_db and (not self._created):
             try:
-                self.request('HEAD', '', _init=False)
+                self.request("HEAD", "", _init=False)
             except exceptions.ResourceNotFound:
-                self.request('PUT', '', _init=False)
+                self.request("PUT", "", _init=False)
             self._created = True
 
         r = time2relax.request(self.session, self.url, method, path, **kwargs)

@@ -1,4 +1,5 @@
 * time2relax version:
+* CouchDB version:
 * Python version:
 * Operating system:
 

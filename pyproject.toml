@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "time2relax"
+version = "0.6.0"
+description = "A CouchDB driver for Python."
+license = "MIT"
+authors = ["Raymond Wanyoike <raymond.wanyoike@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/rwanyoike/time2relax"
+include = ["HISTORY.md"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+requests = "^2.22"
+
+[tool.poetry.dev-dependencies]
+black = "^19.10b0"
+codecov = "^2.0.15"
+isort = "^4.3.21"
+prospector = "^1.2.0"
+pytest = "^5.3.4"
+pytest-cov = "^2.8.1"
+pytest-mock = "^1.11"
+tox = "^3.14.3"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
