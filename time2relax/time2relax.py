@@ -1,7 +1,5 @@
 """Primary methods that power time2relax."""
 
-from __future__ import absolute_import
-
 import json
 from posixpath import join as urljoin
 
@@ -9,9 +7,9 @@ from requests import compat
 
 from time2relax import utils  # pylint: disable=import-self
 
-_LIST = '_list'
-_SHOW = '_show'
-_VIEW = '_view'
+_LIST = "_list"
+_SHOW = "_show"
+_VIEW = "_view"
 
 
 def all_docs(**kwargs):
@@ -23,16 +21,16 @@ def all_docs(**kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if 'params' in kwargs:
-        params = kwargs['params']
-        del kwargs['params']
+    if "params" in kwargs:
+        params = kwargs["params"]
+        del kwargs["params"]
     else:
         params = None
 
     method, _kwargs = utils.query_method_kwargs(params)
     kwargs.update(_kwargs)
 
-    return method, '_all_docs', kwargs
+    return method, "_all_docs", kwargs
 
 
 def bulk_docs(docs, **kwargs):
@@ -44,12 +42,12 @@ def bulk_docs(docs, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if ('json' not in kwargs) or (not isinstance(kwargs['json'], dict)):
-        kwargs['json'] = {}
+    if ("json" not in kwargs) or (not isinstance(kwargs["json"], dict)):
+        kwargs["json"] = {}
 
-    kwargs['json']['docs'] = docs
+    kwargs["json"]["docs"] = docs
 
-    return 'POST', '_bulk_docs', kwargs
+    return "POST", "_bulk_docs", kwargs
 
 
 def compact(**kwargs):
@@ -60,12 +58,12 @@ def compact(**kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if 'headers' not in kwargs or (not isinstance(kwargs['headers'], dict)):
-        kwargs['headers'] = {}
+    if "headers" not in kwargs or (not isinstance(kwargs["headers"], dict)):
+        kwargs["headers"] = {}
 
-    kwargs['headers']['Content-Type'] = 'application/json'
+    kwargs["headers"]["Content-Type"] = "application/json"
 
-    return 'POST', '_compact', kwargs
+    return "POST", "_compact", kwargs
 
 
 def ddoc_list(ddoc_id, func_id, view_id, other_id=None, **kwargs):
@@ -85,7 +83,7 @@ def ddoc_list(ddoc_id, func_id, view_id, other_id=None, **kwargs):
     else:
         path = view_id
 
-    return _ddoc('GET', ddoc_id, _LIST, func_id, path, **kwargs)
+    return _ddoc("GET", ddoc_id, _LIST, func_id, path, **kwargs)
 
 
 def ddoc_show(ddoc_id, func_id, doc_id=None, **kwargs):
@@ -101,10 +99,10 @@ def ddoc_show(ddoc_id, func_id, doc_id=None, **kwargs):
     """
     if doc_id:
         return _ddoc(
-            'GET', ddoc_id, _SHOW, func_id, utils.encode_document_id(doc_id), **kwargs
+            "GET", ddoc_id, _SHOW, func_id, utils.encode_document_id(doc_id), **kwargs
         )
 
-    return _ddoc('GET', ddoc_id, _SHOW, func_id, **kwargs)
+    return _ddoc("GET", ddoc_id, _SHOW, func_id, **kwargs)
 
 
 def ddoc_view(ddoc_id, func_id, **kwargs):
@@ -117,9 +115,9 @@ def ddoc_view(ddoc_id, func_id, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if 'params' in kwargs:
-        params = kwargs['params']
-        del kwargs['params']
+    if "params" in kwargs:
+        params = kwargs["params"]
+        del kwargs["params"]
     else:
         params = None
 
@@ -137,7 +135,7 @@ def destroy(**kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    return 'DELETE', '', kwargs
+    return "DELETE", "", kwargs
 
 
 def get(doc_id, **kwargs):
@@ -149,16 +147,18 @@ def get(doc_id, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if ('params' in kwargs) \
-            and (isinstance(kwargs['params'], dict)) \
-            and ('open_revs' in kwargs['params']) \
-            and (kwargs['params']['open_revs'] != 'all'):
+    if (
+        ("params" in kwargs)
+        and (isinstance(kwargs["params"], dict))
+        and ("open_revs" in kwargs["params"])
+        and (kwargs["params"]["open_revs"] != "all")
+    ):
         # 'open_revs' needs to be JSON encoded
-        kwargs['params']['open_revs'] = json.dumps(kwargs['params']['open_revs'])
+        kwargs["params"]["open_revs"] = json.dumps(kwargs["params"]["open_revs"])
 
     path = utils.encode_document_id(doc_id)
 
-    return 'GET', path, kwargs
+    return "GET", path, kwargs
 
 
 def get_att(doc_id, att_id, **kwargs):
@@ -173,7 +173,7 @@ def get_att(doc_id, att_id, **kwargs):
     """
     path = urljoin(utils.encode_document_id(doc_id), utils.encode_attachment_id(att_id))
 
-    return 'GET', path, kwargs
+    return "GET", path, kwargs
 
 
 def info(**kwargs):
@@ -184,7 +184,7 @@ def info(**kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    return 'GET', '', kwargs
+    return "GET", "", kwargs
 
 
 def insert(doc, **kwargs):
@@ -197,12 +197,12 @@ def insert(doc, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    kwargs['json'] = doc
+    kwargs["json"] = doc
 
-    if '_id' in doc:
-        return 'PUT', utils.encode_document_id(doc['_id']), kwargs
+    if "_id" in doc:
+        return "PUT", utils.encode_document_id(doc["_id"]), kwargs
 
-    return 'POST', '', kwargs
+    return "POST", "", kwargs
 
 
 def insert_att(doc_id, doc_rev, att_id, att, att_type, **kwargs):
@@ -219,18 +219,18 @@ def insert_att(doc_id, doc_rev, att_id, att, att_type, **kwargs):
     :rtype: (str, str, dict)
     """
     if doc_rev:
-        if ('params' not in kwargs) or (not isinstance(kwargs['params'], dict)):
-            kwargs['params'] = {}
-        kwargs['params']['rev'] = doc_rev
+        if ("params" not in kwargs) or (not isinstance(kwargs["params"], dict)):
+            kwargs["params"] = {}
+        kwargs["params"]["rev"] = doc_rev
 
-    if ('headers' not in kwargs) or (not isinstance(kwargs['headers'], dict)):
-        kwargs['headers'] = {}
+    if ("headers" not in kwargs) or (not isinstance(kwargs["headers"], dict)):
+        kwargs["headers"] = {}
 
     path = urljoin(utils.encode_document_id(doc_id), utils.encode_attachment_id(att_id))
-    kwargs['headers']['Content-Type'] = att_type
-    kwargs['data'] = att
+    kwargs["headers"]["Content-Type"] = att_type
+    kwargs["data"] = att
 
-    return 'PUT', path, kwargs
+    return "PUT", path, kwargs
 
 
 def remove(doc_id, doc_rev, **kwargs):
@@ -243,13 +243,13 @@ def remove(doc_id, doc_rev, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if ('params' not in kwargs) or (not isinstance(kwargs['params'], dict)):
-        kwargs['params'] = {}
+    if ("params" not in kwargs) or (not isinstance(kwargs["params"], dict)):
+        kwargs["params"] = {}
 
     path = utils.encode_document_id(doc_id)
-    kwargs['params']['rev'] = doc_rev
+    kwargs["params"]["rev"] = doc_rev
 
-    return 'DELETE', path, kwargs
+    return "DELETE", path, kwargs
 
 
 def remove_att(doc_id, doc_rev, att_id, **kwargs):
@@ -263,13 +263,13 @@ def remove_att(doc_id, doc_rev, att_id, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if ('params' not in kwargs) or (not isinstance(kwargs['params'], dict)):
-        kwargs['params'] = {}
+    if ("params" not in kwargs) or (not isinstance(kwargs["params"], dict)):
+        kwargs["params"] = {}
 
     path = urljoin(utils.encode_document_id(doc_id), utils.encode_attachment_id(att_id))
-    kwargs['params']['rev'] = doc_rev
+    kwargs["params"]["rev"] = doc_rev
 
-    return 'DELETE', path, kwargs
+    return "DELETE", path, kwargs
 
 
 def replicate_to(source, target, **kwargs):
@@ -281,15 +281,15 @@ def replicate_to(source, target, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    url = urljoin(utils.get_database_host(source), '_replicate')
+    url = urljoin(utils.get_database_host(source), "_replicate")
 
-    if ('json' not in kwargs) or (not isinstance(kwargs['json'], dict)):
-        kwargs['json'] = {}
+    if ("json" not in kwargs) or (not isinstance(kwargs["json"], dict)):
+        kwargs["json"] = {}
 
-    kwargs['json']['source'] = source
-    kwargs['json']['target'] = target
+    kwargs["json"]["source"] = source
+    kwargs["json"]["target"] = target
 
-    return 'POST', url, kwargs
+    return "POST", url, kwargs
 
 
 def request(session, base_path, method, path, **kwargs):
@@ -303,19 +303,19 @@ def request(session, base_path, method, path, **kwargs):
     :rtype: requests.Response
     """
     # Prepare the params dictionary
-    if ('params' in kwargs) and isinstance(kwargs['params'], dict):
-        params = kwargs['params'].copy()
+    if ("params" in kwargs) and isinstance(kwargs["params"], dict):
+        params = kwargs["params"].copy()
         for key, val in params.items():
             # Handle titlecase booleans
             if isinstance(val, bool):
                 params[key] = json.dumps(val)
-        kwargs['params'] = params
+        kwargs["params"] = params
 
     if compat.urlparse(path).scheme:
         # Support absolute URLs
         url = path
     else:
-        url = urljoin(base_path, path).strip('/')
+        url = urljoin(base_path, path).strip("/")
 
     r = session.request(method, url, **kwargs)
     # Raise exception on a bad status code
@@ -336,7 +336,7 @@ def _ddoc(method, ddoc_id, func_type, func_id, _path=None, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    doc_id = urljoin('_design', ddoc_id)
+    doc_id = urljoin("_design", ddoc_id)
     path = urljoin(utils.encode_document_id(doc_id), func_type, func_id)
 
     if _path:

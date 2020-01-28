@@ -2,9 +2,9 @@
 
 [![Travis (.org)](https://img.shields.io/travis/rwanyoike/time2relax.svg)](https://travis-ci.org/rwanyoike/time2relax)
 [![Codecov](https://img.shields.io/codecov/c/gh/rwanyoike/time2relax.svg)](https://codecov.io/gh/rwanyoike/time2relax)
+[![GitHub](https://img.shields.io/github/license/rwanyoike/time2relax)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
-[![PyPI - License](https://img.shields.io/pypi/l/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
+[![Code Style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 > A CouchDB driver for Python.
 
@@ -67,12 +67,6 @@ $ pip install -U time2relax
 ```
 
 ## Documentation
-
-[![Read the Docs](https://img.shields.io/readthedocs/time2relax.svg)](https://time2relax.readthedocs.org)
-
-Detailed documentation is available at [https://time2relax.readthedocs.org](https://time2relax.readthedocs.org).
-
----
 
 To use time2relax in a project:
 
@@ -379,10 +373,3 @@ Make sure you understand how view functions work in CouchDB. A good start is [th
 >>> db.ddoc_view('testid', 'viewid', params)
 <Response [200]>
 ```
-
-## How to Contribute
-
-1. Check for open issues or open a fresh issue to start a discussion around a feature idea or a bug.
-1. Fork [the repository](https://github.com/rwanyoike/time2relax) to start making your changes to the master branch (or branch off of it).
-1. Write a test which shows that the bug was fixed or that the feature works as expected.
-1. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to [AUTHORS](https://github.com/rwanyoike/time2relax/blob/master/AUTHORS.md).

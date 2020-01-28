@@ -6,6 +6,7 @@ max-line-length: 88
 
 pep257:
   disable:
-    - "D203"  # 1 blank line required before class docstring (Conflicts with D211)
-    - "D213"  # Multi-line docstring summary should start at the second line (Conflicts
-              # with D212)
+    - "D203"  # 1 blank line required before class docstring (Conflicts with
+              # D211)
+    - "D213"  # Multi-line docstring summary should start at the second line
+              # (Conflicts with D212)

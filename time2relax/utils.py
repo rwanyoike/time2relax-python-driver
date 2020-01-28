@@ -1,7 +1,5 @@
 """Utility methods that are used in time2relax."""
 
-from __future__ import absolute_import
-
 import functools
 import json
 from posixpath import join as urljoin
@@ -22,11 +20,11 @@ HTTP_EXCEPTIONS = {
 }
 
 JSON_QUERY_ARGS = (
-    'end_key',
-    'endkey',
-    'key',
-    'start_key',
-    'startkey',
+    "end_key",
+    "endkey",
+    "key",
+    "start_key",
+    "startkey",
 )
 
 
@@ -43,7 +41,7 @@ def encode_uri_component(string):
     :param str string: The URI component.
     :rtype: str
     """
-    return compat.quote(string, '~()*!.\'')
+    return compat.quote(string, "~()*!.'")
 
 
 def encode_attachment_id(_id):
@@ -57,7 +55,7 @@ def encode_attachment_id(_id):
     :param str _id: The attachment id.
     :rtype: str
     """
-    paths = map(encode_uri_component, _id.split('/'))
+    paths = map(encode_uri_component, _id.split("/"))
     return urljoin(*paths)
 
 
@@ -72,13 +70,13 @@ def encode_document_id(_id):
     :param str _id: The document id.
     :rtype: str
     """
-    if _id.startswith('_design'):
+    if _id.startswith("_design"):
         uri = encode_uri_component(_id[8:])
-        return '_design/{0}'.format(uri)
+        return "_design/{0}".format(uri)
 
-    if _id.startswith('_local'):
+    if _id.startswith("_local"):
         uri = encode_uri_component(_id[7:])
-        return '_local/{0}'.format(uri)
+        return "_local/{0}".format(uri)
 
     return encode_uri_component(_id)
 
@@ -94,7 +92,7 @@ def get_database_host(url):
     :param str url: The URL to parse.
     :rtype: str
     """
-    components = compat.urlparse(url)[:2] + (('',) * 4)
+    components = compat.urlparse(url)[:2] + (("",) * 4)
     return compat.urlunparse(components)
 
 
@@ -109,10 +107,10 @@ def get_database_name(url):
     :param str url: The URL to parse.
     :rtype: str
     """
-    name = compat.urlparse(url).path.strip('/').split('/')[-1]
+    name = compat.urlparse(url).path.strip("/").split("/")[-1]
 
     # Avoid re-encoding the name
-    if '%' not in name:
+    if "%" not in name:
         name = encode_uri_component(name)
 
     return name
@@ -132,24 +130,24 @@ def query_method_kwargs(params):
     :param dict params: The URL parameters.
     :rtype: (str, dict)
     """
-    method = 'GET'
+    method = "GET"
     kwargs = {}
 
     if params:
         _params = dict(params)
 
         # If 'keys' is supplied, issue a POST request to circumvent GET query limits
-        if 'keys' in _params:
-            method = 'POST'
-            kwargs['json'] = {'keys': _params['keys']}
-            del _params['keys']
+        if "keys" in _params:
+            method = "POST"
+            kwargs["json"] = {"keys": _params["keys"]}
+            del _params["keys"]
 
         # These arguments to be properly JSON encoded values
         for i in JSON_QUERY_ARGS:
             if i in _params:
                 _params[i] = json.dumps(_params[i])
         if _params:
-            kwargs['params'] = _params
+            kwargs["params"] = _params
 
     return method, kwargs
 
@@ -181,12 +179,15 @@ def relax(f):
     :param function f: The function to call.
     :rtype: function
     """
+
     def decorator(func):
         @functools.wraps(func)
         def inner(*args, **k):
-            # Hacky alternative to copy-pasting
+            # Hack-y alternative to copy-pasting
             m, p, k = f(*args[1:], **k)
             c = args[0]
             return c.request(m, p, **k)
+
         return inner
+
     return decorator
