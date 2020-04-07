@@ -1,6 +1,6 @@
 # Version History
 
-## 0.6.0 (unreleased)
+## 0.6.0 (2020-01-28)
 
 - Drop Python 2.7 support - Python 2.7 will not be maintained past 2020.
 
