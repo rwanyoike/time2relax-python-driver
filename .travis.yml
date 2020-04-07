@@ -1,9 +1,12 @@
 ---
 
 language: "python"
-python:
-    - "3.6"
-cache:
-  pip: true
-install: "pip install tox-travis"
-script: "tox"
+python: "3.6"
+before_install: "pip install poetry codecov"
+install: "poetry install --verbose"
+script:
+  - "pytest --verbose --cov=time2relax tests"
+  - "prospector time2relax"
+  - "black --check time2relax"
+  - "isort --recursive --check-only time2relax"
+  - "codecov"
