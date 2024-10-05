@@ -30,7 +30,7 @@ Inspired by [pouchdb](https://github.com/pouchdb/pouchdb)  and [couchdb-nano](ht
 - HTTP exceptions modeled from CouchDB [error codes](http://docs.couchdb.org/en/1.6.1/api/basics.html#http-status-codes).
 - Transparent URL and parameter encoding.
 
-time2relax officially supports Python 3.6+; CouchDB 1.7+.
+time2relax officially supports Python 3.8+; CouchDB 1.7+.
 
 ## Installation
 
@@ -44,15 +44,3 @@ $ pip install -U time2relax
 ## Usage
 
 For documentation, see [`./docs/README.md`](./docs/README.md).
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the [MIT License](./LICENSE).
-
-## Related Projects
-
-- [couchutils](https://github.com/rwanyoike/couchutils) - A collection of CouchDB utils.

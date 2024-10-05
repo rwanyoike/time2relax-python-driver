@@ -1,5 +1,9 @@
 # Version History
 
+## 0.7.0 (2024-05-05)
+
+- Drop Python 3.6, 3.7 support - Python 3.7 will not be maintained past 2023.
+
 ## 0.6.0 (2020-01-28)
 
 - Drop Python 2.7 support - Python 2.7 will not be maintained past 2020.
