@@ -1,10 +1,11 @@
 # time2relax: Python CouchDB Driver
 
-[![Travis (.org)](https://img.shields.io/travis/rwanyoike/time2relax.svg)](https://travis-ci.org/rwanyoike/time2relax)
-[![Codecov](https://img.shields.io/codecov/c/gh/rwanyoike/time2relax.svg)](https://codecov.io/gh/rwanyoike/time2relax)
-[![GitHub](https://img.shields.io/github/license/rwanyoike/time2relax)](LICENSE)
-[![PyPI](https://img.shields.io/pypi/v/time2relax.svg)](https://pypi.python.org/pypi/time2relax)
-[![Code Style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![GitHub Actions](https://img.shields.io/github/actions/workflow/status/rwanyoike/time2relax-python-driver/python-package.yml?branch=main)
+](https://github.com/rwanyoike/time2relax-python-driver/actions/workflows/python-package.yml?query=branch%3Amain)
+[![GitHub License](https://img.shields.io/github/license/rwanyoike/time2relax-python-driver)
+](LICENSE.txt)
+[![PyPI - Version](https://img.shields.io/pypi/v/time2relax)
+](https://pypi.org/project/time2relax)
 
 > A CouchDB driver for Python.
 
