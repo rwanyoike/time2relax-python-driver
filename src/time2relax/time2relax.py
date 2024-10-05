@@ -78,10 +78,7 @@ def ddoc_list(ddoc_id, func_id, view_id, other_id=None, **kwargs):
     :param kwargs: (optional) Arguments that :meth:`requests.Session.request` takes.
     :rtype: (str, str, dict)
     """
-    if other_id:
-        path = urljoin(utils.encode_document_id(other_id), view_id)
-    else:
-        path = view_id
+    path = urljoin(utils.encode_document_id(other_id), view_id) if other_id else view_id
 
     return _ddoc("GET", ddoc_id, _LIST, func_id, path, **kwargs)
 
@@ -311,11 +308,8 @@ def request(session, base_path, method, path, **kwargs):
                 params[key] = json.dumps(val)
         kwargs["params"] = params
 
-    if compat.urlparse(path).scheme:
-        # Support absolute URLs
-        url = path
-    else:
-        url = urljoin(base_path, path).strip("/")
+    # Support absolute URLs
+    url = path if compat.urlparse(path).scheme else urljoin(base_path, path).strip("/")
 
     r = session.request(method, url, **kwargs)
     # Raise exception on a bad status code

@@ -28,7 +28,7 @@ JSON_QUERY_ARGS = (
 )
 
 
-def encode_uri_component(string):
+def encode_uri_component(part: str) -> str:
     """Return an encoded URI component.
 
     https://stackoverflow.com/a/6618858
@@ -38,10 +38,10 @@ def encode_uri_component(string):
         >>> encode_uri_component('escaped%2F1')
         'escaped%252F1'
 
-    :param str string: The URI component.
+    :param str part: The URI component.
     :rtype: str
     """
-    return compat.quote(string, "~()*!.'")
+    return compat.quote(part, "~()*!.'")
 
 
 def encode_attachment_id(_id):
@@ -72,11 +72,11 @@ def encode_document_id(_id):
     """
     if _id.startswith("_design"):
         uri = encode_uri_component(_id[8:])
-        return "_design/{0}".format(uri)
+        return f"_design/{uri}"
 
     if _id.startswith("_local"):
         uri = encode_uri_component(_id[7:])
-        return "_local/{0}".format(uri)
+        return f"_local/{uri}"
 
     return encode_uri_component(_id)
 
@@ -165,10 +165,7 @@ def raise_http_exception(response):
     except ValueError:
         message = None
 
-    if response.status_code in HTTP_EXCEPTIONS:
-        ex = HTTP_EXCEPTIONS[response.status_code]
-    else:
-        ex = exceptions.HTTPError
+    ex = HTTP_EXCEPTIONS.get(response.status_code, exceptions.HTTPError)
 
     raise ex(message, response)
 
@@ -182,9 +179,9 @@ def relax(f):
 
     def decorator(func):
         @functools.wraps(func)
-        def inner(*args, **k):
+        def inner(*args, **kwargs):
             # Hack-y alternative to copy-pasting
-            m, p, k = f(*args[1:], **k)
+            m, p, k = f(*args[1:], **kwargs)
             c = args[0]
             return c.request(m, p, **k)
 

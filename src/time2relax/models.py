@@ -51,7 +51,7 @@ class CouchDB:
 
     def __repr__(self):
         """Return repr(self)."""
-        return "<{} [{}]>".format(self.__class__.__name__, self.url)
+        return f"<{self.__class__.__name__} [{self.url}]>"
 
     @utils.relax(time2relax.all_docs)
     def all_docs(self, **kwargs):
@@ -127,5 +127,4 @@ class CouchDB:
                 self.request("PUT", "", _init=False)
             self._created = True
 
-        r = time2relax.request(self.session, self.url, method, path, **kwargs)
-        return r
+        return time2relax.request(self.session, self.url, method, path, **kwargs)
